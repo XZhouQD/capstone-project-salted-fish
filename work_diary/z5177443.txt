@@ -1,0 +1,11 @@
+Week 1
+
+We had our first team meeting and discussed about the main features which we need to work on.
+And we discussed about the roles. I am responsible for the front end development with Nan Zhao.
+
+Next week we are going to work on the proposal based on the discussion content.
+
+Week 2
+
+I have created the software architecture part using draw.io, and created the system modules and flow chart on paper,
+which is implemented by Nan Zhao.
