@@ -3,9 +3,14 @@ Week 1
 Group formed. I created Jira organisation board and held the first group meeting (besides in lab) through Zoom. We discussed all functionality of the project and basically decided role of each member in the team.
 I also created the database access for the project.
 
-Next Week Plan: 2-1. some user stories 2-2. start proposal drafting
+Next Week Plan: 2-1. some user stories; 2-2. start proposal drafting;
 
 Week 2
 
-I wrote some user stories of our project and divide them into 4 sprints. [2-1 finished]
+I wrote some user stories of our project and divide them into 4 sprints. [2-1]
 Created Github project repo. This diary will probably be the first file in the repo.
+Created server user for cloud testing and deployment.
+All user stories updated to Jira, with subtasks for sprint 1.
+Proposal editing: User stories, Background, Objectives, System Architecture, Related Technology. [2-2]
+
+Next Week Plan: 3-1. confirm final user stories; 3-2. Proposal final version and formatting;
