@@ -11,5 +11,8 @@ Next week plan: we planned to start the proposal from user stories which had bee
 Week 2
 
 I collaborated with teammates to complete the user story.
+I added in the backgroud, obejectives, user story analysis part for the proposal.
+Join in the group discussion for the project requirements.
+Took part in the online zoom group meeting to go through the whole prosoal document.
 I wrote down the first version of the tables design for our database system for further refining.
 
