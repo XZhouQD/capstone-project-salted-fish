@@ -3,6 +3,13 @@ Week 1
 Group formed and joined in the Jira project management system.Choose the topic of project.
 We discussed the detail about project in the team meeting and I learn some knowledge about back-end.
 
+Next week :We will start to write our Proposal from user stories
+
 Week 2
 
-Join Github project repo and start to write out Proposal.
+Join Github project repo and start to write our Proposal.
+Disscuss user stories and flow chart with team.
+Complete first version of proposal.
+Join in group meeting and suggest some content should be modified.
+
+Next week : Confirm final content of proposal and submit it.
