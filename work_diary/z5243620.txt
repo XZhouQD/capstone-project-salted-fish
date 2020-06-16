@@ -16,3 +16,6 @@ Join in the group discussion for the project requirements.
 Took part in the online zoom group meeting to go through the whole prosoal document.
 I wrote down the first version of the tables design for our database system for further refining.
 
+next week plan: 
+1. Further modify to perfect the related user story and user story analysis part;
+2. Formating the draft version of proposal and prepare the final version to submit!
