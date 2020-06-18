@@ -14,3 +14,10 @@ All user stories updated to Jira, with subtasks for sprint 1.
 Proposal editing: User stories, Background, Objectives, System Architecture, Related Technology. [2-2]
 
 Next Week Plan: 3-1. confirm final user stories; 3-2. Proposal final version and formatting;
+
+Week 3
+
+Finalised proposal. I wrote the related technology analysis, re-formatted the whorle proposal. [3-2]
+Some user stories has been updated and sync with Jira. [3-1]
+Start to draft backend database system, as well as basic util functions.
+Start to configure smtp system.
