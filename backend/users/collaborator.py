@@ -41,6 +41,13 @@ class Collaborator():
         return skills
 
     @staticmethod
+    def is_email_exist(conn, email):
+        email = email.lower()
+        query = "select * from collaborator where email = \'" + email + "\';"
+        result = conn.execute(query)
+        return result.rowcount
+
+    @staticmethod
     def login(conn, email, password_plain='', password_encrypted=''):
         email = email.lower()
         query = "select * from collaborator where email = \'" + email + "\';"
