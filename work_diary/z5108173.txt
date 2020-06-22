@@ -25,3 +25,8 @@ Start to configure smtp system.
 Next Week Plan: 4-1. first version database; 4-2. User login util; 4-3. Flask-Restplus structure
 
 Week 4
+
+Finished first version of database of users, part of [4-1]
+Finished User login util. [4-2]
+Finished first version of user login/register system.
+
