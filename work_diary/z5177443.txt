@@ -9,3 +9,9 @@ Week 2
 
 I have created the software architecture part using draw.io, and created the system modules and flow chart on paper,
 which is implemented by Nan Zhao.
+
+week 3
+
+redraw the software architecture part and add the explaination of front end techiques
+
+Next week plan: start code the static pages, login, sign up.
