@@ -1,0 +1,43 @@
+.navbar-css {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* homepage */
+div section h1 {
+  margin-top: 50px;
+}
+
+div section div {
+  padding: 10px;
+  margin: 0px 0px 20px;
+}
+
+.parallax-container {
+  height: 500px;
+}
+
+.parallax {
+  position: static;
+}
+
+.avatar:link {
+  color: #000000;
+} /* 未访问链接*/
+.avatar:visited {
+  color: white;
+} /* 已访问链接 */
+.avatar:hover {
+  color: pink;
+} /* 鼠标移动到链接上 */
+.avatar:active {
+  color: gray;
+} /* 鼠标点击时 */
+
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-color: #ec407a;
+  box-shadow: none;
+}
