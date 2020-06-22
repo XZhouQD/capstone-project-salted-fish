@@ -40,6 +40,13 @@ class Dreamer():
         return None
 
     @staticmethod
+    def is_email_exist(conn, email):
+        email = email.lower()
+        query = "select * from dreamer where email = \'" + email + "\';"
+        result = conn.execute(query)
+        return result.rowcount
+
+    @staticmethod
     def getObject(conn, email):
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"
