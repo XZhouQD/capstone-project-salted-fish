@@ -19,3 +19,15 @@ I wrote down the first version of the tables design for our database system for 
 next week plan: 
 1. Further modify to perfect the related user story and user story analysis part;
 2. Formating the draft version of proposal and prepare the final version to submit!
+
+Week 3
+
+Further modify to pecfect the comparing with current existing system part of backgroud, user story and user story analysis part;
+Reorgaine the explaination part for the interface and flow diagram part;
+formatted the first version of the proposal and collaborate with teammates to refine the format and content of the proposal;
+Working with teammates to generate the final version of the proposal;
+took part in the onlining zoom meeting to go through the original database table design to generate first version of it;
+
+Next week plan:
+1. Based on the requirement analysis and database design and team plan, start the coding part for print1;
+
