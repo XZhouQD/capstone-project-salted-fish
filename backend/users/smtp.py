@@ -10,12 +10,12 @@ def send_email(receiver_email,email_content,email_subject):
     smtp_pass = "PcaVXEZo52c7ktes"
     sender = 'no-reply@mail.x-zhou.com'
     receivers = [receiver_email]
-    email_message = MIMEText(email_content, 'plain', 'utf-8')
-    email_message['From'] = Header("mail.x-zhou.com", 'utf-8')
-    email_message['To'] = Header(receiver_email, 'utf-8')
+    email_message = MIMEText(email_content, 'plain')
+    email_message['From'] = Header("mail.x-zhou.com")
+    email_message['To'] = Header(receiver_email)
 
     subject = email_subject
-    email_message['Subject'] = Header(subject, 'utf-8')
+    email_message['Subject'] = Header(subject)
 
     server = smtplib.SMTP_SSL(smtp_host,465)
     server.login(smtp_user,smtp_pass)
