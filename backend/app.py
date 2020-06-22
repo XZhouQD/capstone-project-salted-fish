@@ -17,12 +17,14 @@ import json
 from functools import wraps
 from flask import Flask, request
 from flask_restplus import fields, inputs, reqparse
-from sqlalchemy import create_engine
 from time import time
 from itsdangerous import JSONWebSignatureSerializer, BadSignature, SignatureExpired
 import re
 
+from db import create_conn
+
 app = Flask(__name__)
 
 if __name__ == '__main__':
+    conn = create_conn()
     app.run(debug=True)
