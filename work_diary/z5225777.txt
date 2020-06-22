@@ -4,3 +4,6 @@ Jobs were allocated. I will be in charge for front end developing with Keyu Yang
 
 Week 2
 Start working on project proposal. I am working on drawing the flow diagram using draw.io with the paper prototype provided by Keyu.
+
+Week 3
+I helped to finalize the project proposal by explanning the flow diagram. Start building the front-end with materializecss CSS with Keyu. 
