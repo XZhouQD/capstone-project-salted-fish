@@ -21,3 +21,7 @@ Finalised proposal. I wrote the related technology analysis, re-formatted the wh
 Some user stories has been updated and sync with Jira. [3-1]
 Start to draft backend database system, as well as basic util functions.
 Start to configure smtp system.
+
+Next Week Plan: 4-1. first version database; 4-2. User login util; 4-3. Flask-Restplus structure
+
+Week 4
