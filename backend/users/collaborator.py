@@ -5,7 +5,7 @@ from users.util import sha256
 class Collaborator():
     def __init__(self, name, email, password_plain='', password_encrypted='', id='', create_time='', last_update='', phone_no='', user_level=0, description='', education=-1, skill_dict={}):
         self.name = name
-        self.email = email
+        self.email = email.lower()
         if password_encrypted == '':
             self.password_encrypted = sha256(password_plain)
         else:
@@ -42,6 +42,7 @@ class Collaborator():
 
     @staticmethod
     def login(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
         query = "select * from collaborator where email = \'" + email + "\';"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -58,6 +59,7 @@ class Collaborator():
 
     @staticmethod
     def getObject(conn, email):
+        email = email.lower()
         query = "select * from collaborator where email = \'" + email + "\';"
         result = conn.execute(query)
         if result.rowcount == 0:
