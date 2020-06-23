@@ -80,7 +80,8 @@ collaborator_register_model = api.model('Collaborator_Register', {
     'repeat_password': fields.String(required=True, description='Repeat your password', min_length=8),
     'phone_no': fields.String(required=False, description='Phone number (optional)'),
     'education': fields.Integer(required=False, description='Education, 1=Other, 2=Bachelor, 3=Master, 4=PhD'),
-    'skills': fields.String(required=False, description='skills(as integer) and experience (in years). Format: skill:exp,skill:exp,skill:exp,...', example='1:3,2:2,3:1')
+    'skills': fields.String(required=False, description='skills(as integer). Format: skill1,skill2,skill3,...', example='2,3,1'),
+    'experience': fields.String(required=False, description='experience (in years). Format: exp1,exp2,exp3,...', example='3,2,1')
 })
 
 
@@ -117,10 +118,11 @@ class CollaboratorRegister(CorsResource):
 
             skill_dict = {}
         try:
-            skill_exp_pairs = register_info['skills'].split(',')
-            for str in skill_exp_list:
-                skill_exp = str.split(':')
-                skill_dict[skill_exp[0]]=skill_exp[1]
+            skills = register_info['skills'].split(',')
+            exps = register_info['experience'].split(',')
+            if not (len(skills) == len(exps)): return {'message': 'Skills and experience have different length.'}, 400
+            for i in range(len(skills)):
+                skill_dict[skills[i]]=exps[i]
         except:
             skill_dict = {}
 

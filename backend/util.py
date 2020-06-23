@@ -3,10 +3,19 @@
 import re
 from flask_restplus import Resource
 
+def check_email_local(local):
+    pattern = '^([a-zA-Z]([-]*[a-zA-Z0-9])*[\\.])*[a-zA-Z]([-]*[a-zA-Z0-9])*$'
+    valid = re.findall(pattern, local)
+    return len(valid)
+
+def check_email_domain(domain):
+    pattern = '^([a-zA-Z]([-]*[a-zA-Z0-9])*[\\.])+[a-zA-Z]([-]*[a-zA-Z0-9])*$'
+    valid = re.findall(pattern, domain)
+    return len(valid)
+
 def check_email(email):
-    pattern = '^[\w-]+@[\w-]+\.[\w-]+$'
-    vaild = re.findall(pattern,email)
-    return len(vaild)
+    email_split = email.split('@', 1)
+    return check_email_local(email_split[0]) and check_email_domain(email_split[1])
 
 class CorsResource(Resource):
     def options(self):
