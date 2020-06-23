@@ -15,13 +15,13 @@ Qingbei Wu      z5222641
 import json
 from functools import wraps
 from flask import Flask, request
-from flask_restplus import Resource, Api, abort, fields, inputs, reqparse, marshal
+from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
 from itsdangerous import JSONWebSignatureSerializer, BadSignature
 import re
 
 from db import create_conn
 from auth_token import AuthToken
-from util import check_email
+from util import check_email, CorsResource
 
 from users.admin import Admin
 from users.dreamer import Dreamer
@@ -85,7 +85,7 @@ collaborator_register_model = api.model('Collaborator_Register', {
 
 
 @api.route('/collaborator/register')
-class CollaboratorRegister(Resource):
+class CollaboratorRegister(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Register Failed')
     @api.doc(description='Register a new collaborator')
@@ -129,7 +129,7 @@ class CollaboratorRegister(Resource):
         return {'message': 'Register success'}, 200
 
 @api.route('/dreamer/register')
-class DreamerRegister(Resource):
+class DreamerRegister(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Register Failed')
     @api.doc(description='Register a new dreamer')
@@ -159,7 +159,7 @@ class DreamerRegister(Resource):
         return {'message': 'Register success'}, 200
 
 @api.route('/login')
-class Login(Resource):
+class Login(CorsResource):
     @api.response(200, 'Success')
     @api.response(401, 'Login Failed')
     @api.doc(description='Login with email and password, receive an auth token')
