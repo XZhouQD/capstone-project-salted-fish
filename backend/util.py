@@ -4,12 +4,12 @@ import re
 from flask_restplus import Resource
 
 def check_email_local(local):
-    pattern = '^([a-zA-Z]([-]*[a-zA-Z0-9])*[\\.])*[a-zA-Z]([-]*[a-zA-Z0-9])*$'
+    pattern = '^([a-zA-Z0-9]([-]*[a-zA-Z0-9])*[\\.])*[a-zA-Z0-9]([-]*[a-zA-Z0-9])*$'
     valid = re.findall(pattern, local)
     return len(valid)
 
 def check_email_domain(domain):
-    pattern = '^([a-zA-Z]([-]*[a-zA-Z0-9])*[\\.])+[a-zA-Z]([-]*[a-zA-Z0-9])*$'
+    pattern = '^([a-zA-Z0-9]([-]*[a-zA-Z0-9])*[\\.])+[a-zA-Z0-9]([-]*[a-zA-Z0-9])*$'
     valid = re.findall(pattern, domain)
     return len(valid)
 
