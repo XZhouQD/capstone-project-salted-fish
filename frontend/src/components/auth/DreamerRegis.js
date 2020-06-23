@@ -1,14 +1,18 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { setAlert } from "../../actions/alert";
+import { registerDreamer } from "../../actions/auth";
 
-const DreamerRegis = () => {
+const DreamerRegis = ({ setAlert, registerDreamer }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    password2: "",
+    repeat_password: "",
+    phone_no: "",
   });
 
-  const { name, email, password, password2 } = formData;
+  const { name, email, password, repeat_password, phone_no } = formData;
 
   const onChange = (e) => {
     // get target element name
@@ -17,10 +21,10 @@ const DreamerRegis = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (password !== password2) {
-      console.log("password not mastch");
+    if (password !== repeat_password) {
+      setAlert("Password does not match");
     } else {
-      console.log(formData);
+      registerDreamer({ name, email, phone_no, password, repeat_password });
     }
   };
 
@@ -51,10 +55,20 @@ const DreamerRegis = () => {
         </div>
         <div>
           <input
+            type="text"
+            placeholder="Phone Number"
+            name="phone_no"
+            minLength="8"
+            value={phone_no}
+            onChange={(e) => onChange(e)}
+          />
+        </div>
+        <div>
+          <input
             type="password"
             placeholder="Password"
             name="password"
-            minLength="6"
+            minLength="8"
             value={password}
             onChange={(e) => onChange(e)}
             required
@@ -65,9 +79,9 @@ const DreamerRegis = () => {
           <input
             type="password"
             placeholder="Confirm Password"
-            name="password2"
+            name="repeat_password"
             minLength="6"
-            value={password2}
+            value={repeat_password}
             onChange={(e) => onChange(e)}
             required
           />
@@ -79,4 +93,4 @@ const DreamerRegis = () => {
   );
 };
 
-export default DreamerRegis;
+export default connect(null, { setAlert, registerDreamer })(DreamerRegis);

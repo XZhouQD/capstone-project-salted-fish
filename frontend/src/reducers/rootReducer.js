@@ -1,5 +1,10 @@
 import { combineReducers } from "redux";
 import alert from "./alert";
-const rootReducer = combineReducers({});
+import auth from "./auth";
+
+const rootReducer = combineReducers({
+  alert,
+  auth,
+});
 
 export default rootReducer;

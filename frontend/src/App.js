@@ -7,12 +7,13 @@ import Register from "./components/auth/Register";
 import Test from "./components/layout/test";
 import Dashboard from "./components/dashboard/Dashboard";
 import createProject from "./components/projects/createProject";
-
+import Alert from "./components/layout/alert";
 function App() {
   return (
     <Router>
       <Narvbar />
       <Route exact path="/" component={HomePage} />
+      <Alert />
       <Switch>
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/test" component={Test} />

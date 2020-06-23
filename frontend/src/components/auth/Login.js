@@ -1,68 +1,57 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Register from "./Register";
+import LoginForm from "./LoginForm";
 
-const Login = () => {
-  const [formData, setFormData] = useState({
+class Login extends React.Component {
+  state = {
+    role: "",
     email: "",
     password: "",
-  });
-
-  const { email, password } = formData;
-
-  const onChange = (e) => {
-    // get target element name
-    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    console.log("login success");
-  };
-
-  return (
-    <div className="container">
-      <div className="valign-wrapper" style={{ marginTop: "50px" }}>
-        <div className="row center">
-          <div className="col s12  card-panel z-depth-6">
-            <h5 className="avatar">Sign Into Your Account</h5>
-            <form onSubmit={(e) => onSubmit(e)}>
+  render() {
+    return (
+      <div className="container">
+        <div className="valign-wrapper" style={{ marginTop: "50px" }}>
+          <div className="row center">
+            <div className="col s12  card-panel z-depth-6">
+              <h5 className="avatar">Sign Into Your Account</h5>
               <div>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  name="email"
-                  value={email}
-                  onChange={(e) => onChange(e)}
-                  required
-                />
+                Are you a{" "}
+                <button
+                  className="btn-small lighten-1 z-depth-0 avatar"
+                  onClick={() => this.setState({ role: "Dreamer" })}
+                  style={{ padding: "0px 0px 0px 0px" }}
+                >
+                  dreamer
+                </button>
+                <span> or </span>
+                <button
+                  className="btn-small lighten-1 z-depth-0 avatar"
+                  onClick={() => this.setState({ role: "Collaborator" })}
+                  style={{ padding: "0px 0px 0px 0px" }}
+                >
+                  collaborator
+                </button>
               </div>
-              <div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  name="password"
-                  minLength="6"
-                  value={password}
-                  onChange={(e) => onChange(e)}
-                  required
-                />
-              </div>
-
-              <input
-                type="submit"
-                className="btn btn-primary"
-                value="Sign in"
-              />
-            </form>
-            <p>
-              Don't have an account? <Link to="./register">Sign up</Link>
-            </p>
+              <br />
+              <LoginForm role={this.state.role} />
+              <p>
+                Don't have an account? <Link to="./register">Sign up</Link>
+              </p>
+              <button
+                className="btn-small  z-depth-0 avatar right small"
+                onClick={() => this.setState({ role: "Admin" })}
+                style={{ padding: "0px 0px 0px 0px" }}
+              >
+                admin
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Login;
