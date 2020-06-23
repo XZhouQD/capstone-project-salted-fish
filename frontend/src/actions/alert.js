@@ -1,11 +1,15 @@
 import { SET_ALERT, REMOVE_ALERT } from "./actionTypes";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
-export const setAlert = (msg, alertType) => (dispatch) => {
-  // only id
-  const id = uuid.v4();
+export const setAlert = (msg) => (dispatch) => {
+  // generate unique id
+  const id = uuid;
+  // dispatch to reducer
+  // console.log(msg);
   dispatch({
     type: SET_ALERT,
-    payload: { msg, alertType, id },
+    payload: { msg, id },
   });
+  // disappear after 5s trigger remove alert
+  setTimeout(() => dispatch({ type: REMOVE_ALERT, payload: id }), 3000);
 };

@@ -27,7 +27,7 @@ class Register extends Component {
                 <div>
                   Are you a{" "}
                   <button
-                    className="btn lighten-1 z-depth-0 avatar"
+                    className="btn-small lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickDre.bind(this)}
                     style={{ padding: "0px 0px 0px 0px" }}
                   >
@@ -35,7 +35,7 @@ class Register extends Component {
                   </button>
                   <span> or </span>
                   <button
-                    className="btn lighten-1 z-depth-0 avatar"
+                    className="btn-small lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickCol.bind(this)}
                     style={{ padding: "0px 0px 0px 0px" }}
                   >
