@@ -44,6 +44,7 @@ export const registerDreamer = ({
       "Access-Control-Allow-Origin": "*",
     },
   };
+
   const body = JSON.stringify({
     name,
     email,
@@ -52,6 +53,7 @@ export const registerDreamer = ({
     phone_no,
   });
   console.log(body);
+
   try {
     const res = await axios.post("/dreamer/register", body, config);
     console.log(res.data);
@@ -111,7 +113,7 @@ export const registerColla = ({
     const res = await axios.post("/collaborator/register", body, config);
     console.log(res.data);
 
-    dispatch(setAlert(res.data));
+    dispatch(setAlert(res.data.message));
 
     // good register
     dispatch({

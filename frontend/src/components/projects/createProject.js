@@ -1,53 +1,93 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+// Import Materialize
+import M from "materialize-css";
+import ProjectRole from "./projectRoles";
 
 class CreateProject extends Component {
+  constructor(props) {
+    super(props);
+    this.handleonChange = this.handleonChange.bind(this);
+    this.handleonSubmit = this.handleonSubmit.bind(this);
+  }
+
   state = {
     title: "",
+    topic: "",
     content: "",
   };
 
-  handleChange = (e) => {
-    this.setState({
-      // use id to get that value
-      [e.target.id]: e.target.value,
-    });
+  componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
+
+  handleonChange = (e) => {
+    // get target element name
+    this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = (e) => {
+  handleonSubmit = (e) => {
     e.preventDefault();
-    // console.log(this.state)
-    // this.state 代表这个新建的project
-    this.props.createProject(this.state);
-    this.props.history.push("/");
+    console.log(this.state);
   };
 
   render() {
     // const { auth } = this.props;
     // if (!auth.uid) return <Redirect to="/signin" />;
     return (
-      <div className="container">
-        <div className="center">
-          <form onSubmit={this.handleSubmit} className="white">
-            <h5 className="grey-text text-darken-3">Create your project</h5>
-            <div className="input-field">
-              <label htmlFor="title">Title</label>
-              <input type="text" id="title" onChange={this.handleChange} />
-            </div>
+      <div className="container" style={{ marginTop: "50px" }}>
+        <div className="card z-depth-6">
+          <div className="row" style={{ paddingTop: "20px" }}>
+            <form className="col s12" onSubmit={(e) => this.handleonSubmit(e)}>
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    placeholder="Your project's title"
+                    type="text"
+                    className="validate"
+                    name="title"
+                    onChange={(e) => this.handleonChange(e)}
+                  />
+                  <label htmlFor="title">Project Title</label>
+                </div>
+              </div>
 
-            <div className="input-field">
-              <label htmlFor="content">Project Content</label>
-              <textarea
-                id="content"
-                className="materialize-textarea"
-                onChange={this.handleChange}
-              ></textarea>
-            </div>
-            <div className="input-field">
-              <button className="btn pink lighten-1 z-depth-0">Create</button>
-            </div>
-          </form>
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    placeholder="Your project's catagory"
+                    type="text"
+                    className="validate"
+                    name="topic"
+                    onChange={(e) => this.handleonChange(e)}
+                  />
+                  <label htmlFor="title">Project Topic</label>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="input-field col s12">
+                  <textarea
+                    placeholder="Describe your project details"
+                    className="materialize-textarea"
+                    length="140"
+                    name="content"
+                    onChange={(e) => this.handleonChange(e)}
+                  ></textarea>
+                  <label for="description">Describe your project!</label>
+                </div>
+              </div>
+
+              <input
+                type="submit"
+                className="btn"
+                value="Register"
+                style={{ marginBottom: "20px" }}
+              />
+            </form>
+          </div>
         </div>
       </div>
     );

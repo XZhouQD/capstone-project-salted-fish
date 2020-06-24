@@ -29,7 +29,6 @@ class Register extends Component {
                   <button
                     className="btn-small lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickDre.bind(this)}
-                    style={{ padding: "0px 0px 0px 0px" }}
                   >
                     dreamer
                   </button>
@@ -37,7 +36,6 @@ class Register extends Component {
                   <button
                     className="btn-small lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickCol.bind(this)}
-                    style={{ padding: "0px 0px 0px 0px" }}
                   >
                     collaborator
                   </button>
