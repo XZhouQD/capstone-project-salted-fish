@@ -27,6 +27,10 @@ from users.admin import Admin
 from users.dreamer import Dreamer
 from users.collaborator import Collaborator
 
+from project import Project
+from role import Role
+
+
 app = Flask(__name__)
 api = Api(app, authorizations={
     'API-KEY': {
@@ -44,7 +48,7 @@ auth = AuthToken(SECRET, expires)
 # Auth decorator
 def require_auth(f):
     @wraps(f)
-    def func(*args, **kwarps):
+    def func(*args, **kwargs):
         token = request.headers.get('AUTH_KEY')
         if not token:
             abort(401, 'Auth Token Missing')
@@ -84,6 +88,63 @@ collaborator_register_model = api.model('Collaborator_Register', {
     'experience': fields.String(required=False, description='experience (in years). Format: exp1,exp2,exp3,...', example='3,2,1')
 })
 
+project_post_model = api.model('Project_Post', {
+    'title': fields.String(required=True, description='Project title'),
+    'description': fields.String(required=True, description='Project description'),
+    'category': fields.String(required=False, description='Project topics', example='Machine Learning,Data Analysis')
+})
+
+role_post_model = api.model('Role_Post', {
+    'title': fields.String(required=True, description='Role title'),
+    'amount': fields.Integer(required=True, description='Amount required'),
+    'skill': fields.Integer(required=True, description='Skill id'),
+    'experience': fields.Integer(required=True, description='Experience required in years'),
+    'education': fields.Integer(required=True, description='Education required'),
+    'general_enquiry': fields.String(required=False, description='other enquiry')
+})
+
+@api.route('/project/<int:id>/role')
+@api.param('id', 'The project id')
+class PostRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Post a new role for the project')
+    @api.expect(role_post_model, validate=True)
+    @require_auth
+    def post(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, id, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        role_info = request.json
+        try:
+            general_enquiry = role_info['general_enquiry']
+        except:
+            general_enquiry = ''
+        new_role = Role(int(id), role_info['title'], role_info['amount'], role_info['skill'], role_info['experience'], role_info['education'], general_enquiry=general_enquiry).create(conn)
+        if new_role == None:
+            return {'message': 'role create duplicate'}, 400
+        return {'message': 'role create success', 'project_id': int(id), 'role_id': new_role.info()['id']}, 200
+
+@api.route('/project')
+class PostProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Post a new project')
+    @api.expect(project_post_model, validate=True)
+    @require_auth
+    def post(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        project_info = request.json
+        new_project = Project(project_info['title'], project_info['description'], dreamer_id, project_info['category']).create(conn)
+        if new_project == None:
+            return {'message': 'project create request duplicate'}, 400
+        return {'message': 'project create success', 'project_id': new_project.info()['id']}, 200
 
 @api.route('/collaborator/register')
 class CollaboratorRegister(CorsResource):

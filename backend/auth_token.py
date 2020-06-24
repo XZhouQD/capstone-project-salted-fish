@@ -8,13 +8,16 @@ class AuthToken:
         self.secret = secret
         self.expire = expire
 
+    def decode(self, token):
+        return jwt.decode(token, self.secret, algorithm='HS256')
+
     def token(self, userinfo):
         info = {'email': userinfo['email'], 'id': userinfo['id'], 'role': userinfo['role'], 'time': time()}
         return jwt.encode(info, self.secret, algorithm='HS256')
 
     def validate(self, token):
         info = jwt.decode(token, self.secret, algorithm='HS256')
-        if time() - info['creation_time'] > self.expire:
+        if time() - info['time'] > self.expire:
             raise SignatureExpired("The token has been expired")
         return info
 
