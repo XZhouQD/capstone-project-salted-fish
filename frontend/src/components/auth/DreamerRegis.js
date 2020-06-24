@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { registerDreamer } from "../../actions/auth";
+import { Redirect } from "react-router-dom";
 
 const DreamerRegis = ({ setAlert, registerDreamer }) => {
   const [formData, setFormData] = useState({

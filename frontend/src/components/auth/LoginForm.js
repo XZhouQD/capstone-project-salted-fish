@@ -9,6 +9,7 @@ const LoginForm = (props) => {
     email: "",
     password: "",
   });
+
   console.log(props);
   const { role, loginUser, isAuthenticated } = props;
   const { email, password } = formData;
@@ -28,6 +29,7 @@ const LoginForm = (props) => {
   if (isAuthenticated) {
     return <Redirect to="/dashboard" />;
   }
+
   return (
     <form onSubmit={(e) => onSubmit(e)}>
       <div>
@@ -45,7 +47,7 @@ const LoginForm = (props) => {
           type="password"
           placeholder="Password"
           name="password"
-          minLength="6"
+          minLength="8"
           value={password}
           onChange={(e) => onChange(e)}
           required
