@@ -13,3 +13,13 @@ Complete first version of proposal.
 Join in group meeting and suggest some content should be modified.
 
 Next week : Confirm final content of proposal and submit it.
+
+Week3
+Complete the final version of the proposal with team and submit it.
+Join in group meeting to complete first version of database table design.
+Next week : Create the database system 
+
+Week4
+I wrote the first version of smtp.py and first version of function of check_email.
+Create database system with team.
+Next week:Modify code of backend and prepare  for the demo
