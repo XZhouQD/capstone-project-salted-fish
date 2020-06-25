@@ -155,7 +155,7 @@ export const loginUser = (email, password, role) => async (dispatch) => {
 
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: res.data,
+      payload: { ...res.data, role },
     });
   } catch (err) {
     // error -> dispatch setAlert to reducers

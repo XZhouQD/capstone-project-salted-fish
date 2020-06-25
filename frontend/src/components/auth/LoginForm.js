@@ -10,7 +10,6 @@ const LoginForm = (props) => {
     password: "",
   });
 
-  console.log(props);
   const { role, loginUser, isAuthenticated } = props;
   const { email, password } = formData;
 
@@ -21,7 +20,6 @@ const LoginForm = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password, role);
     loginUser(email, password, role);
     console.log("success");
   };
@@ -53,7 +51,7 @@ const LoginForm = (props) => {
           required
         />
       </div>
-      <p>{role}</p>
+      <p className="yellow">You will log in as {role}</p>
       <input type="submit" className="btn btn-primary" value="Sign in" />
     </form>
   );
