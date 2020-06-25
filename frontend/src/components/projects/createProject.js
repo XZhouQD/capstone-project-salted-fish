@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 // Import Materialize
 import M from "materialize-css";
-import ProjectRole from "./projectRoles";
+import { createProject } from "../../actions/projects";
 
 class CreateProject extends Component {
   constructor(props) {
@@ -14,8 +14,8 @@ class CreateProject extends Component {
 
   state = {
     title: "",
-    topic: "",
-    content: "",
+    category: "",
+    description: "",
   };
 
   componentDidMount() {
@@ -30,12 +30,16 @@ class CreateProject extends Component {
 
   handleonSubmit = (e) => {
     e.preventDefault();
-    console.log(this.state);
+    const { title, category, description } = this.state;
+    this.props.createProject({ title, category, description });
   };
 
   render() {
-    // const { auth } = this.props;
-    // if (!auth.uid) return <Redirect to="/signin" />;
+    const { isAuthenticated } = this.props;
+    if (!isAuthenticated) return <Redirect to="/login" />;
+
+    console.log(this.props.isAuthenticated);
+
     return (
       <div className="container" style={{ marginTop: "50px" }}>
         <div className="card z-depth-6">
@@ -44,11 +48,12 @@ class CreateProject extends Component {
               <div className="row">
                 <div className="input-field col s12">
                   <input
-                    placeholder="Your project's title"
+                    placeholder="enter your project's title"
                     type="text"
                     className="validate"
                     name="title"
                     onChange={(e) => this.handleonChange(e)}
+                    required
                   />
                   <label htmlFor="title">Project Title</label>
                 </div>
@@ -57,10 +62,10 @@ class CreateProject extends Component {
               <div className="row">
                 <div className="input-field col s12">
                   <input
-                    placeholder="Your project's catagory"
+                    placeholder="please use comma to seperate different topics(optional) example: Machine Learning,Data Analysis"
                     type="text"
                     className="validate"
-                    name="topic"
+                    name="category"
                     onChange={(e) => this.handleonChange(e)}
                   />
                   <label htmlFor="title">Project Topic</label>
@@ -70,22 +75,24 @@ class CreateProject extends Component {
               <div className="row">
                 <div className="input-field col s12">
                   <textarea
-                    placeholder="Describe your project details"
+                    placeholder="describe your project details not more than 140 words"
                     className="materialize-textarea"
                     length="140"
-                    name="content"
+                    name="description"
                     onChange={(e) => this.handleonChange(e)}
+                    required
                   ></textarea>
                   <label for="description">Describe your project!</label>
                 </div>
               </div>
-
-              <input
-                type="submit"
-                className="btn"
-                value="Register"
-                style={{ marginBottom: "20px" }}
-              />
+              <div className="row">
+                <input
+                  type="submit"
+                  className="btn right"
+                  value="Create"
+                  style={{ marginRight: "20px" }}
+                />
+              </div>
             </form>
           </div>
         </div>
@@ -94,4 +101,8 @@ class CreateProject extends Component {
   }
 }
 
-export default CreateProject;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, { createProject })(CreateProject);

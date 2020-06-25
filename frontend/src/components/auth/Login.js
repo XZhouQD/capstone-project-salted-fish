@@ -16,6 +16,7 @@ class Login extends React.Component {
           <div className="row center">
             <div className="col s12  card-panel z-depth-6">
               <h5 className="avatar">Sign Into Your Account</h5>
+              <p>* Please choose your role *</p>
               <div>
                 Are you a{" "}
                 <button

@@ -7,10 +7,9 @@ const BeforeAuthNarvbar = () => {
       <Link to="/" className="brand-logo avatar">
         FindColla
       </Link>
-
       <ul className="right hide-on-med-and-down">
         <li>
-          <Link to="/profiles" className="avatar">
+          <Link to="/projects" className="avatar">
             Projects
           </Link>
         </li>

@@ -20,13 +20,13 @@ const DreamerNav = () => {
           </Link>
         </li>
         <li>
-          <Link to="/signout" className="avatar">
-            Sign out
+          <Link to="/dashboard" className="avatar">
+            dashboard
           </Link>
         </li>
         <li>
-          <Link to="/dashboard" className="avatar">
-            profile
+          <Link to="/signout" className="avatar">
+            Sign out
           </Link>
         </li>
       </ul>
