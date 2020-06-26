@@ -26,7 +26,9 @@ Next Week Plan: 4-1. first version database; 4-2. User login util; 4-3. Flask-Re
 
 Week 4
 
-Finished first version of database of users, part of [4-1]
+Finished first version of database of users, project, role. Part of [4-1]
 Finished User login util. [4-2]
 Finished first version of user login/register system.
-
+Finished project post API. [4-3]
+Finished role post API. [4-3]
+Finished project get by id API. [4-3]
