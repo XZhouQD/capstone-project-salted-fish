@@ -8,6 +8,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import CreateProject from "./components/projects/createProject";
 import Alert from "./components/layout/alert";
 import AddRoleProject from "./components/projects/addRoleProject";
+import ProjectList from "./components/projects/projectList";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route exact path="/register" component={Register} />
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
+        <Route exact path="/projects" component={ProjectList} />
       </Switch>
     </Router>
   );
