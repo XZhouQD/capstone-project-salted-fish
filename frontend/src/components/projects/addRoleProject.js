@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import M from "materialize-css";
 
 class AddRoleProject extends Component {
   state = {
@@ -9,6 +10,11 @@ class AddRoleProject extends Component {
     skills: "",
     experience: "",
   };
+
+  componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
 
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -35,16 +41,13 @@ class AddRoleProject extends Component {
             <a href="#">project topic</a>
           </div>
         </div>
-        <div class="card blue-grey">
+
+          <div className="collapsible-header active">Education</div>
           <form onSubmit={(e) => this.onSubmit(e)}>
-            <div>
-              <label className="left">
-                Please select your highest education level
-              </label>
+            <div class="input-field col s12">
               <select
-                className="browser-default"
-                onChange={(e) => this.onChange(e)}
-                name="education"
+                  onChange={(e) => this.onChange(e)}
+                  name="education"
               >
                 <option value="" disabled>
                   Choose your option
@@ -54,16 +57,16 @@ class AddRoleProject extends Component {
                 <option value="3">Master</option>
                 <option value="4">Phd</option>
               </select>
+              <label className="left">
+                Please select your highest education level
+              </label>
             </div>
 
-            <div>
-              <label className="left">
-                Please choose your current job/major
-              </label>
+            <div className="collapsible-header active">Major</div>
+            <div className="input-field col s12">
               <select
-                className="browser-default"
-                onChange={(e) => this.onChange(e)}
-                name="skills"
+                  onChange={(e) => this.onChange(e)}
+                  name="skills"
               >
                 <option value="" disabled>
                   Choose your option
@@ -75,15 +78,16 @@ class AddRoleProject extends Component {
                 <option value="5">Big data development engineer</option>
                 <option value="6">Data analysis engineer </option>
               </select>
-            </div>
-            <div>
               <label className="left">
-                How long have you been working in your feild
+                Please choose your current job/major
               </label>
+            </div>
+
+            <div className="collapsible-header active">Experience</div>
+            <div className="input-field col s12">
               <select
-                className="browser-default"
-                onChange={(e) => this.onChange(e)}
-                name="experience"
+                  onChange={(e) => this.onChange(e)}
+                  name="experience"
               >
                 <option value="" disabled>
                   Choose your option
@@ -93,11 +97,16 @@ class AddRoleProject extends Component {
                 <option value="3">6 - 9 years</option>
                 <option value="4">10+ years</option>
               </select>
+              <label className="left">
+                How long have you been working in your feild
+              </label>
             </div>
             <br></br>
-            <input type="submit" className="btn btn-primary" value="Register" />
+            <button className="btn waves-effect waves-light blue-grey darken-1
+            right" type="submit" name="action">Register
+              <i className="material-icons right">send</i>
+            </button>
           </form>
-        </div>
       </div>
     );
   }
