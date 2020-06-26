@@ -27,8 +27,8 @@ from users.admin import Admin
 from users.dreamer import Dreamer
 from users.collaborator import Collaborator
 
-from project import Project
-from role import Role
+from projects.project import Project
+from projects.role import Role
 
 
 app = Flask(__name__)
@@ -102,6 +102,20 @@ role_post_model = api.model('Role_Post', {
     'education': fields.Integer(required=True, description='Education required'),
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
+
+
+# API
+@api.route('/project/<int:id>')
+@api.param('id', 'The project id')
+class GetProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(404, 'Project not found')
+    @api.doc(description='Get project information')
+    def get(self, id):
+        result = Project.get_by_id(conn, int(id))
+        if result is None:
+            return {'message': 'Requesting non-existing project information'}, 404
+        return result, 200
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')

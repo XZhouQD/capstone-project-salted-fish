@@ -12,6 +12,31 @@ class Role():
         # no input warning
         self.id = -1
 
+    @staticmethod
+    def get_by_id(conn, role_id):
+        query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+        role.id = row['ID']
+        return role.info()
+
+    @staticmethod
+    def get_by_proj_id(conn, proj_id):
+        query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        roles = []
+        if result.rowcount == 0:
+            return roles
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+            role.id = row['ID']
+            roles.append(role.info())
+        return roles
+
     def info(self):
         return {'id': self.id, 'title': self.title, 'amount': self.amount, 'skill': self.skill, 'experience': self.experience, 'education': self.education, 'general_enquiry': self.general_enquiry, 'project_id': self.project_id}
 
