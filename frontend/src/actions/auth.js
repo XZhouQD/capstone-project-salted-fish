@@ -7,28 +7,9 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  LOGOUT,
 } from "./actionTypes";
 import setToken from "../utils/setToken";
-
-// get the user back by token;
-export const loadUser = () => async (dispatch) => {
-  if (localStorage.token) {
-    setToken(localStorage.token);
-  }
-
-  try {
-    // change this api
-    const res = await axios.get("./api/auth");
-    dispatch({
-      type: USER_LOADED,
-      payload: res.data,
-    });
-  } catch (err) {
-    dispatch({
-      type: AUTH_ERROR,
-    });
-  }
-};
 
 // register user
 export const registerDreamer = ({
@@ -167,4 +148,9 @@ export const loginUser = (email, password, role) => async (dispatch) => {
       type: LOGIN_FAIL,
     });
   }
+};
+
+// sign out
+export const logOut = () => (dispatch) => {
+  dispatch({ type: LOGOUT });
 };
