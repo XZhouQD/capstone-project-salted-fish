@@ -103,7 +103,10 @@ role_post_model = api.model('Role_Post', {
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
 
-
+change_password_model = api.model('Change_Password', {
+    'original_password': fields.String(required=True, description='Your original password', min_length=8),
+    'new_password': fields.String(required=True, description='Your new password', min_length=8)
+})
 
 # API
 @api.route('/project/<int:id>')
@@ -261,6 +264,37 @@ class Login(CorsResource):
             token = auth.token(user).decode()
             return {'token': token}, 200
 
+@api.route('/changepassword')
+class ChangePassword(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Change your password')
+    @api.expect(change_password_model, validate=True)
+    @require_auth
+    def post(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        role = userinfo['role']
+        email = userinfo['email']
+        password_info = request.json
+        original_password = password_info['original_password']
+        new_password = password_info['new_password']
+        if original_password == new_password:
+            return {'message': 'new password should be different'}, 400
+        if role == 'Admin':
+            if not Admin.check_password(conn, email, original_password):
+                return {'message': 'Your original_password is incorrect'}, 400
+            Admin.commit_newpassword(conn,dreamer_email,new_password)
+        elif role == 'Dreamer':
+            if not Dreamer.check_password(conn, email, original_password):
+                return {'message': 'Your original_password is incorrect'}, 400
+            Dreamer.commit_newpassword(conn,dreamer_email,new_password)
+        elif role == 'Collaborator':
+            if not Collaborator.check_password(conn, email, original_password):
+                return {'message': 'Your original_password is incorrect'}, 400
+            Collaborator.commit_newpassword(conn,dreamer_email,new_password)
+        return {'message': 'change password success'}, 200
 
 
 if __name__ == '__main__':
