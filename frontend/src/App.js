@@ -9,6 +9,7 @@ import CreateProject from "./components/projects/createProject";
 import Alert from "./components/layout/alert";
 import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
+import Test from "./components/layout/test";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route exact path="/" component={HomePage} />
       <Alert />
       <Switch>
+        <Route exact path="/test" component={Test} />
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />

@@ -2,7 +2,7 @@ import axios from "axios";
 import { setAlert } from "./alert";
 import { CREATE_PROJECT_FAIL, CREATE_PROJECT_SUCCESS } from "./actionTypes";
 
-// register user
+// create project
 export const createProject = ({ title, category, description }) => async (
   dispatch
 ) => {
@@ -31,7 +31,7 @@ export const createProject = ({ title, category, description }) => async (
 
     dispatch({
       type: CREATE_PROJECT_SUCCESS,
-      payload: res.data.id,
+      payload: res.data.project_id,
     });
   } catch (err) {
     // error -> dispatch setAlert to reducers
