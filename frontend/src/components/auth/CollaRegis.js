@@ -11,8 +11,6 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     repeat_password: "",
     phone_no: "",
     education: "",
-    skill: "",
-    experience: "",
   });
 
   const {
@@ -22,8 +20,6 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     repeat_password,
     phone_no,
     education,
-    skill,
-    experience,
   } = formData;
 
   const [fields, setFields] = useState([{ value: null, skill: null }]);
@@ -72,7 +68,6 @@ const CollaRegis = ({ setAlert, registerColla }) => {
 
     var skills = skillsArr.join(",");
     var experience = experienceArr.join(",");
-    console.log(skill, experience);
 
     if (password !== repeat_password) {
       setAlert("Password does not match");
