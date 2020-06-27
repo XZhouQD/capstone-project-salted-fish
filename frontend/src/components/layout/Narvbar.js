@@ -5,9 +5,15 @@ import AfterAuthNarvbar from "./AfterAuthNarvbar";
 import { connect } from "react-redux";
 
 const Narvbar = (props) => {
-  const { auth, profile } = props;
+  const { isAuthenticated } = props;
 
-  return <div>{0 ? <AfterAuthNarvbar /> : <BeforeAuthNarvbar />}</div>;
+  return (
+    <div>{isAuthenticated ? <AfterAuthNarvbar /> : <BeforeAuthNarvbar />}</div>
+  );
 };
 
-export default Narvbar;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, null)(Narvbar);

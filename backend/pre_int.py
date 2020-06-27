@@ -39,6 +39,18 @@ conn.execute(query)
 query = 'drop table if exists project;'
 conn.execute(query)
 
+query = 'drop table if exists discussion;'
+conn.execute(query)
+
+query = 'drop table if exists subscription;'
+conn.execute(query)
+
+query = 'drop table if exists dreamer_notification;'
+conn.execute(query)
+
+query = 'drop table if exists collaborator_notification;'
+conn.execute(query)
+
 
 # admin table
 print("rebuild admin table...")
@@ -123,4 +135,51 @@ last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMES
 PRIMARY KEY (`ID`));'''
 conn.execute(query)
 
+# discussion table
+print("rebuild discussion table...")
+query = '''CREATE TABLE discussion(
+ID INT(11) NOT NULL AUTO_INCREMENT,
+projectID INT(11) NOT NULL,FOREIGN KEY (`projectID`) REFERENCES project(`ID`),
+parent_discussion_ID INT(11) DEFAULT NULL, FOREIGN KEY (`parent_discussion_id`) REFERENCES discussion(`ID`),
+text TEXT DEFAULT NULL,
+is_dreamer TINYINT DEFAULT 0,
+d_author INT(11),FOREIGN KEY (`d_author`) REFERENCES dreamer(`ID`), 
+c_author INT(11),FOREIGN KEY (`c_author`) REFERENCES collaborator(`ID`),
+last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`ID`));'''
+conn.execute(query)
+
+# subscription table
+print("rebuild subscription table...")
+query = '''CREATE TABLE subscription(
+projectID INT(11) NOT NULL,FOREIGN KEY (`projectID`) REFERENCES project(`ID`),
+is_dreamer TINYINT DEFAULT 0,
+d_subscriber INT(11),FOREIGN KEY (`d_subscriber`) REFERENCES dreamer(`ID`), 
+c_subscriber INT(11),FOREIGN KEY (`c_subscriber`) REFERENCES collaborator(`ID`),
+last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);'''
+conn.execute(query)
+
+# dreamer_notification table
+print("rebuild dreamer_notification table...")
+query = '''CREATE TABLE dreamer_notification(
+d_noti_ID INT(11) NOT NULL AUTO_INCREMENT,
+dreamer_ID INT(11) NOT NULL,FOREIGN KEY (`dreamer_ID`) REFERENCES dreamer(`ID`),
+notification_text TEXT DEFAULT NULL,
+is_viewed TINYINT DEFAULT 0,
+last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`d_noti_ID`));'''
+conn.execute(query)
+
+# collaborator_notification table
+print("rebuild collaborator_notification table...")
+query = '''CREATE TABLE collaborator_notification(
+c_noti_ID INT(11) NOT NULL AUTO_INCREMENT,
+collaborator_ID INT(11) NOT NULL,FOREIGN KEY (`collaborator_ID`) REFERENCES collaborator(`ID`),
+notification_text TEXT DEFAULT NULL,
+is_viewed TINYINT DEFAULT 0,
+last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`c_noti_ID`));'''
+conn.execute(query)
+
 print("pre initialisation complete")
+

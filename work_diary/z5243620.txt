@@ -29,5 +29,14 @@ Working with teammates to generate the final version of the proposal;
 took part in the onlining zoom meeting to go through the original database table design to generate first version of it;
 
 Next week plan:
-1. Based on the requirement analysis and database design and team plan, start the coding part for print1;
+1. Create the database system based on the analysis; 
+2. Start the coding part for print1;
 
+Week 4
+1. Collaborate with teammate for database system creation;
+2. Initiate and compelete the Restful API design;
+
+Next week plan:
+1. Collaborate to complete the backend part for print1;
+2. Get prepared for the first demo on wednesday;
+ 

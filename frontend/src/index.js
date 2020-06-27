@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import rootReducer from "./reducers/rootReducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 import "./layout.css";
+
 const store = createStore(
   rootReducer,
   // initial state

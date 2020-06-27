@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { logOut } from "../../actions/auth";
+import { Redirect } from "react-router-dom";
 
-const DreamerNav = () => {
+const DreamerNav = ({ isAuthenticated, logOut }) => {
+  if (!isAuthenticated) return <Redirect to="/login" />;
   return (
     <nav className="darken-2 nav-wrapper grey navbar-css">
       <Link to="/" className="brand-logo avatar">
@@ -20,18 +24,21 @@ const DreamerNav = () => {
           </Link>
         </li>
         <li>
-          <Link to="/signout" className="avatar">
-            Sign out
+          <Link to="/dashboard" className="avatar">
+            dashboard
           </Link>
         </li>
         <li>
-          <Link to="/dashboard" className="avatar">
-            profile
+          <Link to="/signout" onClick={logOut} className="avatar">
+            Sign out
           </Link>
         </li>
       </ul>
     </nav>
   );
 };
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
-export default DreamerNav;
+export default connect(mapStateToProps, { logOut })(DreamerNav);
