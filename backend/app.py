@@ -12,18 +12,254 @@ Nan Zhao        z5225777
 Qingbei Wu      z5222641
 '''
 
-import jwt
 import json
 from functools import wraps
 from flask import Flask, request
-from flask_restplus import fields, inputs, reqparse
-from time import time
-from itsdangerous import JSONWebSignatureSerializer, BadSignature, SignatureExpired
+from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
+from itsdangerous import JSONWebSignatureSerializer, BadSignature
 import re
 
 from db import create_conn
+from auth_token import AuthToken
+from util import check_email, CorsResource
+
+from users.admin import Admin
+from users.dreamer import Dreamer
+from users.collaborator import Collaborator
+
+from projects.project import Project
+from projects.role import Role
+
 
 app = Flask(__name__)
+api = Api(app, authorizations={
+    'API-KEY': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'AUTH_KEY'
+    },
+}, security='API-KEY', default='Dream_Matchmaker', title='Dream Matchmaker', description='Dream Matchmaker, a project posting and collaborator finding system')
+
+# Auth Token
+SECRET = "DREAM MATCHMAKER, POWERED BY TEAM SALTED FISH"
+expires = 3600
+auth = AuthToken(SECRET, expires)
+
+# Auth decorator
+def require_auth(f):
+    @wraps(f)
+    def func(*args, **kwargs):
+        token = request.headers.get('AUTH_KEY')
+        if not token:
+            abort(401, 'Auth Token Missing')
+        try:
+            userinfo = auth.validate(token)
+        except Exception as e:
+            abort(401, e)
+        return f(*args, **kwargs)
+
+    return func
+
+# Get Parsers
+
+# Post Models
+login_model = api.model('Login', {
+    'email': fields.String(required=True, description='Your email address'),
+    'password': fields.String(required=True, description='Your password', min_length=8),
+    'role': fields.String(required=True, description='Admin, Dreamer, Collaborator', enum=['Admin','Dreamer','Collaborator'])
+})
+
+dreamer_register_model = api.model('Dreamer_Register', {
+    'name': fields.String(required=True, description='Your name'),
+    'email': fields.String(required=True, description='Your email address'),
+    'password': fields.String(required=True, description='Your password', min_length=8),
+    'repeat_password': fields.String(required=True, description='Repeat your password', min_length=8),
+    'phone_no': fields.String(required=False, description='Phone number (optional)')
+})
+
+collaborator_register_model = api.model('Collaborator_Register', {
+    'name': fields.String(required=True, description='Your name'),
+    'email': fields.String(required=True, description='Your email address'),
+    'password': fields.String(required=True, description='Your password', min_length=8),
+    'repeat_password': fields.String(required=True, description='Repeat your password', min_length=8),
+    'phone_no': fields.String(required=False, description='Phone number (optional)'),
+    'education': fields.Integer(required=False, description='Education, 1=Other, 2=Bachelor, 3=Master, 4=PhD'),
+    'skills': fields.String(required=False, description='skills(as integer). Format: skill1,skill2,skill3,...', example='2,3,1'),
+    'experience': fields.String(required=False, description='experience (in years). Format: exp1,exp2,exp3,...', example='3,2,1')
+})
+
+project_post_model = api.model('Project_Post', {
+    'title': fields.String(required=True, description='Project title'),
+    'description': fields.String(required=True, description='Project description'),
+    'category': fields.String(required=False, description='Project topics', example='Machine Learning,Data Analysis')
+})
+
+role_post_model = api.model('Role_Post', {
+    'title': fields.String(required=True, description='Role title'),
+    'amount': fields.Integer(required=True, description='Amount required'),
+    'skill': fields.Integer(required=True, description='Skill id'),
+    'experience': fields.Integer(required=True, description='Experience required in years'),
+    'education': fields.Integer(required=True, description='Education required'),
+    'general_enquiry': fields.String(required=False, description='other enquiry')
+})
+
+
+# API
+@api.route('/project/<int:id>')
+@api.param('id', 'The project id')
+class GetProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(404, 'Project not found')
+    @api.doc(description='Get project information')
+    def get(self, id):
+        result = Project.get_by_id(conn, int(id))
+        if result is None:
+            return {'message': 'Requesting non-existing project information'}, 404
+        return result, 200
+
+@api.route('/project/<int:id>/role')
+@api.param('id', 'The project id')
+class PostRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Post a new role for the project')
+    @api.expect(role_post_model, validate=True)
+    @require_auth
+    def post(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, id, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        role_info = request.json
+        try:
+            general_enquiry = role_info['general_enquiry']
+        except:
+            general_enquiry = ''
+        new_role = Role(int(id), role_info['title'], role_info['amount'], role_info['skill'], role_info['experience'], role_info['education'], general_enquiry=general_enquiry).create(conn)
+        if new_role == None:
+            return {'message': 'role create duplicate'}, 400
+        return {'message': 'role create success', 'project_id': int(id), 'role_id': new_role.info()['id']}, 200
+
+@api.route('/project')
+class PostProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Post a new project')
+    @api.expect(project_post_model, validate=True)
+    @require_auth
+    def post(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        project_info = request.json
+        new_project = Project(project_info['title'], project_info['description'], dreamer_id, project_info['category']).create(conn)
+        if new_project == None:
+            return {'message': 'project create request duplicate'}, 400
+        return {'message': 'project create success', 'project_id': new_project.info()['id']}, 200
+
+@api.route('/collaborator/register')
+class CollaboratorRegister(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Register Failed')
+    @api.doc(description='Register a new collaborator')
+    @api.expect(collaborator_register_model, validate=True)
+    def post(self):
+        register_info = request.json
+        name = register_info['name']
+
+        email = register_info['email']
+        if not check_email(email):
+            return {'message': 'Email not valid.'}, 400
+
+        if Collaborator.is_email_exist(conn, email):
+            return {'message': 'Email already registered.'}, 400
+
+        password = register_info['password']
+        if password != register_info['repeat_password']:
+            return {'message': 'Passwords not match.'}, 400
+
+        try:
+            phone_no = register_info['phone_no']
+        except:
+            phone_no = ''
+
+        try:
+            education = register_info['education']
+        except:
+            education = -1
+
+            skill_dict = {}
+        try:
+            skills = register_info['skills'].split(',')
+            exps = register_info['experience'].split(',')
+            if not (len(skills) == len(exps)): return {'message': 'Skills and experience have different length.'}, 400
+            for i in range(len(skills)):
+                skill_dict[skills[i]]=exps[i]
+        except:
+            skill_dict = {}
+
+        Collaborator(name, email, password_plain=password, phone_no=phone_no, education=education, skill_dict=skill_dict).commit(conn)
+
+        return {'message': 'Register success'}, 200
+
+@api.route('/dreamer/register')
+class DreamerRegister(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Register Failed')
+    @api.doc(description='Register a new dreamer')
+    @api.expect(dreamer_register_model, validate=True)
+    def post(self):
+        register_info = request.json
+        name = register_info['name']
+
+        email = register_info['email']
+        if not check_email(email):
+            return {'message': 'Email not valid.'}, 400
+
+        if Dreamer.is_email_exist(conn, email):
+            return {'message': 'Email already registered.'}, 400
+
+        password = register_info['password']
+        if password != register_info['repeat_password']:
+            return {'message': 'Passwords not match.'}, 400
+
+        try:
+            phone_no = register_info['phone_no']
+        except:
+            phone_no = ''
+
+        Dreamer(name, email, password_plain=password, phone_no=phone_no).commit(conn)
+
+        return {'message': 'Register success'}, 200
+
+@api.route('/login')
+class Login(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Login Failed')
+    @api.doc(description='Login with email and password, receive an auth token')
+    @api.expect(login_model, validate=True)
+    def post(self):
+        login_info = request.json
+        email = login_info['email']
+        password = login_info['password']
+        # try login based on role
+        role = login_info['role']
+        if role == 'Admin':
+            user = Admin.login(conn, email, password)
+        elif role == 'Dreamer':
+            user = Dreamer.login(conn, email, password)
+        elif role == 'Collaborator':
+            user = Collaborator.login(conn, email, password)
+        # login failed
+        if user is None:
+            return {'message': 'Login failed for incorrect credentials.'}, 401
+        else:
+            token = auth.token(user).decode()
+            return {'token': token}, 200
+
 
 if __name__ == '__main__':
     conn = create_conn()
