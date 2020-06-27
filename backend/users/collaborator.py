@@ -70,7 +70,8 @@ class Collaborator():
     
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
-        query = "SELECT * FROM dreamer where email = \'" + email + "\';"
+        email = email.lower()
+        query = "select * from collaborator where email = \'" + email + "\';"
         result = conn.execute(query)
         row = result.fetchone()
         if password_encrypted == '':
