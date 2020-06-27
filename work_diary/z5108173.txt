@@ -26,9 +26,11 @@ Next Week Plan: 4-1. first version database; 4-2. User login util; 4-3. Flask-Re
 
 Week 4
 
-Finished first version of database of users, project, role. Part of [4-1]
+Finished first version of database with team members. [4-1]
 Finished User login util. [4-2]
-Finished first version of user login/register system.
-Finished project post API. [4-3]
-Finished role post API. [4-3]
-Finished project get by id API. [4-3]
+Finished first version of user login/register API, project post API, role post API. [4-3]
+Finished project get by id API, project List API with category filter and basic search. [4-3]
+Use YAML config files for backend configuration.
+Keep udpating Github project board and Jira.
+
+Next Week Plan: 5-1. Make a first version of Demo backend; 5-2. Move more stuff into YAML config files;
