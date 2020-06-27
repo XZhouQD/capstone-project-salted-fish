@@ -61,6 +61,11 @@ def require_auth(f):
     return func
 
 # Get Parsers
+projects_parser = reqparse.RequestParser()
+projects_parser.add_argument('description', type=str, default='')
+projects_parser.add_argument('category', type=int, default=-1) # -1 for all categories
+projects_parser.add_argument('order_by', choices=['last_update','project_title'], default='last_update')
+projects_parser.add_argument('sorting', choices=['ASC','DESC'], default='DESC')
 
 # Post Models
 login_model = api.model('Login', {
@@ -91,7 +96,7 @@ collaborator_register_model = api.model('Collaborator_Register', {
 project_post_model = api.model('Project_Post', {
     'title': fields.String(required=True, description='Project title'),
     'description': fields.String(required=True, description='Project description'),
-    'category': fields.String(required=False, description='Project topics', example='Machine Learning,Data Analysis')
+    'category': fields.Integer(required=False, description='Project Category ID')
 })
 
 role_post_model = api.model('Role_Post', {
@@ -109,6 +114,23 @@ change_password_model = api.model('Change_Password', {
 })
 
 # API
+@api.route('/projects')
+class ProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.doc(description="Get projects list filtered by arguments")
+    @api.expect(projects_parser, validate=True)
+    def get(self):
+        args = projects_parser.parse_args()
+        desc = args.get('description')
+        category = args.get('category')
+        order_by = args.get('order_by')
+        sorting = args.get('sorting')
+        result = Project.search_list(conn, desc, category, order_by, sorting)
+        if result is None:
+            return {'projects': [], 'message': 'No matching projects were found.'}, 200
+        return result, 200
+
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
