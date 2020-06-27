@@ -74,6 +74,26 @@ class Collaborator():
         row = result.fetchone()
         skills = Collaborator.getSkills(conn, row['ID'])
         return Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'], skill_dict=skills)
+    
+    @staticmethod
+    def check_password(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        query = "select * from collaborator where email = \'" + email + "\';"
+        result = conn.execute(query)
+        row = result.fetchone()
+        if password_encrypted == '':
+            enc_pass = sha256(password_plain)
+        else:
+            enc_pass = password_encrypted
+        if enc_pass == row['password']:
+            return True
+        return False
+
+    @staticmethod
+    def commit_newpassword(conn, email,new_password):
+        email = email.lower()
+        query = "UPDATE collaborator set password_plain = new_password ,password_encrypted = sha256(new_password) where email = \'" + email + "\';"
+        conn.execute(query)
 
     def info(self):
         return {'role': 'Collaborator', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description, 'education': self.education_text, 'skills': self.skill_dict}

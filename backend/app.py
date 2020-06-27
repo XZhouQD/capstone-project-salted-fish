@@ -104,6 +104,7 @@ role_post_model = api.model('Role_Post', {
 })
 
 
+
 # API
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
@@ -259,6 +260,7 @@ class Login(CorsResource):
         else:
             token = auth.token(user).decode()
             return {'token': token}, 200
+
 
 
 if __name__ == '__main__':
