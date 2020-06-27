@@ -11,8 +11,6 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     repeat_password: "",
     phone_no: "",
     education: "",
-    skills: "",
-    experience: "",
   });
 
   const {
@@ -22,9 +20,34 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     repeat_password,
     phone_no,
     education,
-    skills,
-    experience,
   } = formData;
+
+  const [fields, setFields] = useState([{ value: null, skill: null }]);
+
+  function handleValueChange(i, event) {
+    const values = [...fields];
+    values[i].value = event.target.value;
+    setFields(values);
+  }
+
+  function handleSkillChange(i, event) {
+    const values = [...fields];
+    values[i].skill = event.target.value;
+    setFields(values);
+  }
+
+  function handleAdd() {
+    const values = [...fields];
+    values.push({ value: null });
+    setFields(values);
+  }
+
+  // remove handler
+  // function handleRemove(i) {
+  //   const values = [...fields];
+  //   values.splice(i, 1);
+  //   setFields(values);
+  // }
 
   const onChange = (e) => {
     // get target element name
@@ -33,6 +56,18 @@ const CollaRegis = ({ setAlert, registerColla }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(fields);
+
+    var skillsArr = [];
+    var experienceArr = [];
+
+    for (var i of fields) {
+      skillsArr.push(i.skill);
+      experienceArr.push(i.value);
+    }
+
+    var skills = skillsArr.join(",");
+    var experience = experienceArr.join(",");
 
     if (password !== repeat_password) {
       setAlert("Password does not match");
@@ -107,7 +142,7 @@ const CollaRegis = ({ setAlert, registerColla }) => {
           />
         </div>
 
-        <div>
+        <div style={{ marginBottom: "10px" }}>
           <label className="left">
             Please select your highest education level
           </label>
@@ -127,44 +162,70 @@ const CollaRegis = ({ setAlert, registerColla }) => {
           </select>
         </div>
 
-        <div>
-          <label className="left">Please choose your current job/major</label>
-          <select
-            className="browser-default"
-            value={skills}
-            onChange={(e) => onChange(e)}
-            name="skills"
-          >
-            <option value="" disabled>
-              Choose your option
-            </option>
-            <option value="1">UI designer</option>
-            <option value="2">Backend engineer</option>
-            <option value="3">Frontend engineer</option>
-            <option value="4">AI engineer</option>
-            <option value="5">Big data development engineer</option>
-            <option value="6">Data analysis engineer </option>
-          </select>
-        </div>
-        <div>
-          <label className="left">
-            How long have you been working in your feild
-          </label>
-          <select
-            className="browser-default"
-            value={experience}
-            onChange={(e) => onChange(e)}
-            name="experience"
-          >
-            <option value="" disabled>
-              Choose your option
-            </option>
-            <option value="1">0 - 3 years</option>
-            <option value="2">3 - 6 years</option>
-            <option value="3">6 - 9 years</option>
-            <option value="4">10+ years</option>
-          </select>
-        </div>
+        {fields.map((field, idx) => {
+          return (
+            <div>
+              <div key={`${field}-${idx}`}>
+                <div style={{ marginBottom: "10px" }}>
+                  <label className="left">
+                    Please choose your computer skill
+                  </label>
+                  <select
+                    className="browser-default"
+                    onChange={(e) => handleSkillChange(idx, e)}
+                  >
+                    <option value="" disabled>
+                      Choose your option
+                    </option>
+                    {[
+                      "Web Development",
+                      "Java",
+                      "Python",
+                      "PHP",
+                      "Script Language",
+                      "Database Management",
+                      "Computer Vision",
+                      "Security Engineering",
+                      "Testing",
+                      "Algorithm Design",
+                      "Operating System",
+                      "Data Science",
+                      "Human Computer Interaction",
+                      "Deep Learning/Neural Network",
+                      "Distribution System",
+                    ].map((ele, index) => {
+                      return (
+                        <option value={index} key={index}>
+                          {ele}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div>
+                  <label className="left">
+                    How many years experience do you have in your field?
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="enter one number"
+                    onChange={(e) => handleValueChange(idx, e)}
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <button
+          type="btn-small"
+          onClick={() => handleAdd()}
+          style={{ marginBottom: "10px" }}
+        >
+          add one skill
+        </button>
+
         <br></br>
         <input type="submit" className="btn btn-primary" value="Register" />
       </form>
