@@ -7,3 +7,6 @@ Start working on project proposal. I am working on drawing the flow diagram usin
 
 Week 3
 I helped to finalize the project proposal by explanning the flow diagram. Start building the front-end with materializecss CSS with Keyu. 
+
+Week 4
+I am building the front-end part of the project with Keyu. I build some static parts include addRoleProject.js, createProject.js. 
