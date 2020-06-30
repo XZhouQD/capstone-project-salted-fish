@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { registerColla } from "../../actions/auth";
+import { Redirect } from "react-router-dom";
 
-const CollaRegis = ({ setAlert, registerColla }) => {
+const CollaRegis = ({ setAlert, registerColla, flag }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -85,6 +86,9 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     }
   };
 
+  if (flag === "register success") {
+    return <Redirect to="/login" />;
+  }
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>
@@ -232,5 +236,9 @@ const CollaRegis = ({ setAlert, registerColla }) => {
     </div>
   );
 };
+
+const mapStateToProps = (state) => ({
+  flag: state.auth.flag,
+});
 
 export default connect(null, { setAlert, registerColla })(CollaRegis);

@@ -7,7 +7,7 @@ export const createProject = ({ title, category, description }) => async (
   dispatch
 ) => {
   const a = localStorage.getItem("token");
-  console.log(a);
+
   const config = {
     headers: {
       "Content-Type": "application/json;charset=UTF-8",
@@ -15,7 +15,8 @@ export const createProject = ({ title, category, description }) => async (
       "AUTH-KEY": a,
     },
   };
-
+  category = Number(category);
+  console.log(category, typeof category);
   const body = JSON.stringify({
     title,
     category,
@@ -31,7 +32,7 @@ export const createProject = ({ title, category, description }) => async (
 
     dispatch({
       type: CREATE_PROJECT_SUCCESS,
-      payload: res.data.id,
+      payload: res.data.project_id,
     });
   } catch (err) {
     // error -> dispatch setAlert to reducers

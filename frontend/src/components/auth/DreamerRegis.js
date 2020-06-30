@@ -4,7 +4,7 @@ import { setAlert } from "../../actions/alert";
 import { registerDreamer } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
 
-const DreamerRegis = ({ setAlert, registerDreamer }) => {
+const DreamerRegis = ({ setAlert, registerDreamer, flag }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,7 +28,10 @@ const DreamerRegis = ({ setAlert, registerDreamer }) => {
       registerDreamer({ name, email, phone_no, password, repeat_password });
     }
   };
-
+  console.log(flag);
+  if (flag === "register success") {
+    return <Redirect to="/login" />;
+  }
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>
@@ -94,4 +97,10 @@ const DreamerRegis = ({ setAlert, registerDreamer }) => {
   );
 };
 
-export default connect(null, { setAlert, registerDreamer })(DreamerRegis);
+const mapStateToProps = (state) => ({
+  flag: state.auth.flag,
+});
+
+export default connect(mapStateToProps, { setAlert, registerDreamer })(
+  DreamerRegis
+);

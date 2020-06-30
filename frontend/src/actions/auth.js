@@ -9,7 +9,6 @@ import {
   LOGIN_FAIL,
   LOGOUT,
 } from "./actionTypes";
-import setToken from "../utils/setToken";
 
 // register user
 export const registerDreamer = ({
