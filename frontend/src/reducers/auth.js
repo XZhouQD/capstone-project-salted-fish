@@ -7,6 +7,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
 } from "../actions/actionTypes";
+import { Redirect } from "react-router-dom";
 
 const initialState = {
   // get token from localstorage localStorage.getItem()
@@ -25,7 +26,12 @@ export default function (state = initialState, action) {
       };
 
     case REGISTER_SUCCESS:
-      return { ...state, ...payload, isAuthenticated: false };
+      return {
+        ...state,
+        ...payload,
+        isAuthenticated: false,
+        flag: "register success",
+      };
 
     case LOGIN_SUCCESS:
       // set token to local storage
@@ -41,6 +47,7 @@ export default function (state = initialState, action) {
 
     case LOGOUT:
       localStorage.removeItem("token");
+
       return { ...state, token: null, isAuthenticated: false };
 
     default:

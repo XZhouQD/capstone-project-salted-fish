@@ -40,10 +40,7 @@ class DreamerDash extends React.Component {
                   to use effectively.
                 </p>
               </div>
-              <div className="card-action">
-                <a href="#">This is a link</a>
-                <a href="#">This is a link</a>
-              </div>
+              <div className="card-action"></div>
             </div>
           </div>
           <div className="col s12 m4 l4 cards-container">
@@ -57,10 +54,7 @@ class DreamerDash extends React.Component {
                   to use effectively.
                 </p>
               </div>
-              <div class="card-action">
-                <a href="#">This is a link</a>
-                <a href="#">This is a link</a>
-              </div>
+              <div class="card-action"></div>
             </div>
           </div>
         </div>

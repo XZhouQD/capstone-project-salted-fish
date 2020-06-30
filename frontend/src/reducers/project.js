@@ -12,7 +12,7 @@ export default function (state = initialState, action) {
     case CREATE_PROJECT_SUCCESS:
       return {
         ...state,
-        payload,
+        flag: "create success",
       };
 
     case CREATE_PROJECT_FAIL:

@@ -25,7 +25,7 @@ const CollaNav = ({ isAuthenticated, logOut }) => {
           </Link>
         </li>
         <li>
-          <Link to="/signout" onClick={logOut} className="avatar">
+          <Link to="/login" onClick={logOut} className="avatar">
             Sign out
           </Link>
         </li>
