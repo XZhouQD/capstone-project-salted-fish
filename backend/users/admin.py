@@ -43,12 +43,17 @@ class Admin():
         if enc_pass == row['password']:
             return True
         return False
-
+    
     @staticmethod
-    def commit_newpassword(conn, email,new_password):
-        email = email.lower()
-        query = "UPDATE admin set password_plain = new_password ,password_encrypted = sha256(new_password) where email = \'" + email + "\';"
-        conn.execute(query)
+    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        if password_encrypted == '':
+            new_pass = sha256(password_plain)
+        else:
+            new_pass = password_encrypted
+        query = "UPDATE admin set password = \'" + new_pass + "\' where email = \'" + email + "\';"
+        conn.execute(query)
+   
 
     def info(self):
         return {'role': 'Admin', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update}
