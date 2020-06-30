@@ -91,14 +91,14 @@ class Collaborator():
         return False
 
     @staticmethod
-    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
-        email = email.lower()
-        if password_encrypted == '':
-            new_pass = sha256(password_plain)
-        else:
-            new_pass = password_encrypted
+    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        if password_encrypted == '':
+            new_pass = sha256(password_plain)
+        else:
+            new_pass = password_encrypted
         query = "UPDATE collaborator set password = \'" + new_pass + "\' where email = \'" + email + "\';"
-        conn.execute(query)
+        conn.execute(query)
 
     def search_list(self, conn, description, category, order_by, order):
         skills = self.skill_dict
