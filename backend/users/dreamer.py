@@ -56,8 +56,34 @@ class Dreamer():
         row = result.fetchone()
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
 
+    @staticmethod
+    def check_password(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        query = "select * from dreamer where email = \'" + email + "\';"
+        result = conn.execute(query)
+        row = result.fetchone()
+        if password_encrypted == '':
+            enc_pass = sha256(password_plain)
+        else:
+            enc_pass = password_encrypted
+        if enc_pass == row['password']:
+            return True
+        return False
+    
+    @staticmethod
+    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        if password_encrypted == '':
+            new_pass = sha256(password_plain)
+        else:
+            new_pass = password_encrypted
+        query = "UPDATE dreamer set password = \'" + new_pass + "\' where email = \'" + email + "\';"
+        conn.execute(query)
+    
+
     def info(self):
         return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
+
 
     def commit(self, conn):
         query = "INSERT INTO dreamer (name, email, password, phone_no, user_level, description) VALUES (\'" + self.name + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no + "\', " + str(self.user_level) + ", \'" + self.description + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no + "\', `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description + "\';"

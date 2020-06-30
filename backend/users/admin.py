@@ -29,6 +29,31 @@ class Admin():
         if enc_pass == row['password']:
             return Admin(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update']).info()
         return None
+   
+    @staticmethod
+    def check_password(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        query = "select * from admin where email = \'" + email + "\';"
+        result = conn.execute(query)
+        row = result.fetchone()
+        if password_encrypted == '':
+            enc_pass = sha256(password_plain)
+        else:
+            enc_pass = password_encrypted
+        if enc_pass == row['password']:
+            return True
+        return False
+    
+    @staticmethod
+    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        if password_encrypted == '':
+            new_pass = sha256(password_plain)
+        else:
+            new_pass = password_encrypted
+        query = "UPDATE admin set password = \'" + new_pass + "\' where email = \'" + email + "\';"
+        conn.execute(query)
+   
 
     def info(self):
         return {'role': 'Admin', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update}

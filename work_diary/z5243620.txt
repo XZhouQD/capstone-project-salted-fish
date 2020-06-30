@@ -35,8 +35,17 @@ Next week plan:
 Week 4
 1. Collaborate with teammate for database system creation;
 2. Initiate and compelete the Restful API design;
+3. took part in online discussion about system detail design;
+4. start to write backend API program project query and project list query part;
 
 Next week plan:
 1. Collaborate to complete the backend part for print1;
 2. Get prepared for the first demo on wednesday;
- 
+
+week 5
+1. check and get familiar with the whole system and applications;
+2. prepare for the first demo on wednesday;
+3. participate the online meeting for the projects progress and prepare for first demo;
+
+Next wek plan:
+1. start print2 part as planed;  
