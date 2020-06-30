@@ -365,15 +365,15 @@ class ChangePassword(CorsResource):
         if role == 'Admin':
             if not Admin.check_password(conn, email, original_password):
                 return {'message': 'Your original_password is incorrect'}, 400
-            Admin.commit_newpassword(conn,dreamer_email,new_password)
+            Admin.commit_newpassword(conn,email,new_password)
         elif role == 'Dreamer':
             if not Dreamer.check_password(conn, email, original_password):
                 return {'message': 'Your original_password is incorrect'}, 400
-            Dreamer.commit_newpassword(conn,dreamer_email,new_password)
+            Dreamer.commit_newpassword(conn,email,new_password)
         elif role == 'Collaborator':
             if not Collaborator.check_password(conn, email, original_password):
                 return {'message': 'Your original_password is incorrect'}, 400
-            Collaborator.commit_newpassword(conn,dreamer_email,new_password)
+            Collaborator.commit_newpassword(conn,email,new_password)
         return {'message': 'change password success'}, 200
 
 
