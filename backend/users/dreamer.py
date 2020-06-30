@@ -70,15 +70,15 @@ class Dreamer():
             return True
         return False
     
-    @staticmethod 
-    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
-        email = email.lower()
-        if password_encrypted == '':
-            new_pass = sha256(password_plain)
-        else:
-            new_pass = password_encrypted
-        query = "UPDATE dreamer set password = \'" + new_pass + "\' where email = \'" + email + "\';"
-        conn.execute(query)
+    @staticmethod
+    def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        email = email.lower()
+        if password_encrypted == '':
+            new_pass = sha256(password_plain)
+        else:
+            new_pass = password_encrypted
+        query = "UPDATE dreamer set password = \'" + new_pass + "\' where email = \'" + email + "\';"
+        conn.execute(query)
     
 
     def info(self):
