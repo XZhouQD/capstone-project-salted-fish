@@ -67,3 +67,7 @@ textarea.materialize-textarea:focus:not([readonly]) {
   background-color: #546e7a;
   color: #fff;
 }
+
+.icon {
+  font-size: 5px;
+}

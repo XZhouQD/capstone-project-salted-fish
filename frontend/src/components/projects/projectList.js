@@ -1,69 +1,142 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { getProject, searchProject } from "../../actions/projects";
 import M from "materialize-css";
+import EachProject from "./eachProject";
 
 class ProjectList extends Component {
+  constructor(props) {
+    super(props);
+    this.handleonChange = this.handleonChange.bind(this);
+    this.handleonSubmit = this.handleonSubmit.bind(this);
+  }
+
+  state = {
+    description: "",
+    category: "",
+    order_by: "",
+    sorting: "",
+  };
+
+  componentWillMount() {
+    this.props.getProject();
+  }
+
   componentDidMount() {
     // Auto initialize all the materailize css!
     M.AutoInit();
   }
 
+  handleonChange = (e) => {
+    // get target element name
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleonSubmit = (e) => {
+    e.preventDefault();
+    const { description, category, order_by, sorting } = this.state;
+    console.log(this.state);
+    this.props.searchProject({ description, category, order_by, sorting });
+  };
+
   render() {
-    // const { auth } = this.props;
-    // if (!auth.uid) return <Redirect to="/signin" />;
     return (
       <div>
         <div className="container">
           <div className="row">
             <div className="col s12">
-              <div className="row">
-                <div className="input-field col s12">
-                  <i className="material-icons prefix">search</i>
-                  <input type="text" id="search-projects" />
-                  <label for="search-projects">search</label>
+              <form
+                className="col s12"
+                onSubmit={(e) => this.handleonSubmit(e)}
+              >
+                <div style={{ marginBottom: "10px", marginTop: "20px" }}>
+                  <input
+                    type="text"
+                    placeholder="TYPE THE DESCRIPTION FOR YOUR PROJECT"
+                    name="description"
+                    onChange={(e) => this.handleonChange(e)}
+                  />
                 </div>
-              </div>
+
+                <div style={{ marginBottom: "10px" }}>
+                  <label className="left">
+                    SELECT THE CATEGORY FOR YOUR PROJECT
+                  </label>
+                  <select
+                    className="browser-default"
+                    onChange={(e) => this.handleonChange(e)}
+                    name="category"
+                  >
+                    <option value="">Choose your option</option>
+                    <option value="1">All other</option>
+                    <option value="2">A web based application</option>
+                    <option value="3">A desktop application</option>
+                    <option value="4">A mobile application</option>
+                    <option value="5">
+                      A library for other project to reference
+                    </option>
+                    <option value="6">
+                      A modification to existing platform
+                    </option>
+                    <option value="7">A research oriented project</option>
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: "10px" }}>
+                  <label className="left">SORTING ORDER</label>
+                  <select
+                    className="browser-default"
+                    onChange={(e) => this.handleonChange(e)}
+                    name="order_by"
+                  >
+                    <option value="">Choose your option</option>
+                    <option value="last_update">last_update</option>
+                    <option value="project_title">project_title</option>
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: "10px" }}>
+                  <label className="left">ASCENDING/DESCENDING</label>
+                  <select
+                    className="browser-default"
+                    onChange={(e) => this.handleonChange(e)}
+                    name="sorting"
+                    required
+                  >
+                    <option value="">Choose your option</option>
+                    <option value="ASC">ASC</option>
+                    <option value="DESC">DESC</option>
+                  </select>
+                </div>
+                <input
+                  type="submit"
+                  className="btn btn-primary"
+                  value="Search"
+                />
+              </form>
             </div>
           </div>
 
-          <div className="row">
-            <div className="col s12 m12 l12 xl12">
-              <div className="card">
-                <div className="card-image waves-effect waves-block waves-light"></div>
-                <div className="card-content">
-                  <span className="card-title activator grey-text text-darken-4">
-                    Project 2<i className="material-icons right">more_vert</i>
-                  </span>
-                  <p className="truncate">
-                    This is a brief project description. It is sliced from the
-                    whole project description. Only some of the information will
-                    be shown before the user click it.
-                  </p>
-                </div>
-                <div className="card-action">
-                  <a className="waves-effect waves-light btn-small">follow</a>
-                  <a className="waves-effect waves-light btn-small">Apply</a>
-                  <a className="waves-effect waves-light btn-small">
-                    More info
-                  </a>
-                </div>
-                <div className="card-reveal">
-                  <span className="card-title grey-text text-darken-4">
-                    Project 2 descriptions
-                    <i className="material-icons right">close</i>
-                  </span>
-                  <p>
-                    Here is some more information about this project that is
-                    only revealed once clicked on.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {this.props.ProjectLists.map((each, index) => {
+            return (
+              <EachProject
+                title={each.title}
+                category={each.category}
+                description={each.description}
+              />
+            );
+          })}
         </div>
       </div>
     );
   }
 }
-export default ProjectList;
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  ProjectLists: state.project.ProjectLists,
+});
+
+export default connect(mapStateToProps, { getProject, searchProject })(
+  ProjectList
+);
