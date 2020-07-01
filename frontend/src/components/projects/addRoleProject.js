@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
+import RoleList from "./roleList";
+import AddRole from "./addRole";
 
 const AddRoleProject = ({ setAlert, registerColla }) => {
   const [formData, setFormData] = useState({
@@ -12,6 +14,7 @@ const AddRoleProject = ({ setAlert, registerColla }) => {
   });
 
   const { amount, education, skills, experience } = formData;
+
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
