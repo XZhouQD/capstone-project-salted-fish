@@ -74,14 +74,14 @@ class CreateProject extends Component {
                     <option value="1">All other</option>
                     <option value="2">A web based application</option>
                     <option value="3">A desktop application</option>
-                    <option value="3">A mobile application</option>
-                    <option value="3">
+                    <option value="4">A mobile application</option>
+                    <option value="5">
                       A library for other project to reference
                     </option>
-                    <option value="3">
+                    <option value="6">
                       A modification to existing platform
                     </option>
-                    <option value="3">A research oriented project</option>
+                    <option value="7">A research oriented project</option>
                   </select>
                   <label>Project catagory</label>
                 </div>

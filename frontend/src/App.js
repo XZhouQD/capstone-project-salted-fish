@@ -24,7 +24,11 @@ function App() {
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
-        <Route exact path="/projects/project_detail" component={ProjectDetails}/>
+        <Route
+          exact
+          path="/projects/project_detail"
+          component={ProjectDetails}
+        />
       </Switch>
     </Router>
   );
