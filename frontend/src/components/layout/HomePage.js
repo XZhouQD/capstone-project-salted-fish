@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
     <div>
       <div class="parallax-container">
-        <Parallax bgImage={background1} bgImageAlt="the cat" strength={1000}>
+        <Parallax bgImage={background1} bgImageAlt="the cat" strength={800}>
           <div style={{ height: "500px" }} />
         </Parallax>
       </div>

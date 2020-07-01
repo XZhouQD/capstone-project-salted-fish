@@ -33,20 +33,20 @@ class EachProject extends Component {
             </div>
             <div className="card-action">
               <a
-                className="waves-effect waves-light btn-small"
-                style={{ marginRight: "5px" }}
+                className="waves-effect waves-light btn-small blue-grey darken-1"
+                style={{ marginRight: "10px" }}
               >
                 follow
               </a>
               <a
-                className="waves-effect waves-light btn-small"
-                style={{ marginRight: "5px" }}
+                className="waves-effect waves-light btn-small blue-grey darken-1"
+                style={{ marginRight: "10px" }}
               >
                 Apply
               </a>
               <a
-                className="waves-effect waves-light btn-small"
-                style={{ marginRight: "5px" }}
+                className="waves-effect waves-light btn-small blue-grey darken-1"
+                style={{ marginRight: "10px" }}
               >
                 More info
               </a>

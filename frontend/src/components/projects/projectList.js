@@ -49,23 +49,22 @@ class ProjectList extends Component {
                 className="col s12"
                 onSubmit={(e) => this.handleonSubmit(e)}
               >
-                <div style={{ marginBottom: "10px", marginTop: "20px" }}>
+                <div className="input-field" style={{ marginBottom: "30px", marginTop: "30px" }}>
                   <input
                     type="text"
-                    placeholder="TYPE THE DESCRIPTION FOR YOUR PROJECT"
+                    // placeholder="TYPE THE DESCRIPTION FOR YOUR PROJECT"
                     name="description"
                     onChange={(e) => this.handleonChange(e)}
+                    id="type_description"
                   />
+                  <label for="type_description">TYPE THE DESCRIPTION FOR YOUR PROJECT</label>
                 </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label className="left">
-                    SELECT THE CATEGORY FOR YOUR PROJECT
-                  </label>
+                <div className="input-field"
+                     style={{ marginBottom: "30px" }}>
                   <select
-                    className="browser-default"
                     onChange={(e) => this.handleonChange(e)}
                     name="category"
+                    id="category"
                   >
                     <option value="">Choose your option</option>
                     <option value="1">All other</option>
@@ -80,37 +79,41 @@ class ProjectList extends Component {
                     </option>
                     <option value="7">A research oriented project</option>
                   </select>
+                  <label  for="category" className="left">
+                    SELECT THE CATEGORY FOR YOUR PROJECT
+                  </label>
                 </div>
 
-                <div style={{ marginBottom: "10px" }}>
-                  <label className="left">SORTING ORDER</label>
+                <div className="input-field" style={{ marginBottom: "30px" }}>
                   <select
-                    className="browser-default"
                     onChange={(e) => this.handleonChange(e)}
                     name="order_by"
+                    id="sorting_order"
                   >
                     <option value="">Choose your option</option>
                     <option value="last_update">last_update</option>
                     <option value="project_title">project_title</option>
                   </select>
+                  <label for="sorting_order" className="left">SORTING ORDER</label>
                 </div>
 
-                <div style={{ marginBottom: "10px" }}>
-                  <label className="left">ASCENDING/DESCENDING</label>
+                <div className="input-field" style={{ marginBottom: "30px" }}>
                   <select
-                    className="browser-default"
                     onChange={(e) => this.handleonChange(e)}
                     name="sorting"
                     required
+                    id="asending_desending"
                   >
                     <option value="">Choose your option</option>
                     <option value="ASC">ASC</option>
                     <option value="DESC">DESC</option>
                   </select>
+                  <label for="asending_desending" className="left">ASCENDING/DESCENDING</label>
                 </div>
+
                 <input
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary right blue-grey darken-1"
                   value="Search"
                 />
               </form>

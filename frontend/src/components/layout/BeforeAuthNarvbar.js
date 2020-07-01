@@ -7,6 +7,11 @@ const BeforeAuthNarvbar = () => {
       <Link to="/" className="brand-logo avatar">
         FindColla
       </Link>
+      {/*<a href="#" className="sidenav-trigger right" data-target="mobile-links">*/}
+      {/*  <i className="material-icons">*/}
+      {/*    menu*/}
+      {/*  </i>*/}
+      {/*</a>*/}
       <ul className="right hide-on-med-and-down">
         <li>
           <Link to="/projects" className="avatar">
@@ -25,6 +30,7 @@ const BeforeAuthNarvbar = () => {
         </li>
       </ul>
     </nav>
+
   );
 };
 

@@ -20,7 +20,7 @@ class Login extends React.Component {
               <div>
                 Are you a{" "}
                 <button
-                  className="btn-small lighten-1 z-depth-0 avatar"
+                  className="btn-small lighten-1 z-depth-0 avatar blue-grey darken-1"
                   onClick={() => this.setState({ role: "Dreamer" })}
                   style={{ padding: "0px 0px 0px 0px" }}
                 >
@@ -28,7 +28,7 @@ class Login extends React.Component {
                 </button>
                 <span> or </span>
                 <button
-                  className="btn-small lighten-1 z-depth-0 avatar"
+                  className="btn-small lighten-1 z-depth-0 avatar blue-grey darken-1"
                   onClick={() => this.setState({ role: "Collaborator" })}
                   style={{ padding: "0px 0px 0px 0px" }}
                 >
@@ -41,9 +41,9 @@ class Login extends React.Component {
                 Don't have an account? <Link to="./register">Sign up</Link>
               </p>
               <button
-                className="btn-small  z-depth-0 avatar right small"
+                className="btn-small  z-depth-0 avatar right small blue-grey darken-1"
                 onClick={() => this.setState({ role: "Admin" })}
-                style={{ padding: "0px 0px 0px 0px" }}
+                style={{ padding: "0px 0px 0px 0px" , marginBottom: "10px"}}
               >
                 admin
               </button>

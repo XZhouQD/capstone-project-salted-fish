@@ -3,8 +3,15 @@ import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { loginUser } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
+import M from "materialize-css";
 
 const LoginForm = (props) => {
+  function componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
+  componentDidMount();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,29 +37,33 @@ const LoginForm = (props) => {
 
   return (
     <form onSubmit={(e) => onSubmit(e)}>
-      <div>
+      <div className="input-field">
         <input
           type="email"
-          placeholder="Email Address"
+          // placeholder="Email Address"
           name="email"
           value={email}
           onChange={(e) => onChange(e)}
           required
+          id="email_address"
         />
+        <label for="email_address">Email Address</label>
       </div>
-      <div>
+      <div className="input-field">
         <input
           type="password"
-          placeholder="Password"
+          // placeholder="Password"
           name="password"
           minLength="8"
           value={password}
           onChange={(e) => onChange(e)}
           required
+          id="password"
         />
+        <label for="password">Password</label>
       </div>
       <p className="yellow">You will log in as {role}</p>
-      <input type="submit" className="btn btn-primary" value="Sign in" />
+      <input type="submit" className="btn btn-primary blue-grey darken-1" value="Sign in" />
     </form>
   );
 };
