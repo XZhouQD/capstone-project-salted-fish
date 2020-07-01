@@ -186,71 +186,70 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
 
         {fields.map((field, idx) => {
           return (
-            <div>
-              <div key={`${field}-${idx}`}>
-                <div className="input-field"
-                     style={{ marginBottom: "10px" }}>
-
-                  <select
-                    onChange={(e) => handleSkillChange(idx, e)}
-                  >
-                    <option value="" disabled>
-                      Choose your option
-                    </option>
-                    {[
-                      "Web Development",
-                      "Java",
-                      "Python",
-                      "PHP",
-                      "Script Language",
-                      "Database Management",
-                      "Computer Vision",
-                      "Security Engineering",
-                      "Testing",
-                      "Algorithm Design",
-                      "Operating System",
-                      "Data Science",
-                      "Human Computer Interaction",
-                      "Deep Learning/Neural Network",
-                      "Distribution System",
-                    ].map((ele, index) => {
-                      return (
-                        <option value={index} key={index}>
-                          {ele}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <label className="left">
-                    Please choose your computer skill
-                  </label>
-                </div>
-                <div>
-                  <label className="left">
-                    How many years experience do you have in your field?
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="enter one number"
-                    onChange={(e) => handleValueChange(idx, e)}
-                    min="0"
-                    required
-                  />
+              <div>
+                <div key={`${field}-${idx}`}>
+                  <div style={{ marginBottom: "10px" }}>
+                    <label className="left">
+                      Please choose your computer skill
+                    </label>
+                    <select
+                        className="browser-default"
+                        onChange={(e) => handleSkillChange(idx, e)}
+                    >
+                      <option value="" disabled>
+                        Choose your option
+                      </option>
+                      {[
+                        "Web Development",
+                        "Java",
+                        "Python",
+                        "PHP",
+                        "Script Language",
+                        "Database Management",
+                        "Computer Vision",
+                        "Security Engineering",
+                        "Testing",
+                        "Algorithm Design",
+                        "Operating System",
+                        "Data Science",
+                        "Human Computer Interaction",
+                        "Deep Learning/Neural Network",
+                        "Distribution System",
+                      ].map((ele, index) => {
+                        return (
+                            <option value={index} key={index}>
+                              {ele}
+                            </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="left">
+                      How many years experience do you have in your field?
+                    </label>
+                    <input
+                        type="number"
+                        placeholder="enter one number"
+                        onChange={(e) => handleValueChange(idx, e)}
+                        min="0"
+                        required
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
           );
         })}
         <button
-          type="btn-small"
-          onClick={() => handleAdd()}
-          style={{ marginBottom: "30px" }}
+            type="btn-small"
+            onClick={() => handleAdd()}
+            style={{ marginBottom: "10px" }}
         >
           add one skill
         </button>
 
         <br></br>
-        <input type="submit" className="btn btn-primary blue-grey lighten-1" value="Register" />
+        <input type="submit" className="btn btn-primary" value="Register" />
       </form>
     </div>
   );
