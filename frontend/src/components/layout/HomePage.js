@@ -20,14 +20,14 @@ const HomePage = () => {
         <div>
           <Link
             to="register"
-            className="btn waves-effect waves-light"
+            className="btn waves-effect waves-light blue-grey lighten-1"
             style={{ margin: "5px" }}
           >
             Sign Up
           </Link>
           <Link
             to="login"
-            className="btn waves-effect waves-light"
+            className="btn waves-effect waves-light blue-grey lighten-1"
             style={{ margin: "10px" }}
           >
             Login
