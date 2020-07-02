@@ -122,6 +122,25 @@ class Collaborator():
         if len(project_list) == 0: return None
         return {'projects': project_list, 'amount': result.rowcount}
 
+    def projects_recommdation(self, conn):
+        skills = self.skill_dict
+        edu = self.education
+        project_list = []
+        for skill, exp in skills.items():
+            print(skill, exp, edu)
+            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience <= " + str(exp + 2) + " AND education = " + str(edu) + " ORDER BY experience asc;"
+            result = conn.execute(query)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                proj = Project.get_by_id(conn, row['pID'])
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+        if len(project_list) == 0: return None
+        return {'projects': project_list, 'amount': result.rowcount}
+
     def info(self):
         return {'role': 'Collaborator', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description, 'education': self.education_text, 'skills': self.skill_dict}
 

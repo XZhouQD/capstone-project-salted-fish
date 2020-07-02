@@ -188,6 +188,42 @@ class CollaboratorProjectsList(CorsResource):
             return {'projects': [], 'message': 'No matching projects were found.'}, 200
         return result, 200
 
+@api.route('/collaborator/recommendation')
+class ProjectsRecommendation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        email = userinfo['email']
+        my_user = Collaborator.getObject(conn, email)
+        result = my_user.projects_recommdation(conn)
+        if result is None:
+            return {'projects': [], 'message': 'No matching projects were found.'}, 200
+        return result, 200
+
+@api.route('/dreamer/recommendation')
+class CollaboratorsRecommendation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        email = userinfo['email']
+        my_user = Dreamer.getObject(conn, email)
+        result = my_user.collaborators_recommdation(conn)
+        if result is None:
+            return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
+        return result, 200
+
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
