@@ -129,6 +129,7 @@ class Collaborator():
         #strict matching
         strict_matching_count = 0
         for skill, exp in skills.items():
+            print(skill, exp, edu)
             query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
             result = conn.execute(query)
             for i in range(result.rowcount):
@@ -136,8 +137,7 @@ class Collaborator():
                 proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id'] and skill == proj['roles.skill']: 
-                        is_exist = True
+                    if project['id'] == proj['id']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     strict_matching_count += 1
@@ -151,8 +151,7 @@ class Collaborator():
                 proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id'] and skill == proj['roles.skill']:
-                        is_exist = True
+                    if project['id'] == proj['id']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     relaxing_matching_count += 1
