@@ -155,7 +155,7 @@ class Collaborator():
                     project_list.append(proj)
                     relaxing_matching_count += 1
         if len(project_list) == 0: return None
-        return {'projects': project_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relax_matching_count}
+        return {'projects': project_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
 
     def info(self):
         return {'role': 'Collaborator', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description, 'education': self.education_text, 'skills': self.skill_dict}
