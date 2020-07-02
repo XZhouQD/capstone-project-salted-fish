@@ -68,7 +68,7 @@ class Dreamer():
         roles_needed[row['roleID']] = (row['ski'], row['exp'], row['edu'])
         for role_i in roles_needed:
             print(roles_needed[role_i])
-            query = "select collaborator.ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][0]) + " and experience >= " + str(roles_needed[role_i][1] - 1) + " and education >= " + str(roles_needed[role_i][1]) + " ORDER BY experience Desc;"
+            query = "select collaborator.ID as ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][0]) + " and experience >= " + str(roles_needed[role_i][1] - 1) + " and education >= " + str(roles_needed[role_i][1]) + " ORDER BY experience Desc;"
             result = conn.execute(query)
             collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
             collaborators_list.append(collabor)
