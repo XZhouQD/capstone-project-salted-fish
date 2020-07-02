@@ -133,10 +133,11 @@ class Collaborator():
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id(conn, row['pID'])
+                proj = Project.get_by_id_skill(conn, row['pID'])
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
+                    if project['id'] == proj['id'] and skill == proj['roles.skill']: 
+                        is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     strict_matching_count += 1
@@ -150,7 +151,8 @@ class Collaborator():
                 proj = Project.get_by_id(conn, row['pID'])
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
+                    if project['id'] == proj['id'] and skill == proj['roles.skill']:
+                        is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     relaxing_matching_count += 1

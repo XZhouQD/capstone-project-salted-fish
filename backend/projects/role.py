@@ -24,6 +24,19 @@ class Role():
         return role.info()
 
     @staticmethod
+    # get by one type role of project (project id + skill)
+    def get_by_id_skill(conn, proj_id, skill):
+        query = "SELECT * FROM project_role where projectID = " + str(proj_id) + " and skill = " + str(skill) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+        role.id = row['ID']
+        return role.info()
+    
+
+    @staticmethod
     def get_by_proj_id(conn, proj_id):
         query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
         result = conn.execute(query)
