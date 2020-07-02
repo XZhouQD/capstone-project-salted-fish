@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+<<<<<<< HEAD
 import { postProjectRole } from "../../actions/projects";
+=======
+import M from "materialize-css";
+import RoleList from "./roleList";
+import AddRole from "./addRole";
+>>>>>>> origin
 
 const AddRoleProject = ({ postProjectRole }) => {
   const [fields, setFields] = useState([
@@ -21,11 +27,18 @@ const AddRoleProject = ({ postProjectRole }) => {
     setFields(values);
   }
 
+<<<<<<< HEAD
   function handleTitleChange(i, event) {
     const values = [...fields];
     values[i].title = event.target.value;
     setFields(values);
   }
+=======
+
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+>>>>>>> origin
 
   function handleAmountChange(i, event) {
     const values = [...fields];

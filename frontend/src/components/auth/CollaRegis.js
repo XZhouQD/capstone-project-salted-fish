@@ -3,8 +3,15 @@ import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { registerColla } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
+import M from "materialize-css";
 
 const CollaRegis = ({ setAlert, registerColla, flag }) => {
+  function componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
+  componentDidMount();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,6 +31,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
   } = formData;
 
   const [fields, setFields] = useState([{ value: null, skill: null }]);
+
 
   function handleValueChange(i, event) {
     const values = [...fields];
@@ -91,66 +99,73 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>
-        <div>
+        <div className="input-field">
           <input
             type="text"
-            placeholder="Name"
+            // placeholder="Name"
             name="name"
             value={name}
             onChange={(e) => onChange(e)}
             required
+            id="name"
           />
+          <label for="name">Name</label>
         </div>
-        <div>
+        <div className="input-field">
           <input
             type="email"
-            placeholder="Email Address"
+            // placeholder="Email Address"
             name="email"
             value={email}
             onChange={(e) => onChange(e)}
             required
+            id="email_address"
           />
+          <label for="email_address">Email Address</label>
         </div>
-        <div>
+        <div className="input-field">
           <input
             type="text"
-            placeholder="Phone Number"
+            // placeholder="Phone Number"
             name="phone_no"
             minLength="6"
             value={phone_no}
             onChange={(e) => onChange(e)}
+            id="phone_number"
           />
+          <label for="phone_number">Phone Number</label>
         </div>
-        <div>
+        <div className="input-field">
           <input
             type="password"
-            placeholder="Password"
+            // placeholder="Password"
             name="password"
             minLength="8"
             value={password}
             onChange={(e) => onChange(e)}
             required
+            id="password"
           />
+          <label for="password">Password</label>
         </div>
 
-        <div>
+        <div className="input-field">
           <input
             type="password"
-            placeholder="Confirm Password"
+            // placeholder="Confirm Password"
             name="repeat_password"
             minLength="8"
             value={repeat_password}
             onChange={(e) => onChange(e)}
             required
+            id="confirm_password"
           />
+          <label for="confirm_password">Confirm Password</label>
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
-          <label className="left">
-            Please select your highest education level
-          </label>
+        <div className="input-field"
+             style={{ marginBottom: "10px" }}>
           <select
-            className="browser-default"
             value={education}
             onChange={(e) => onChange(e)}
             name="education"
@@ -163,68 +178,71 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             <option value="3">Master</option>
             <option value="4">Phd</option>
           </select>
+          <label className="left">
+            Please select your highest education level
+          </label>
         </div>
 
         {fields.map((field, idx) => {
           return (
-            <div>
-              <div key={`${field}-${idx}`}>
-                <div style={{ marginBottom: "10px" }}>
-                  <label className="left">
-                    Please choose your computer skill
-                  </label>
-                  <select
-                    className="browser-default"
-                    onChange={(e) => handleSkillChange(idx, e)}
-                  >
-                    <option value="" disabled>
-                      Choose your option
-                    </option>
-                    {[
-                      "Web Development",
-                      "Java",
-                      "Python",
-                      "PHP",
-                      "Script Language",
-                      "Database Management",
-                      "Computer Vision",
-                      "Security Engineering",
-                      "Testing",
-                      "Algorithm Design",
-                      "Operating System",
-                      "Data Science",
-                      "Human Computer Interaction",
-                      "Deep Learning/Neural Network",
-                      "Distribution System",
-                    ].map((ele, index) => {
-                      return (
-                        <option value={index} key={index}>
-                          {ele}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                <div>
-                  <label className="left">
-                    How many years experience do you have in your field?
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="enter one number"
-                    onChange={(e) => handleValueChange(idx, e)}
-                    min="0"
-                    required
-                  />
+              <div>
+                <div key={`${field}-${idx}`}>
+                  <div style={{ marginBottom: "10px" }}>
+                    <label className="left">
+                      Please choose your computer skill
+                    </label>
+                    <select
+                        className="browser-default"
+                        onChange={(e) => handleSkillChange(idx, e)}
+                    >
+                      <option value="" disabled>
+                        Choose your option
+                      </option>
+                      {[
+                        "Web Development",
+                        "Java",
+                        "Python",
+                        "PHP",
+                        "Script Language",
+                        "Database Management",
+                        "Computer Vision",
+                        "Security Engineering",
+                        "Testing",
+                        "Algorithm Design",
+                        "Operating System",
+                        "Data Science",
+                        "Human Computer Interaction",
+                        "Deep Learning/Neural Network",
+                        "Distribution System",
+                      ].map((ele, index) => {
+                        return (
+                            <option value={index} key={index}>
+                              {ele}
+                            </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="left">
+                      How many years experience do you have in your field?
+                    </label>
+                    <input
+                        type="number"
+                        placeholder="enter one number"
+                        onChange={(e) => handleValueChange(idx, e)}
+                        min="0"
+                        required
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
           );
         })}
         <button
-          type="btn-small"
-          onClick={() => handleAdd()}
-          style={{ marginBottom: "10px" }}
+            type="btn-small"
+            onClick={() => handleAdd()}
+            style={{ marginBottom: "10px" }}
         >
           add one skill
         </button>

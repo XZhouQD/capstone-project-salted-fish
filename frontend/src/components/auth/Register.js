@@ -2,11 +2,17 @@ import React, { Component } from "react";
 import DreamerRegis from "./DreamerRegis";
 import CollaRegis from "./CollaRegis";
 import { Link } from "react-router-dom";
+import M from "materialize-css";
 
 class Register extends Component {
   state = {
     dreamer: true,
   };
+
+  componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
 
   handleClickDre() {
     this.setState({ dreamer: true });
@@ -27,14 +33,14 @@ class Register extends Component {
                 <div>
                   Are you a{" "}
                   <button
-                    className="btn-small lighten-1 z-depth-0 avatar"
+                    className="btn-small blue-grey lighten-1 lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickDre.bind(this)}
                   >
                     dreamer
                   </button>
                   <span> or </span>
                   <button
-                    className="btn-small lighten-1 z-depth-0 avatar"
+                    className="btn-small blue-grey lighten-1 lighten-1 z-depth-0 avatar"
                     onClick={this.handleClickCol.bind(this)}
                   >
                     collaborator
@@ -43,6 +49,8 @@ class Register extends Component {
                 {this.state.dreamer ? <DreamerRegis /> : <CollaRegis />}
                 <div>
                   Already have an account? <Link to="./login">Sign In</Link>
+                  <br/>
+                  <br/>
                 </div>
               </div>
             </div>
