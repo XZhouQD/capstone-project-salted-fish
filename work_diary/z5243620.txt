@@ -46,6 +46,8 @@ week 5
 1. check and get familiar with the whole system and applications;
 2. prepare for the first demo on wednesday;
 3. participate the online meeting for the projects progress and prepare for first demo;
+4. complete backend coding SF-29 and Sf-30 recommendation functions of sprint2;
 
 Next wek plan:
-1. start print2 part as planed;  
+1. start print2 part as planed;
+  
