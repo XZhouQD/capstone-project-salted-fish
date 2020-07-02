@@ -56,6 +56,25 @@ class Dreamer():
         row = result.fetchone()
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
 
+    def collaborators_recommdation(self, conn):
+        owner = self.id
+        roles_needed = {}
+        collaborators_list = []
+        query = "SELECT project_role.ID as roleID, project_role.skill as ski, project_role.experience as exp, project_role.education as edu FROM project, project_role WHERE project.ID = project_role.projectID and project.dreamerID = " + str(owner) + " ORDER BY project_role.ID asc;"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        roles_needed[row['roleID']] = (row['ski'], row['exp'], row['edu'])
+        for role_i in roles_needed:
+            print(roles_needed[role_i])
+            query = "select collaborator.ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][0]) + " and experience >= " + str(roles_needed[role_i][1] - 1) + " and education >= " + str(roles_needed[role_i][1]) + "ORDER BY experience Desc;"
+            result = conn.execute(query)
+            collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
+            collaborators_list.append(collabor)
+        if len(collaborators_list) == 0: return None
+        return {'collaborators': collaborators_list, 'amount': result.rowcount}
+
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
         email = email.lower()
