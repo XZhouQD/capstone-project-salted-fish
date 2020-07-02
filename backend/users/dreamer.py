@@ -60,20 +60,26 @@ class Dreamer():
         owner = self.id
         roles_needed = {}
         collaborators_list = []
+        total_count = 0
         query = "SELECT project_role.ID as roleID, project_role.skill as ski, project_role.experience as exp, project_role.education as edu FROM project, project_role WHERE project.ID = project_role.projectID and project.dreamerID = " + str(owner) + " ORDER BY project_role.ID asc;"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
-        row = result.fetchone()
-        roles_needed[row['roleID']] = (row['ski'], row['exp'], row['edu'])
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            roles_needed[row['roleID']] = (row['ski'], row['exp'], row['edu'])
         for role_i in roles_needed:
             print(roles_needed[role_i])
             query = "select collaborator.ID as ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][0]) + " and experience >= " + str(roles_needed[role_i][1] - 1) + " and education >= " + str(roles_needed[role_i][1]) + " ORDER BY experience Desc;"
             result = conn.execute(query)
-            collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
-            collaborators_list.append(collabor)
+            if result.rowcount != 0:
+                for j in range(result.rowcount):
+                    row = result.fetchone()
+                    collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
+                    collaborators_list.append(collabor)
+                    total_count += 1
         if len(collaborators_list) == 0: return None
-        return {'collaborators': collaborators_list, 'amount': result.rowcount}
+        return {'collaborators': collaborators_list, 'amount': total_count}
 
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
