@@ -6,6 +6,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  REGISTER_DISAPPEAR,
 } from "../actions/actionTypes";
 import { Redirect } from "react-router-dom";
 
@@ -31,6 +32,13 @@ export default function (state = initialState, action) {
         ...payload,
         isAuthenticated: false,
         flag: "register success",
+      };
+
+    case REGISTER_DISAPPEAR:
+      return {
+        ...state,
+        isAuthenticated: false,
+        flag: "register again",
       };
 
     case LOGIN_SUCCESS:

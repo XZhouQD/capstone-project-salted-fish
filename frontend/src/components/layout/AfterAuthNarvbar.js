@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 
 const AfterAuthNarvbar = (props) => {
   const { isDreamerOrCollaOrAdmin } = props;
-  if (isDreamerOrCollaOrAdmin == "Dreamer") {
+  if (isDreamerOrCollaOrAdmin === "Dreamer") {
     return (
       <div>
         <DreamerNav />
       </div>
     );
-  } else if (isDreamerOrCollaOrAdmin == "Collaborator") {
+  } else if (isDreamerOrCollaOrAdmin === "Collaborator") {
     return (
       <div>
         <CollaNav />

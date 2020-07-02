@@ -65,8 +65,6 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(fields);
-
     var skillsArr = [];
     var experienceArr = [];
 
@@ -97,6 +95,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
   if (flag === "register success") {
     return <Redirect to="/login" />;
   }
+
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>

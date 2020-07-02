@@ -6,6 +6,8 @@ import {
   GET_PROJECT_LIST,
   UNDO_FLAG,
   SEARCH_PROJECT_LIST,
+  POST_PROJECT_ROLE,
+  POST_PROJECT_ROLE_FAIL,
 } from "./actionTypes";
 
 // createProject
@@ -100,5 +102,62 @@ export const searchProject = ({
     console.log(err.response);
     const errors = err.response.data.message;
     dispatch(setAlert(errors));
+  }
+};
+
+// postProjectRole list
+export const postProjectRole = ({
+  title,
+  amount,
+  skill,
+  experience,
+  education,
+  general_enquiry,
+}) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+
+  amount = Number(amount);
+  skill = Number(skill);
+  experience = Number(experience);
+  education = Number(education);
+
+  const body = JSON.stringify({
+    title,
+    amount,
+    skill,
+    experience,
+    education,
+    general_enquiry,
+  });
+  console.log(body);
+
+  try {
+    // need to change
+    const id = 3;
+    const res = await axios.post("/project/" + id + "/role", body, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: POST_PROJECT_ROLE,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+
+    dispatch({
+      type: POST_PROJECT_ROLE_FAIL,
+    });
   }
 };

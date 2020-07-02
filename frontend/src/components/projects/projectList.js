@@ -52,13 +52,68 @@ class ProjectList extends Component {
                 <div className="input-field" style={{ marginBottom: "30px", marginTop: "30px" }}>
                   <input
                     type="text"
+<<<<<<< HEAD
+                    placeholder="SEARCH BY DESCRIPTION"
+=======
                     // placeholder="TYPE THE DESCRIPTION FOR YOUR PROJECT"
+>>>>>>> origin
                     name="description"
                     onChange={(e) => this.handleonChange(e)}
                     id="type_description"
                   />
                   <label for="type_description">TYPE THE DESCRIPTION FOR YOUR PROJECT</label>
                 </div>
+<<<<<<< HEAD
+                <div className="row">
+                  <div style={{ marginBottom: "10px" }} className="col s4">
+                    <label className="left">SELECT CATEGORY</label>
+                    <select
+                      className="browser-default"
+                      onChange={(e) => this.handleonChange(e)}
+                      name="category"
+                    >
+                      <option value="">Choose your option</option>
+                      <option value="1">All other</option>
+                      <option value="2">A web based application</option>
+                      <option value="3">A desktop application</option>
+                      <option value="4">A mobile application</option>
+                      <option value="5">
+                        A library for other project to reference
+                      </option>
+                      <option value="6">
+                        A modification to existing platform
+                      </option>
+                      <option value="7">A research oriented project</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }} className="col s4">
+                    <label className="left">SORTING ORDER</label>
+                    <select
+                      className="browser-default"
+                      onChange={(e) => this.handleonChange(e)}
+                      name="order_by"
+                    >
+                      <option value="">Choose your option</option>
+                      <option value="last_update">last_update</option>
+                      <option value="project_title">project_title</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }} className="col s4">
+                    <label className="left">ASCENDING/DESCENDING</label>
+                    <select
+                      className="browser-default"
+                      onChange={(e) => this.handleonChange(e)}
+                      name="sorting"
+                      required
+                    >
+                      <option value="">Choose your option</option>
+                      <option value="ASC">ASC</option>
+                      <option value="DESC">DESC</option>
+                    </select>
+                  </div>
+=======
                 <div className="input-field"
                      style={{ marginBottom: "30px" }}>
                   <select
@@ -109,26 +164,32 @@ class ProjectList extends Component {
                     <option value="DESC">DESC</option>
                   </select>
                   <label for="asending_desending" className="left">ASCENDING/DESCENDING</label>
+>>>>>>> origin
                 </div>
 
                 <input
                   type="submit"
+<<<<<<< HEAD
+                  className="btn btn-small right"
+=======
                   className="btn btn-primary right blue-grey darken-1"
+>>>>>>> origin
                   value="Search"
                 />
               </form>
             </div>
           </div>
-
-          {this.props.ProjectLists.map((each, index) => {
-            return (
-              <EachProject
-                title={each.title}
-                category={each.category}
-                description={each.description}
-              />
-            );
-          })}
+          <div className="flexLayout">
+            {this.props.ProjectLists.map((each, index) => {
+              return (
+                <EachProject
+                  title={each.title}
+                  category={each.category}
+                  description={each.description}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     );
