@@ -133,7 +133,7 @@ class Collaborator():
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id_skill(conn, row['pID'])
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
                     if project['id'] == proj['id'] and skill == proj['roles.skill']: 
@@ -148,7 +148,7 @@ class Collaborator():
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id(conn, row['pID'])
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
                     if project['id'] == proj['id'] and skill == proj['roles.skill']:
