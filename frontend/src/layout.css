@@ -71,3 +71,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
 .icon {
   font-size: 5px;
 }
+
+.flexLayout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}

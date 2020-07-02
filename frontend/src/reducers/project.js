@@ -4,6 +4,8 @@ import {
   GET_PROJECT_LIST,
   UNDO_FLAG,
   SEARCH_PROJECT_LIST,
+  POST_PROJECT_ROLE,
+  POST_PROJECT_ROLE_FAIL,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -37,6 +39,18 @@ export default function (state = initialState, action) {
         ProjectLists: payload.projects,
         flag: "search project",
       };
+
+    case POST_PROJECT_ROLE:
+      return {
+        ...state,
+        role: payload,
+      };
+    case POST_PROJECT_ROLE_FAIL:
+      return {
+        ...state,
+        role: "Create role fail",
+      };
+
     default:
       return state;
   }
