@@ -16,6 +16,7 @@ class Project():
         self.roles = [] # role info instead of Role object in json format
 
     @staticmethod
+    #general search for all visitors without registering or logining in;
     def search_list(conn, description, category, order_by, order):
         if description != '' and category != -1:
             query = "SELECT * FROM project WHERE description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND project_status > 0 ORDER BY " + order_by + " " + order + ";"
@@ -49,6 +50,20 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_proj_id(conn, proj_id)
+        return proj.info()
+
+    @staticmethod
+    #search by project id and role skill for one type of role 
+    def get_by_id_skill(conn, proj_id, skill):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_by_id_skill(conn, proj.id, skill)
         return proj.info()
 
     @staticmethod

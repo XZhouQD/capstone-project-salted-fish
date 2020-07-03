@@ -126,20 +126,37 @@ class Collaborator():
         skills = self.skill_dict
         edu = self.education
         project_list = []
+        #strict matching
+        strict_matching_count = 0
         for skill, exp in skills.items():
             print(skill, exp, edu)
-            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience <= " + str(exp + 2) + " AND education = " + str(edu) + " ORDER BY experience asc;"
+            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id(conn, row['pID'])
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
                     if project['id'] == proj['id']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
+                    strict_matching_count += 1
+        #relaxing matching
+        relaxing_matching_count = 0
+        for skill, exp in skills.items():
+            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY experience, education;"
+            result = conn.execute(query)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+                    relaxing_matching_count += 1
         if len(project_list) == 0: return None
-        return {'projects': project_list, 'amount': result.rowcount}
+        return {'projects': project_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
 
     def info(self):
         return {'role': 'Collaborator', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description, 'education': self.education_text, 'skills': self.skill_dict}
