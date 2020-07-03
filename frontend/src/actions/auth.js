@@ -104,7 +104,7 @@ export const registerColla = ({
       payload: res.data,
     });
 
-    setTimeout(() => dispatch({ type: REGISTER_DISAPPEAR }), 100);
+    setTimeout(() => dispatch({ type: REGISTER_DISAPPEAR }), 1000);
   } catch (err) {
     console.log(err.response.data);
     const errors = err.response.data.message;
