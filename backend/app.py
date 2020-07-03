@@ -229,7 +229,7 @@ class CollaboratorsRecommendation(CorsResource):
             return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/collaborator/project/project_role/<int:id>')
+@api.route('/collaborator/project_role/<int:id>/application')
 @api.param('id', 'The project_role id')
 class ApplyRole(CorsResource):
     @api.response(200, 'Success')
