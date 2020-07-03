@@ -239,7 +239,7 @@ class ApplyRole(CorsResource):
     @api.doc(description='Apply a new role for the project')
     @api.expect(apply_role_model, validate=True)
     @require_auth
-    def post(self, id):
+    def post(self, pid, rid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         collaborator_id = userinfo['id']
