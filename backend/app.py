@@ -229,8 +229,9 @@ class CollaboratorsRecommendation(CorsResource):
             return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/collaborator/project_role/<int:id>/application')
-@api.param('id', 'The project_role id')
+@api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -249,11 +250,10 @@ class ApplyRole(CorsResource):
             general_text = apply_info['general_text']
         except:
             general_text = ''
-        project_id = Role.get_by_id(conn,int(id))['project_id']
-        new_apply = Application(project_id, int(id), collaborator_id,general_text=general_text).create(conn)
+        new_apply = Application(int(pid), int(rid), collaborator_id,general_text=general_text).create(conn)
         if new_apply == None:
             return {'message': 'apply role duplicate'}, 400
-        return {'message': 'role apply success', 'project_role_id': int(id), 'apply_id': new_apply.info()['id']}, 200
+        return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
     
 @api.route('/project/<int:id>')
