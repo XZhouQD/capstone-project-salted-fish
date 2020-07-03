@@ -169,6 +169,22 @@ class ProjectsList(CorsResource):
             return {'projects': [], 'message': 'No matching projects were found.'}, 200
         return result, 200
 
+@api.route('/dreamer/my_projects')
+class DreamerOwnProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        my_user_id = Dreamer.getObject(conn, userinfo['email']).info()['id']
+        result = Project.get_by_owner(conn, my_user_id)
+        if result is None:
+            return {'projects': [], 'message': 'You have not create any projects'}, 200
+        return {'projects': result}, 200
+
 @api.route('/collaborator/projects')
 class CollaboratorProjectsList(CorsResource):
     @api.response(200, 'Success')
