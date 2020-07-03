@@ -14,7 +14,7 @@ class CreateProject extends Component {
 
   state = {
     title: "",
-    category: "",
+    category: null,
     description: "",
   };
 
@@ -30,14 +30,17 @@ class CreateProject extends Component {
 
   handleonSubmit = (e) => {
     e.preventDefault();
+
     const { title, category, description } = this.state;
+
     this.props.createProject({ title, category, description });
   };
 
   render() {
-    const { isAuthenticated } = this.props;
+    const { isAuthenticated, flag } = this.props;
     if (!isAuthenticated) return <Redirect to="/login" />;
-
+    console.log(flag);
+    if (flag === "create success") return <Redirect to="/projects" />;
     console.log(this.props.isAuthenticated);
 
     return (
@@ -50,7 +53,6 @@ class CreateProject extends Component {
                   <input
                     placeholder="enter your project's title"
                     type="text"
-                    className="validate"
                     name="title"
                     onChange={(e) => this.handleonChange(e)}
                     required
@@ -60,15 +62,28 @@ class CreateProject extends Component {
               </div>
 
               <div className="row">
-                <div className="input-field col s12">
-                  <input
-                    placeholder="please use comma to seperate different topics(optional) example: Machine Learning,Data Analysis"
-                    type="text"
-                    className="validate"
+                <div class="input-field col s12">
+                  <select
                     name="category"
                     onChange={(e) => this.handleonChange(e)}
-                  />
-                  <label htmlFor="title">Project Topic</label>
+                    placeholder="please choose the realated fields"
+                  >
+                    <option value="" disabled selected>
+                      Choose your option
+                    </option>
+                    <option value="1">All other</option>
+                    <option value="2">A web based application</option>
+                    <option value="3">A desktop application</option>
+                    <option value="4">A mobile application</option>
+                    <option value="5">
+                      A library for other project to reference
+                    </option>
+                    <option value="6">
+                      A modification to existing platform
+                    </option>
+                    <option value="7">A research oriented project</option>
+                  </select>
+                  <label>Project catagory</label>
                 </div>
               </div>
 
@@ -103,6 +118,7 @@ class CreateProject extends Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  flag: state.project.flag,
 });
 
 export default connect(mapStateToProps, { createProject })(CreateProject);

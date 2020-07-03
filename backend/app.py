@@ -12,12 +12,11 @@ Nan Zhao        z5225777
 Qingbei Wu      z5222641
 '''
 
-import json
+import json, yaml
 from functools import wraps
 from flask import Flask, request
 from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
 from itsdangerous import JSONWebSignatureSerializer, BadSignature
-import re
 
 from db import create_conn
 from auth_token import AuthToken
@@ -30,7 +29,11 @@ from users.collaborator import Collaborator
 from projects.project import Project
 from projects.role import Role
 
+# Load config
+f = open('projects/project.config', 'r', encoding='utf-8')
+config = yaml.load(f.read(), Loader=yaml.FullLoader)
 
+# Flask App
 app = Flask(__name__)
 api = Api(app, authorizations={
     'API-KEY': {
@@ -61,6 +64,11 @@ def require_auth(f):
     return func
 
 # Get Parsers
+projects_parser = reqparse.RequestParser()
+projects_parser.add_argument('description', type=str, default='')
+projects_parser.add_argument('category', type=int, default=-1) # -1 for all categories
+projects_parser.add_argument('order_by', choices=['last_update','project_title'], default='last_update')
+projects_parser.add_argument('sorting', choices=['ASC','DESC'], default='DESC')
 
 # Post Models
 login_model = api.model('Login', {
@@ -91,7 +99,7 @@ collaborator_register_model = api.model('Collaborator_Register', {
 project_post_model = api.model('Project_Post', {
     'title': fields.String(required=True, description='Project title'),
     'description': fields.String(required=True, description='Project description'),
-    'category': fields.String(required=False, description='Project topics', example='Machine Learning,Data Analysis')
+    'category': fields.Integer(required=False, description='Project Category ID')
 })
 
 role_post_model = api.model('Role_Post', {
@@ -109,6 +117,113 @@ change_password_model = api.model('Change_Password', {
 })
 
 # API
+@api.route('/admin')
+class AdminAPI(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description="Get Admin data")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        admin_email = userinfo['email']
+        admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        return {'email': admin_email}, 200
+
+@api.route('/categories')
+class Categories(CorsResource):
+    @api.response(200, 'Success')
+    @api.doc(description="Get project categories list")
+    def get(self):
+        return {"categories": config['Project']['Categories'], "description": config['Project']['Categories_description']}, 200
+
+@api.route('/skills')
+class Skills(CorsResource):
+    @api.response(200, 'Success')
+    @api.doc(description="Get collaborator skills list")
+    def get(self):
+        return {"skills": config['Role']['Skills']}, 200
+
+@api.route('/projects')
+class ProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.doc(description="Get projects list filtered by arguments")
+    @api.expect(projects_parser, validate=True)
+    def get(self):
+        args = projects_parser.parse_args()
+        desc = args.get('description')
+        category = args.get('category')
+        order_by = args.get('order_by')
+        sorting = args.get('sorting')
+        result = Project.search_list(conn, desc, category, order_by, sorting)
+        if result is None:
+            return {'projects': [], 'message': 'No matching projects were found.'}, 200
+        return result, 200
+
+@api.route('/collaborator/projects')
+class CollaboratorProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @api.expect(projects_parser, validate=True)
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        email = userinfo['email']
+        my_user = Collaborator.getObject(conn, email)
+        args = projects_parser.parse_args()
+        desc = args.get('description')
+        category = args.get('category')
+        order_by = args.get('order_by')
+        sorting = args.get('sorting')
+        result = my_user.search_list(conn, desc, category, order_by, sorting)
+        if result is None:
+            return {'projects': [], 'message': 'No matching projects were found.'}, 200
+        return result, 200
+
+@api.route('/collaborator/recommendation')
+class ProjectsRecommendation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        email = userinfo['email']
+        my_user = Collaborator.getObject(conn, email)
+        result = my_user.projects_recommdation(conn)
+        if result is None:
+            return {'projects': [], 'message': 'No matching projects were found.'}, 200
+        return result, 200
+
+@api.route('/dreamer/recommendation')
+class CollaboratorsRecommendation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        email = userinfo['email']
+        my_user = Dreamer.getObject(conn, email)
+        result = my_user.collaborators_recommdation(conn)
+        if result is None:
+            return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
+        return result, 200
+
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
@@ -195,16 +310,17 @@ class CollaboratorRegister(CorsResource):
         except:
             education = -1
 
-            skill_dict = {}
+        skill_dict = {}
         try:
             skills = register_info['skills'].split(',')
             exps = register_info['experience'].split(',')
+            print(skills, exps)
             if not (len(skills) == len(exps)): return {'message': 'Skills and experience have different length.'}, 400
             for i in range(len(skills)):
                 skill_dict[skills[i]]=exps[i]
         except:
             skill_dict = {}
-
+        print(skill_dict)
         Collaborator(name, email, password_plain=password, phone_no=phone_no, education=education, skill_dict=skill_dict).commit(conn)
 
         return {'message': 'Register success'}, 200

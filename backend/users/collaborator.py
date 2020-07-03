@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from users.util import sha256
+from projects.project import Project
 
 class Collaborator():
     def __init__(self, name, email, password_plain='', password_encrypted='', id='', create_time='', last_update='', phone_no='', user_level=0, description='', education=-1, skill_dict={}):
@@ -74,7 +75,7 @@ class Collaborator():
         row = result.fetchone()
         skills = Collaborator.getSkills(conn, row['ID'])
         return Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'], skill_dict=skills)
-    
+
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
         email = email.lower()
@@ -99,11 +100,70 @@ class Collaborator():
         query = "UPDATE collaborator set password = \'" + new_pass + "\' where email = \'" + email + "\';"
         conn.execute(query)
 
+    def search_list(self, conn, description, category, order_by, order):
+        skills = self.skill_dict
+        edu = self.education
+        project_list = []
+        for skill, exp in skills.items():
+            print(skill, exp, edu)
+            if category == -1:
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+            else:
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+            result = conn.execute(query)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                proj = Project.get_by_id(conn, row['pID'])
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+        if len(project_list) == 0: return None
+        return {'projects': project_list, 'amount': result.rowcount}
+
+    def projects_recommdation(self, conn):
+        skills = self.skill_dict
+        edu = self.education
+        project_list = []
+        #strict matching
+        strict_matching_count = 0
+        for skill, exp in skills.items():
+            print(skill, exp, edu)
+            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
+            result = conn.execute(query)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+                    strict_matching_count += 1
+        #relaxing matching
+        relaxing_matching_count = 0
+        for skill, exp in skills.items():
+            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY experience, education;"
+            result = conn.execute(query)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                proj = Project.get_by_id_skill(conn, row['pID'], skill)
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+                    relaxing_matching_count += 1
+        if len(project_list) == 0: return None
+        return {'projects': project_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
+
     def info(self):
         return {'role': 'Collaborator', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description, 'education': self.education_text, 'skills': self.skill_dict}
 
     def commit_skills(self, conn):
         query = "DELETE FROM skills where `collaboratorID` = " + str(self.id) + ";"
+        conn.execute(query)
         for k, v in self.skill_dict.items():
             query = "INSERT INTO skills (skill, experience, collaboratorID) VALUES (" + str(k) + ", " + str(v) + ", " + str(self.id) + ");"
             conn.execute(query)

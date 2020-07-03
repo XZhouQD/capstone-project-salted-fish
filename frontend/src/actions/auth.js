@@ -8,8 +8,8 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  REGISTER_DISAPPEAR,
 } from "./actionTypes";
-import setToken from "../utils/setToken";
 
 // register user
 export const registerDreamer = ({
@@ -45,6 +45,8 @@ export const registerDreamer = ({
       type: REGISTER_SUCCESS,
       payload: res.data,
     });
+
+    setTimeout(() => dispatch({ type: REGISTER_DISAPPEAR }), 100);
   } catch (err) {
     // error -> dispatch setAlert to reducers
     console.log(err.response.data);
@@ -101,6 +103,8 @@ export const registerColla = ({
       type: REGISTER_SUCCESS,
       payload: res.data,
     });
+
+    setTimeout(() => dispatch({ type: REGISTER_DISAPPEAR }), 1000);
   } catch (err) {
     console.log(err.response.data);
     const errors = err.response.data.message;

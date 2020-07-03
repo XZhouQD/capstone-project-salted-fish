@@ -3,8 +3,15 @@ import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { registerDreamer } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
+import M from "materialize-css";
 
-const DreamerRegis = ({ setAlert, registerDreamer }) => {
+const DreamerRegis = ({ setAlert, registerDreamer, flag }) => {
+  function componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+  }
+  componentDidMount();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,6 +36,9 @@ const DreamerRegis = ({ setAlert, registerDreamer }) => {
     }
   };
 
+  if (flag === "register success") {
+    return <Redirect to="/login" />;
+  }
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>
@@ -94,4 +104,10 @@ const DreamerRegis = ({ setAlert, registerDreamer }) => {
   );
 };
 
-export default connect(null, { setAlert, registerDreamer })(DreamerRegis);
+const mapStateToProps = (state) => ({
+  flag: state.auth.flag,
+});
+
+export default connect(mapStateToProps, { setAlert, registerDreamer })(
+  DreamerRegis
+);

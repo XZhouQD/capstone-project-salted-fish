@@ -7,7 +7,7 @@ import { Redirect } from "react-router-dom";
 const CollaNav = ({ isAuthenticated, logOut }) => {
   if (!isAuthenticated) return <Redirect to="/login" />;
   return (
-    <nav className="darken-2 nav-wrapper grey navbar-css">
+    <nav className="darken-2 nav-wrapper blue-grey lighten-1 navbar-css">
       <Link to="/" className="brand-logo avatar">
         FindColla
       </Link>
@@ -25,7 +25,7 @@ const CollaNav = ({ isAuthenticated, logOut }) => {
           </Link>
         </li>
         <li>
-          <Link to="/signout" onClick={logOut} className="avatar">
+          <Link to="/login" onClick={logOut} className="avatar">
             Sign out
           </Link>
         </li>
