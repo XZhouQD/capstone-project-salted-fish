@@ -90,7 +90,7 @@ class Dreamer():
             if result.rowcount != 0:
                 for j in range(result.rowcount):
                     row = result.fetchone()
-                    collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
+                    collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['skill'],row['experience'],row['education'],row['user_level'],row['description'])
                     proj_role_info = Project.get_by_id_skill(conn, roles_needed[role_i][0], roles_needed[role_i][1])
                     proj_role_collaborator_list.append((proj_role_info, collabor))
                     relaxing_matching_count += 1
