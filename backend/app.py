@@ -28,6 +28,7 @@ from users.collaborator import Collaborator
 
 from projects.project import Project
 from projects.role import Role
+from projects.application import Application
 
 # Load config
 f = open('projects/project.config', 'r', encoding='utf-8')
@@ -114,6 +115,10 @@ role_post_model = api.model('Role_Post', {
 change_password_model = api.model('Change_Password', {
     'original_password': fields.String(required=True, description='Your original password', min_length=8),
     'new_password': fields.String(required=True, description='Your new password', min_length=8)
+})
+
+apply_role_model = api.model('Apply_Role', {
+    'general_text': fields.String(required=True, description='Apply description')
 })
 
 # API
@@ -224,6 +229,33 @@ class CollaboratorsRecommendation(CorsResource):
             return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
+@api.route('/collaborator/project_role/<int:id>/application')
+@api.param('id', 'The project_role id')
+class ApplyRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Apply a new role for the project')
+    @api.expect(apply_role_model, validate=True)
+    @require_auth
+    def post(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        apply_info = request.json
+        try:
+            general_text = apply_info['general_text']
+        except:
+            general_text = ''
+        project_id = Role.get_by_id(conn,int(id))['project_id']
+        new_apply = Application(project_id, int(id), collaborator_id,general_text=general_text).create(conn)
+        if new_apply == None:
+            return {'message': 'apply role duplicate'}, 400
+        return {'message': 'role apply success', 'project_role_id': int(id), 'apply_id': new_apply.info()['id']}, 200
+
+    
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
