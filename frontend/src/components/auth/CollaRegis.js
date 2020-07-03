@@ -32,7 +32,6 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
 
   const [fields, setFields] = useState([{ value: null, skill: null }]);
 
-
   function handleValueChange(i, event) {
     const values = [...fields];
     values[i].value = event.target.value;
@@ -92,6 +91,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
     }
   };
 
+  console.log(flag);
   if (flag === "register success") {
     return <Redirect to="/login" />;
   }
@@ -163,8 +163,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
           <label for="confirm_password">Confirm Password</label>
         </div>
 
-        <div className="input-field"
-             style={{ marginBottom: "10px" }}>
+        <div className="input-field" style={{ marginBottom: "10px" }}>
           <select
             value={education}
             onChange={(e) => onChange(e)}
@@ -185,64 +184,64 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
 
         {fields.map((field, idx) => {
           return (
-              <div>
-                <div key={`${field}-${idx}`}>
-                  <div style={{ marginBottom: "10px" }}>
-                    <label className="left">
-                      Please choose your computer skill
-                    </label>
-                    <select
-                        className="browser-default"
-                        onChange={(e) => handleSkillChange(idx, e)}
-                    >
-                      <option value="" disabled>
-                        Choose your option
-                      </option>
-                      {[
-                        "Web Development",
-                        "Java",
-                        "Python",
-                        "PHP",
-                        "Script Language",
-                        "Database Management",
-                        "Computer Vision",
-                        "Security Engineering",
-                        "Testing",
-                        "Algorithm Design",
-                        "Operating System",
-                        "Data Science",
-                        "Human Computer Interaction",
-                        "Deep Learning/Neural Network",
-                        "Distribution System",
-                      ].map((ele, index) => {
-                        return (
-                            <option value={index} key={index}>
-                              {ele}
-                            </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="left">
-                      How many years experience do you have in your field?
-                    </label>
-                    <input
-                        type="number"
-                        placeholder="enter one number"
-                        onChange={(e) => handleValueChange(idx, e)}
-                        min="0"
-                        required
-                    />
-                  </div>
+            <div>
+              <div key={`${field}-${idx}`}>
+                <div style={{ marginBottom: "10px" }}>
+                  <label className="left">
+                    Please choose your computer skill
+                  </label>
+                  <select
+                    className="browser-default"
+                    onChange={(e) => handleSkillChange(idx, e)}
+                  >
+                    <option value="" disabled>
+                      Choose your option
+                    </option>
+                    {[
+                      "Web Development",
+                      "Java",
+                      "Python",
+                      "PHP",
+                      "Script Language",
+                      "Database Management",
+                      "Computer Vision",
+                      "Security Engineering",
+                      "Testing",
+                      "Algorithm Design",
+                      "Operating System",
+                      "Data Science",
+                      "Human Computer Interaction",
+                      "Deep Learning/Neural Network",
+                      "Distribution System",
+                    ].map((ele, index) => {
+                      return (
+                        <option value={index} key={index}>
+                          {ele}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <div>
+                  <label className="left">
+                    How many years experience do you have in your field?
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="enter one number"
+                    onChange={(e) => handleValueChange(idx, e)}
+                    min="0"
+                    required
+                  />
                 </div>
               </div>
+            </div>
           );
         })}
         <button
-            type="btn-small"
-            onClick={() => handleAdd()}
-            style={{ marginBottom: "10px" }}
+          type="btn-small"
+          onClick={() => handleAdd()}
+          style={{ marginBottom: "10px" }}
         >
           add one skill
         </button>
@@ -258,4 +257,6 @@ const mapStateToProps = (state) => ({
   flag: state.auth.flag,
 });
 
-export default connect(null, { setAlert, registerColla })(CollaRegis);
+export default connect(mapStateToProps, { setAlert, registerColla })(
+  CollaRegis
+);

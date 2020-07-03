@@ -5,7 +5,6 @@ import { registerDreamer } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 
-
 const DreamerRegis = ({ setAlert, registerDreamer, flag }) => {
   function componentDidMount() {
     // Auto initialize all the materailize css!
@@ -36,80 +35,70 @@ const DreamerRegis = ({ setAlert, registerDreamer, flag }) => {
       registerDreamer({ name, email, phone_no, password, repeat_password });
     }
   };
-  console.log(flag);
+
   if (flag === "register success") {
     return <Redirect to="/login" />;
   }
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)}>
-        <div className="input-field">
+        <div>
           <input
             type="text"
-            // placeholder="Name"
+            placeholder="Name"
             name="name"
             // onChange 响应到value里
             value={name}
             // change happens put the value into different states
             onChange={(e) => onChange(e)}
             required
-            id="name"
           />
-          <label for="name">Name</label>
         </div>
-        <div className="input-field">
+        <div>
           <input
             type="email"
-            // placeholder="Email Address"
+            placeholder="Email Address"
             name="email"
             value={email}
             onChange={(e) => onChange(e)}
             required
-            id="email_address"
           />
-          <label for="email_address">Email Address</label>
         </div>
-        <div className="input-field">
+        <div>
           <input
             type="text"
-            // placeholder="Phone Number"
+            placeholder="Phone Number"
             name="phone_no"
             minLength="8"
             value={phone_no}
             onChange={(e) => onChange(e)}
-            id="phone_number"
           />
-          <label for="phone_number">Phone Number</label>
         </div>
-        <div className="input-field">
+        <div>
           <input
             type="password"
-            // placeholder="Password"
+            placeholder="Password"
             name="password"
             minLength="8"
             value={password}
             onChange={(e) => onChange(e)}
             required
-            id="password"
           />
-          <label for="password">Password</label>
         </div>
 
-        <div className="input-field">
+        <div>
           <input
             type="password"
-            // placeholder="Confirm Password"
+            placeholder="Confirm Password"
             name="repeat_password"
             minLength="6"
             value={repeat_password}
             onChange={(e) => onChange(e)}
             required
-            id="confirm_password"
           />
-          <label for="confirm_password">Confirm Password</label>
         </div>
-        <input type="submit" className="btn blue-grey lighten-1" value="Register"
-               style={{ marginBottom: "10px" }}/>
+        <br></br>
+        <input type="submit" className="btn" value="Register" />
       </form>
     </div>
   );

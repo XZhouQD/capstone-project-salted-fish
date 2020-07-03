@@ -77,3 +77,86 @@ textarea.materialize-textarea:focus:not([readonly]) {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+
+.sidenav {
+  padding-top: 18px;
+  min-height: 1000px;
+  overflow-y: auto;
+}
+.logo {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.posts {
+  padding: 0 0 5px 0 !important;
+}
+.event-card {
+  margin: 20px !important;
+}
+.row {
+  padding-top: 30px;
+}
+.search-field {
+  width: 50% !important;
+}
+.event-title {
+  margin: 1rem 0 0.912rem 1rem !important;
+}
+.input-field input[type="search"] + .search-icon {
+  left: unset !important;
+  right: 1rem !important;
+  cursor: pointer;
+}
+nav .input-field .search-icon,
+.input-field > .search-icon {
+  right: 0 !important;
+}
+.input-field input[type="search"] ~ .close-icon {
+  right: unset !important;
+  left: 1rem !important;
+}
+
+.event-today > .card-title {
+  padding: 10px;
+}
+.modal-trigger {
+  display: block !important;
+}
+@media only screen and (min-width: 993px) {
+  /* header {
+    padding-left: 300px;
+  } */
+  .sidenav {
+    top: 65px !important;
+  }
+  .logo {
+    bottom: 130px;
+  }
+
+  main {
+    padding-left: 300px;
+  }
+  main .container {
+    width: 100%;
+    max-width: 1500px;
+  }
+  .search-field {
+    width: 70% !important;
+  }
+  /* .calendar-btn, .event-today-btn {
+    display: none !important;
+  } */
+  .modal-trigger {
+    display: none !important;
+  }
+
+  .event-today {
+    display: block;
+    position: fixed;
+    top: 480px;
+    max-width: 475px;
+    margin-right: 18px;
+  }
+}
