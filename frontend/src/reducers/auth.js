@@ -8,7 +8,6 @@ import {
   LOGOUT,
   REGISTER_DISAPPEAR,
 } from "../actions/actionTypes";
-import { Redirect } from "react-router-dom";
 
 const initialState = {
   // get token from localstorage localStorage.getItem()
