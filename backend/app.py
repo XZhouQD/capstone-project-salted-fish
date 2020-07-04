@@ -255,7 +255,7 @@ class ApplyRole(CorsResource):
             return {'message': 'apply role duplicate'}, 400
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
-@api.route('/dreamer/project/<int:pid>/role/<int:rid>/view')
+@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ViewApplication(CorsResource):
