@@ -28,6 +28,7 @@ from users.collaborator import Collaborator
 
 from projects.project import Project
 from projects.role import Role
+from projects.application import Application
 
 # Load config
 f = open('projects/project.config', 'r', encoding='utf-8')
@@ -116,6 +117,10 @@ change_password_model = api.model('Change_Password', {
     'new_password': fields.String(required=True, description='Your new password', min_length=8)
 })
 
+apply_role_model = api.model('Apply_Role', {
+    'general_text': fields.String(required=True, description='Apply description')
+})
+
 # API
 @api.route('/admin')
 class AdminAPI(CorsResource):
@@ -163,6 +168,22 @@ class ProjectsList(CorsResource):
         if result is None:
             return {'projects': [], 'message': 'No matching projects were found.'}, 200
         return result, 200
+
+@api.route('/dreamer/my_projects')
+class DreamerOwnProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        my_user_id = Dreamer.getObject(conn, userinfo['email']).info()['id']
+        result = Project.get_by_owner(conn, my_user_id)
+        if result is None:
+            return {'projects': [], 'message': 'You have not create any projects'}, 200
+        return {'projects': result}, 200
 
 @api.route('/collaborator/projects')
 class CollaboratorProjectsList(CorsResource):
@@ -224,6 +245,55 @@ class CollaboratorsRecommendation(CorsResource):
             return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
+@api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
+class ApplyRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Apply a new role for the project')
+    @api.expect(apply_role_model, validate=True)
+    @require_auth
+    def post(self, pid, rid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        apply_info = request.json
+        try:
+            general_text = apply_info['general_text']
+        except:
+            general_text = ''
+        new_apply = Application(int(pid), int(rid), collaborator_id,general_text=general_text).create(conn)
+        if new_apply == None:
+            return {'message': 'apply role duplicate'}, 400
+        return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
+
+@api.route('/dreamer/project/<int:pid>/role/<int:rid>/view')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
+class ViewApplication(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Application not found')
+    @api.doc(description=' View applications for each role')
+    def get(self, pid,rid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, pid, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        result = Application.get_by_id(conn, int(pid),int(rid))
+        if result is None:
+            return {'message': 'Application not found'}, 404
+        return result, 200
+
+    
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):

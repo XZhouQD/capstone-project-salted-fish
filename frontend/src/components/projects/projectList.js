@@ -65,14 +65,12 @@ class ProjectList extends Component {
                   </label>
                 </div>
                 <div className="row">
-                  <div style={{ marginBottom: "10px" }} className="col s4">
-                    <label className="left">SELECT CATEGORY</label>
+                  <div style={{ marginBottom: "10px" }} className="input-field col s4">
                     <select
-                      className="browser-default"
                       onChange={(e) => this.handleonChange(e)}
                       name="category"
                     >
-                      <option value="">Choose your option</option>
+                      <option value="" disabled selected>Choose your option</option>
                       <option value="1">All other</option>
                       <option value="2">A web based application</option>
                       <option value="3">A desktop application</option>
@@ -85,12 +83,11 @@ class ProjectList extends Component {
                       </option>
                       <option value="7">A research oriented project</option>
                     </select>
+                    <label className="left">SELECT CATEGORY</label>
                   </div>
 
-                  <div style={{ marginBottom: "10px" }} className="col s4">
-                    <label className="left">SORTING ORDER</label>
+                  <div style={{ marginBottom: "10px" }} className="input-field col s4">
                     <select
-                      className="browser-default"
                       onChange={(e) => this.handleonChange(e)}
                       name="order_by"
                     >
@@ -98,12 +95,11 @@ class ProjectList extends Component {
                       <option value="last_update">last_update</option>
                       <option value="project_title">project_title</option>
                     </select>
+                    <label className="left">SORTING ORDER</label>
                   </div>
 
-                  <div style={{ marginBottom: "10px" }} className="col s4">
-                    <label className="left">ASCENDING/DESCENDING</label>
+                  <div style={{ marginBottom: "10px" }} className="input-field col s4">
                     <select
-                      className="browser-default"
                       onChange={(e) => this.handleonChange(e)}
                       name="sorting"
                       required
@@ -112,6 +108,7 @@ class ProjectList extends Component {
                       <option value="ASC">ASC</option>
                       <option value="DESC">DESC</option>
                     </select>
+                    <label className="left">ASCENDING/DESCENDING</label>
                   </div>
                 </div>
 
