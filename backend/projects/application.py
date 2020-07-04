@@ -35,8 +35,17 @@ class Application():
         if result.rowcount > 0:
             return True
         return False
+    
+    def check_project_role(self,conn):
+        query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND ID = " + str(self.role_apply) + " ;"
+        result = conn.execute(query)
+        if result.rowcount > 0:
+            return True
+        return False
 
     def create(self, conn):
+        if not self.check_project_role(conn):
+            return None
         if self.duplicate_check(conn):
             return None
         query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text + "\');"
