@@ -148,18 +148,18 @@ class Dreamer():
         query_2 = "select user_level from dreamer where ID= " + str(dreamer_ID) + ";"
         result_2 = conn.execute(query_2)
         dreamer_level = result_2.fetchone()
-        Dreamer.update_user_level(conn, 'D', count_dreamer_finished_proj, dreamer_level, dreamer_ID)
+        update_user_level(conn, 'D', count_dreamer_finished_proj, dreamer_level, dreamer_ID)
 
         #further update user_level for all collaborators of this project based on the statistic count;
         query_3 = "select applicant from application where projectID = "+ str(proj_ID) + ";"
         result_3 = conn.execute(query_3)
         for i in range(result_3.rowcount):
             row_3 = result_3.fetchone()
-            count_collabor_finished_proj = Dreamer.total_project_finished_by_collabor(conn, row_3['applicant'])
+            count_collabor_finished_proj = total_project_finished_by_collabor(conn, row_3['applicant'])
             query_4 = "select user_level from collaborator where ID= " + str(row_3['applicant']) + ";"
             result_4 = conn.execute(query_4)
             collabor_level = result_4.fetchone()
-            Dreamer.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
+            update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
             
                     
     @staticmethod
