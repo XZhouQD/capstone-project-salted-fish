@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from users.collaborator import Collaborator
 
 class Application():
     def __init__(self, project_id, role_apply, applicant,general_text = '',status = -1):
@@ -9,7 +10,20 @@ class Application():
         self.status = -1
         # no input warning
         self.id = -1
-
+    
+    
+    def get_by_id(conn, project_id,role_id):
+        query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
+        result = conn.execute(query)
+        application_list = []
+        if result.rowcount == 0:
+            return None
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            application= Collaborator.get_by_id(conn,row['applicant'])
+            application_list.append(application)
+        if len(application_list) == 0: return None
+        return {'application': application_list, 'amount': result.rowcount}
 
 
     def info(self):
