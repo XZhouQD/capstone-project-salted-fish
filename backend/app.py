@@ -247,7 +247,7 @@ class CollaboratorsRecommendation(CorsResource):
 
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
-@api.route('/dreamer/finishProject')
+@api.route('/project/finishProject')
 class DreamerFinishProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -263,7 +263,7 @@ class DreamerFinishProject(CorsResource):
         email = userinfo['email']
         my_user = Dreamer.getObject(conn, email)
         dreamer_id = userinfo['id']
-        my_user.Dreamer.finish_a_project(conn, int(id), dreamer_id)
+        my_user.finish_a_project(conn, int(id), dreamer_id)
         result = Project.get_by_id(conn, int(id))
         if result['project_status'] != 9:
             return {'message': 'Failed to finish the project!'}, 404
