@@ -242,7 +242,31 @@ class CollaboratorsRecommendation(CorsResource):
         my_user = Dreamer.getObject(conn, email)
         result = my_user.collaborators_recommdation(conn)
         if result is None:
-            return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
+            return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
+        return result, 200
+
+@api.route('/project/<int:id>')
+@api.param('id', 'The project id')
+@api.route('/dreamer/finishProject')
+class DreamerFinishProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Finish a project')
+    #@api.expect(project_finish_model, validate=True)
+    @require_auth
+    def post(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        email = userinfo['email']
+        my_user = Dreamer.getObject(conn, email)
+        dreamer_id = userinfo['id']
+        my_user.Dreamer.finish_a_project(conn, int(id), dreamer_id)
+        result = Project.get_by_id(conn, int(id))
+        if result['project_status'] != 9:
+            return {'message': 'Failed to finish the project!'}, 404
         return result, 200
 
 @api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
