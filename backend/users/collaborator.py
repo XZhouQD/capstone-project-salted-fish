@@ -29,7 +29,20 @@ class Collaborator():
         elif self.education == 3: self.education_text='Master'
         elif self.education == 4: self.education_text='PhD'
         self.skill_dict = skill_dict
-
+    
+    @staticmethod
+    def get_by_id(conn, id):
+        query = "select * from collaborator where ID = " + str(id) + ";"
+        result = conn.execute(query)
+        row = result.fetchone()
+        application = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
+        application.skill_dict = Collaborator.getSkills(conn, row['ID'])
+        application_info = application.info()
+        del application_info['creation_time']
+        del application_info['last_update']
+        return application_info
+    
+    
     @staticmethod
     def getSkills(conn, id):
         skills = {}
