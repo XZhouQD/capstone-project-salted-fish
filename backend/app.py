@@ -255,7 +255,7 @@ class DreamerFinishProject(CorsResource):
     @api.doc(description='Finish a project')
     #@api.expect(project_finish_model, validate=True)
     @require_auth
-    def post(self, id):
+    def post(self):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Dreamer':
