@@ -78,7 +78,6 @@ class Dreamer():
                 for j in range(result.rowcount):
                     row = result.fetchone()
                     collabor = {'collaboratorID':row['ID'],'Name':row['name'],'Email':row['email'],'Phone_no':row['phone_no'],'skill':row['skill'],'experience':row['experience'],'education':row['education'],'user_level':row['user_level'],'description':row['description']}
-                    #collabor = (row['ID'],row['name'],row['email'],row['phone_no'],row['education'],row['skill'],row['experience'],row['user_level'],row['description'])
                     proj_role_info = Project.get_by_id_skill(conn, roles_needed[role_i][0], roles_needed[role_i][1])
                     proj_role_collaborator_list.append((proj_role_info, collabor))
                     strict_matching_count += 1
@@ -98,6 +97,71 @@ class Dreamer():
         if len(proj_role_collaborator_list) == 0: return None
         return {'project-role-collaborator': proj_role_collaborator_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
 
+    @staticmethod
+    def update_user_level(conn, user_type, count, user_level, user_ID):
+        if user_type == 'D':
+            table_to_update = 'dreamer'
+        if user_type == 'C':
+            table_to_update = 'collaborator'
+        if count >= 1 and count <= 3 and user_level != 1:
+            query = "UPDATE " + str(table_to_update) + " set user_level = 1 where ID = " + str(user_ID) + ";"
+            conn.execute(query)
+        if count > 3 and count <= 5 and user_level != 2:
+            query = "UPDATE " + str(table_to_update) + " set user_level = 2 where ID = " + str(user_ID) + ";"
+            conn.execute(query)
+        if count > 5 and count <= 8 and user_level != 3:
+            query = "UPDATE " + str(table_to_update) + " set user_level = 3 where ID = " + str(user_ID) + ";"
+            conn.execute(query)
+        if count > 8 and count <= 15 and user_level != 4:
+            query = "UPDATE " + str(table_to_update) + " set user_level = 4 where ID = " + str(user_ID) + ";"
+            conn.execute(query)
+        if count > 15 and user_level != 5:
+            query = "UPDATE " + str(table_to_update) + " set user_level = 5 where ID = " + str(user_ID) + ";"
+            conn.execute(query)
+
+    @staticmethod
+    def total_project_finished_by_collabor(conn, collabor_ID):
+        query_1 = "select count(*) as count_1 from application where status = 9 and applicant = " + str(collabor_ID) + ";"
+        result_1 = conn.execute(query_1)
+        row_1 = result_1.fetchone()
+        query_2 = "select count(*) as count_2 from invitation where status = 9 and invitee = " + str(collabor_ID) + ";"
+        result_2 = conn.execute(query_2)
+        row_2 = result_2.fetchone()
+        return row_1['count_1'] + row_2['count_2']
+
+    @staticmethod
+    def finish_a_project(conn, proj_ID, dreamer_ID):
+        # update project_status = 9 as finished
+        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " ID = " + str(proj_ID) + ";"
+        conn.execute(query)
+        #update applicant status as finish coorporation for application table
+        query = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
+        conn.execute(query)
+        #update invitation status as finish coorporation for invitation table
+        query = "UPDATE invitation set status = 9 where ID = " + str(proj_ID) + ";"
+        conn.execute(query)
+
+        #further update user_level for dreamer based on the statistic count;
+        query_1 = "select count(*) as count from project where dreamerID = " + str(dreamer_ID) + " and project_status = 9;"
+        result_1 = conn.execute(query_1)
+        count_dreamer_finished_proj = result_1.fetchone()
+        query_2 = "select user_level from dreamer where ID= " + str(dreamer_ID) + ";"
+        result_2 = conn.execute(query_2)
+        dreamer_level = result_2.fetchone()
+        Dreamer.update_user_level(conn, 'D', count_dreamer_finished_proj, dreamer_level, dreamer_ID)
+
+        #further update user_level for all collaborators of this project based on the statistic count;
+        query_3 = "select applicant from application where projectID = "+ str(proj_ID) + ";"
+        result_3 = conn.execute(query_3)
+        for i in range(result_3.rowcount):
+            row_3 = result_3.fetchone()
+            count_collabor_finished_proj = Dreamer.total_project_finished_by_collabor(conn, row_3['applicant'])
+            query_4 = "select user_level from collaborator where ID= " + str(row_3['applicant']) + ";"
+            result_4 = conn.execute(query_4)
+            collabor_level = result_4.fetchone()
+            Dreamer.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
+            
+                    
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
         email = email.lower()
