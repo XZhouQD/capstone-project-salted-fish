@@ -52,13 +52,10 @@ class EachProject extends Component {
         </div>
         <div className="card-reveal">
           <span className="card-title grey-text text-darken-4">
-            Project 2 descriptions
+            {this.props.title}
             <i className="material-icons right">close</i>
           </span>
-          <p>
-            Here is some more information about this project that is only
-            revealed once clicked on.
-          </p>
+          <p >Description: {this.props.description}</p>
         </div>
       </div>
     );
