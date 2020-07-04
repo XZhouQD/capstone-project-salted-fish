@@ -226,7 +226,7 @@ class CollaboratorsRecommendation(CorsResource):
 
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
-@api.route('/dreamer/finishProject')
+@api.route('/project/finishProject')
 class DreamerFinishProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
