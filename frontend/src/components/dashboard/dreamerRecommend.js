@@ -2,14 +2,27 @@ import React, { useState } from "react";
 import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-class DreamerDash extends React.Component {
+class DreamerRecommend extends React.Component {
   constructor() {
     super();
+    this.state = {};
   }
-  componentDidMount() {
-    // Auto initialize all the materailize css!
+  async componentDidMount() {
     M.AutoInit();
+
+    const a = localStorage.getItem("token");
+    console.log(a);
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+    const res = await axios.get("/dreamer/recommendation", config);
+    console.log(res);
   }
 
   render() {
@@ -33,11 +46,9 @@ class DreamerDash extends React.Component {
                 </Link>
               </li>
               <li class="bold">
-                <a href="#" class="waves-effect waves-teal">
-                  <Link class="waves-effect waves-teal" to="./drecommend">
-                    Recommend Collaborators
-                  </Link>
-                </a>
+                <Link class="waves-effect waves-teal">
+                  Recommend Collaborators
+                </Link>
               </li>
               <li class="bold">
                 <a href="#" class="waves-effect waves-teal">
@@ -143,4 +154,4 @@ class DreamerDash extends React.Component {
   }
 }
 
-export default DreamerDash;
+export default DreamerRecommend;
