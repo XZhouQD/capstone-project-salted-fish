@@ -121,7 +121,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             required
             id="email_address"
           />
-          <label for="email_address">Email Address</label>
+          <label HtmlFor="email_address">Email Address</label>
         </div>
         <div className="input-field">
           <input
@@ -160,7 +160,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             required
             id="confirm_password"
           />
-          <label for="confirm_password">Confirm Password</label>
+          <label HtmlFor="confirm_password">Confirm Password</label>
         </div>
 
         <div className="input-field" style={{ marginBottom: "10px" }}>
@@ -168,6 +168,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             value={education}
             onChange={(e) => onChange(e)}
             name="education"
+            id="education"
           >
             <option value="" disabled>
               Choose your option
@@ -177,7 +178,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             <option value="3">Master</option>
             <option value="4">Phd</option>
           </select>
-          <label className="left">
+          <label HtmlFor="education" className="left">
             Please select your highest education level
           </label>
         </div>
@@ -187,12 +188,13 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             <div>
               <div key={`${field}-${idx}`}>
                 <div style={{ marginBottom: "10px" }}>
-                  <label className="left">
+                  <label HtmlFor="computer_skill"className="left">
                     Please choose your computer skill
                   </label>
                   <select
                     className="browser-default"
                     onChange={(e) => handleSkillChange(idx, e)}
+                    id="computer_skill"
                   >
                     <option value="" disabled>
                       Choose your option

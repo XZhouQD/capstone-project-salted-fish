@@ -10,11 +10,7 @@ import Alert from "./components/layout/alert";
 import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
 import ProjectDetails from "./components/projects/projectDetails";
-<<<<<<< HEAD
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
-=======
-import AdminDash from "./components/dashboard/adminDash"
->>>>>>> origin
 
 function App() {
   return (
@@ -30,7 +26,6 @@ function App() {
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
-        <Route exact path="/admindash" component={AdminDash} />
         <Route
           exact
           path="/projects/project_detail"
