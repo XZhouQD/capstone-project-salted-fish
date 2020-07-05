@@ -10,8 +10,13 @@ import Alert from "./components/layout/alert";
 import AdminDash from "./components/dashboard/adminDash";
 import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
+<<<<<<< HEAD
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
 import projectDetails from "./components/projects/projectDetails";
+=======
+import ProjectDetails from "./components/projects/projectDetails";
+import DreamerRecommend from "./components/dashboard/dreamerRecommend";
+>>>>>>> origin
 
 function App() {
   return (
@@ -27,8 +32,16 @@ function App() {
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
+<<<<<<< HEAD
         <Route exact path="/admindash" component={AdminDash} />
         <Route exact path="/projects/:id" component={projectDetails} />
+=======
+        <Route
+          exact
+          path="/projects/project_detail"
+          component={ProjectDetails}
+        />
+>>>>>>> origin
       </Switch>
     </Router>
   );
