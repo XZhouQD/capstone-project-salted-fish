@@ -7,6 +7,7 @@ class DreamerDash extends React.Component {
   constructor() {
     super();
   }
+
   componentDidMount() {
     // Auto initialize all the materailize css!
     M.AutoInit();
@@ -39,14 +40,20 @@ class DreamerDash extends React.Component {
                   </Link>
                 </a>
               </li>
+
               <li class="bold">
                 <a href="#" class="waves-effect waves-teal">
-                  Joined Events
+                  <Link class="waves-effect waves-teal" to="./drecommend">
+                    Followed collaborators
+                  </Link>
                 </a>
               </li>
+
               <li class="bold">
                 <a href="#" class="waves-effect waves-teal">
-                  My Schedule
+                  <Link class="waves-effect waves-teal" to="./drecommend">
+                    My Info
+                  </Link>
                 </a>
               </li>
 
@@ -81,7 +88,7 @@ class DreamerDash extends React.Component {
                     <div class="card medium event-card">
                       <div class="card-image">
                         <img
-                          src="https://source.unsplash.com/collection/4"
+                          src="https://source.unsplash.com/collection/1"
                           alt="banner"
                         />
                       </div>
@@ -96,19 +103,19 @@ class DreamerDash extends React.Component {
                           </p>
                         </div>
                         <div class="right-align">
-                          <button class="waves-effect waves-light btn">
-                            <i class="material-icons left">add</i>Join
-                          </button>
-                          <p>
-                            <b>Capacity: </b> 3/100
-                          </p>
+                          <Link
+                            class="waves-effect waves-light btn-small"
+                            to="./project/:id/role"
+                          >
+                            <i class="material-icons left">add</i>Add role
+                          </Link>
                         </div>
                       </div>
                     </div>
                     <div class="card medium event-card">
                       <div class="card-image">
                         <img
-                          src="https://images.pexels.com/photos/1853371/pexels-photo-1853371.jpeg?cs=srgb&dl=adventure-cliff-daylight-1853371.jpg&fm=jpg"
+                          src="https://source.unsplash.com/collection/2"
                           alt="banner"
                         />
                       </div>

@@ -7,14 +7,11 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateProject from "./components/projects/createProject";
 import Alert from "./components/layout/alert";
+import AdminDash from "./components/dashboard/adminDash";
 import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
-import ProjectDetails from "./components/projects/projectDetails";
-<<<<<<< HEAD
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
-=======
-import AdminDash from "./components/dashboard/adminDash"
->>>>>>> origin
+import projectDetails from "./components/projects/projectDetails";
 
 function App() {
   return (
@@ -31,11 +28,7 @@ function App() {
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/admindash" component={AdminDash} />
-        <Route
-          exact
-          path="/projects/project_detail"
-          component={ProjectDetails}
-        />
+        <Route exact path="/projects/:id" component={projectDetails} />
       </Switch>
     </Router>
   );

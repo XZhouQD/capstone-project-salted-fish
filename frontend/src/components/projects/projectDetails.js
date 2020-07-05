@@ -3,10 +3,32 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 
+import axios from "axios";
+
 class ProjectDetails extends Component {
-  componentDidMount() {
-    // Auto initialize all the materailize css!
+  constructor() {
+    super();
+    this.handlebutton = this.handlebutton.bind(this);
+  }
+
+  state = {
+    role: [],
+    follow: true,
+    apply: true,
+  };
+
+  async componentDidMount() {
     M.AutoInit();
+    const res = await axios.get("/project/" + this.props.match.params.id);
+    console.log(res.data);
+  }
+
+  handlebutton() {
+    this.setState({ follow: !this.state.follow });
+  }
+
+  handlebuttona() {
+    this.setState({ apply: !this.state.apply });
   }
 
   render() {
@@ -15,69 +37,59 @@ class ProjectDetails extends Component {
     return (
       <div>
         <div className="container">
-          <br />
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Project title</h5>
-            <p>related topics provided by the owner</p>
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <div class="card-image">
+                  <img src="https://source.unsplash.com/collection/12" />
+                  <span class="card-title">卡片标题</span>
+                  <a class="btn-floating halfway-fab waves-effect waves-light red">
+                    <i class="material-icons">add</i>
+                  </a>
+                </div>
+                <div class="card-content">
+                  <p>
+                    我是一个很简单的卡片。我很擅长于包含少量的信息。我很方便，因为我只需要一个小标记就可以有效地使用。
+                  </p>
+                  <button
+                    className="blue-grey darken-1 waves-light btn-small right"
+                    onClick={() => {
+                      this.handlebutton();
+                    }}
+                    style={{ paddingBottom: "10px" }}
+                  >
+                    <i className="material-icons left">favorite</i>
+                    {this.state.follow ? "follow" : "unfollow"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Descriptions</h5>
-            <p>This is the whole descriptions provided by the owner</p>
+          <div class="row">
+            <div class="input-field col s8 m4 l8">
+              <select multiple>
+                <option value="" disabled selected>
+                  Choose your option
+                </option>
+                <option value="1">选项 1</option>
+                <option value="2">选项 2</option>
+                <option value="3">选项 3</option>
+              </select>
+              <label>Materialize多选下拉列表</label>
+            </div>
+            <div class="input-field col s4 m4 l4">
+              <button
+                className="blue-grey darken-1 waves-light btn-small right"
+                onClick={() => {
+                  this.handlebuttona();
+                }}
+              >
+                <i className="material-icons left">favorite</i>
+                {this.state.apply ? "apply" : "unapply"}
+              </button>
+            </div>
           </div>
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Roles Required</h5>
-            <table className="striped responsive-table">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>Experience</th>
-                  <th>Comment</th>
-                  <th></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>Skill_A</td>
-                  <td>1 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Skill_B</td>
-                  <td>2 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Skill_C</td>
-                  <td>3 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <br />
-            <br />
-            <a className="blue-grey darken-1 waves-effect waves-light btn right">
-              <i className="material-icons left">favorite</i>follow
-            </a>
-          </div>
+          <div className="row">comment section</div>
         </div>
       </div>
     );
