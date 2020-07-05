@@ -3,8 +3,45 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 
+class HideButton extends Component {
+    constructor () {
+        super()
+        this.state = { isHide: false }
+    }
+
+    handleClickOnLikeButton () {
+        this.setState({
+            isHide: !this.state.isHide
+        })
+    }
+
+    render () {
+        const hideButton = <a
+            className="waves-effect waves-light btn-small"
+            style={{ marginRight: "5px" }}
+        >
+            hide
+        </a>
+        const unhideButton = <a
+            className="waves-effect waves-light btn-small grey"
+            style={{ marginRight: "5px" }}
+        >
+            reveal
+        </a>
+
+        return (
+            <div className="card-action" onClick={this.handleClickOnLikeButton.bind(this)}>
+                {this.state.isHide ? unhideButton : hideButton}
+            </div>
+        )
+    }
+}
+
 class AdminEachProject extends Component {
+
     render() {
+
+
         var categoryList = [
             "All other",
             "A web based application",
@@ -30,14 +67,7 @@ class AdminEachProject extends Component {
                     </p>
                     <p className="truncate">Description: {this.props.description}</p>
                 </div>
-                <div className="card-action">
-                    <a
-                        className="waves-effect waves-light btn-small"
-                        style={{ marginRight: "5px" }}
-                    >
-                        hide
-                    </a>
-                </div>
+                    <HideButton />
                 <div className="card-reveal">
           <span className="card-title grey-text text-darken-4">
             {this.props.title}
