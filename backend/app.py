@@ -229,7 +229,7 @@ class CollaboratorsRecommendation(CorsResource):
             return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
+@api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
@@ -255,9 +255,11 @@ class ApplyRole(CorsResource):
             return {'message': 'apply role duplicate'}, 400
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
-@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
+#@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
+@api.route('/project/<int:pID>/role/<int:rID>/application/<int:aID>')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
+@api.param('aid', 'The application id')
 class ViewApplication(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -272,7 +274,7 @@ class ViewApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
-        result = Application.get_by_id(conn, int(pid),int(rid))
+        result = Application.get_by_id(conn, int(aid))
         if result is None:
             return {'message': 'Application not found'}, 404
         return result, 200
