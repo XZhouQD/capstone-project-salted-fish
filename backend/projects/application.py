@@ -15,15 +15,12 @@ class Application():
     def get_by_id(conn, application_id):
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
-        application_list = []
         if result.rowcount == 0:
             return None
-        for i in range(result.rowcount):
-            row = result.fetchone()
-            application= Collaborator.get_by_id(conn,row['applicant'])
-            application_list.append(application)
-        if len(application_list) == 0: return None
-        return {'application': application_list, 'amount': result.rowcount}
+        row = result.fetchone()
+        application= Collaborator.get_by_id(conn,row['applicant'])
+        if len(application) == 0: return None
+        return application_list
 
 
     def info(self):
