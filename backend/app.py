@@ -316,7 +316,7 @@ class InviteRole(CorsResource):
             return {'message': 'invite role duplicate'}, 400
         return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
 
-@api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
+@api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
@@ -342,7 +342,6 @@ class ApplyRole(CorsResource):
             return {'message': 'apply role duplicate'}, 400
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
-#@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
