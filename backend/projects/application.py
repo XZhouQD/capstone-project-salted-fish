@@ -20,7 +20,7 @@ class Application():
         row = result.fetchone()
         application= Collaborator.get_by_id(conn,row['applicant'])
         if len(application) == 0: return None
-        return application_list
+        return application
 
 
     def info(self):
