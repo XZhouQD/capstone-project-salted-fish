@@ -20,6 +20,7 @@ class Application():
         row = result.fetchone()
         application= Collaborator.get_by_id(conn,row['applicant'])
         if len(application) == 0: return None
+        application['apply_status'] = row['status']
         return application
 
 
