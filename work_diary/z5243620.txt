@@ -51,7 +51,7 @@ week 5
 
 Next wek plan:
 1. start print2 part as planed;
-2. coding for satistic function for dreamer and collaborator;
+2. coding for satistic function for dreamer SF-64 and collaborator SF-66 ;
 3. hold retrospect meeting with team;
 
   
