@@ -342,16 +342,18 @@ class ApplyRole(CorsResource):
             return {'message': 'apply role duplicate'}, 400
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
-@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
+#@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
+@api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
+@api.param('aid', 'The application id')
 class ViewApplication(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
-    def get(self, pid,rid):
+    def get(self, pid,rid,aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
@@ -359,7 +361,7 @@ class ViewApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
-        result = Application.get_by_id(conn, int(pid),int(rid))
+        result = Application.get_by_id(conn, int(aid))
         if result is None:
             return {'message': 'Application not found'}, 404
         return result, 200
