@@ -123,7 +123,7 @@ apply_role_model = api.model('Apply_Role', {
 })
 
 invite_role_model = api.model('Invite_Role', {
-    'collaborator_id': fields.Integer(required=True, description='Invitee ID')
+    'collaborator_id': fields.Integer(required=True, description='Invitee ID'),
     'general_text': fields.String(required=True, description='Invite description')
 })
 
