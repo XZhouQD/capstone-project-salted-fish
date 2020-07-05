@@ -256,7 +256,7 @@ class ApplyRole(CorsResource):
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
 #@api.route('/dreamer/application/project/<int:pid>/role/<int:rid>/view')
-@api.route('/project/<int:pID>/role/<int:rID>/application/<int:aID>')
+@api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 @api.param('aid', 'The application id')
@@ -266,7 +266,7 @@ class ViewApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
-    def get(self, pid,rid):
+    def get(self, pid,rid,aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
