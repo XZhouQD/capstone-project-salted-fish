@@ -10,6 +10,7 @@ import Alert from "./components/layout/alert";
 import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
 import ProjectDetails from "./components/projects/projectDetails";
+import DreamerRecommend from "./components/dashboard/dreamerRecommend";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Alert />
       <Switch>
         <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/drecommend" component={DreamerRecommend} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/create" component={CreateProject} />

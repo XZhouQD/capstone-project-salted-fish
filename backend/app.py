@@ -29,6 +29,7 @@ from users.collaborator import Collaborator
 from projects.project import Project
 from projects.role import Role
 from projects.application import Application
+from projects.invitation import Invitation
 
 # Load config
 f = open('projects/project.config', 'r', encoding='utf-8')
@@ -121,6 +122,11 @@ apply_role_model = api.model('Apply_Role', {
     'general_text': fields.String(required=True, description='Apply description')
 })
 
+invite_role_model = api.model('Invite_Role', {
+    'collaborator_id': fields.Integer(required=True, description='Invitee ID')
+    'general_text': fields.String(required=True, description='Invite description')
+})
+
 # API
 @api.route('/admin')
 class AdminAPI(CorsResource):
@@ -168,6 +174,22 @@ class ProjectsList(CorsResource):
         if result is None:
             return {'projects': [], 'message': 'No matching projects were found.'}, 200
         return result, 200
+
+@api.route('/dreamer/my_projects')
+class DreamerOwnProjectsList(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        my_user_id = Dreamer.getObject(conn, userinfo['email']).info()['id']
+        result = Project.get_by_owner(conn, my_user_id)
+        if result is None:
+            return {'projects': [], 'message': 'You have not create any projects'}, 200
+        return {'projects': result}, 200
 
 @api.route('/collaborator/projects')
 class CollaboratorProjectsList(CorsResource):
@@ -226,10 +248,75 @@ class CollaboratorsRecommendation(CorsResource):
         my_user = Dreamer.getObject(conn, email)
         result = my_user.collaborators_recommdation(conn)
         if result is None:
-            return {'pcollaborators': [], 'message': 'No matching collaborators were found.'}, 200
+            return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/project/<int:pid>/role/<int:rid>/appllication')
+@api.route('/project/<int:id>')
+@api.param('id', 'The project id')
+@api.route('/project/finishProject')
+class DreamerFinishProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Finish a project')
+    #@api.expect(project_finish_model, validate=True)
+    @require_auth
+    def post(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        email = userinfo['email']
+        my_user = Dreamer.getObject(conn, email)
+        dreamer_id = userinfo['id']
+        my_user.finish_a_project(conn, int(id), dreamer_id)
+        result = Project.get_by_id(conn, int(id))
+        if result['project_status'] != 9:
+            return {'message': 'Failed to finish the project!'}, 404
+        return result, 200
+
+@api.route('/collaborator/invitations')
+class InvitationsReceived(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Show invitations I received')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        result = Invitation.get_by_invitee(conn, collaborator_id)
+        return result, 200
+
+@api.route('/project/<int:pID>/role/<int:rID>/invitation')
+@api.param('pID', 'The project id')
+@api.param('rID', 'The project_role id')
+class InviteRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Invite a collaborator for a role')
+    @api.expect(invite_role_model, validate=True)
+    @require_auth
+    def post(self, pID, rID):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        invite_info = request.json
+        try:
+            general_text = invite_info['general_text']
+        except:
+            general_text = ''
+        new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=genera_text).create(conn)
+        if new_invite == None:
+            return {'message': 'invite role duplicate'}, 400
+        return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
+
+@api.route('/collaborator/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
@@ -279,7 +366,6 @@ class ViewApplication(CorsResource):
             return {'message': 'Application not found'}, 404
         return result, 200
 
-    
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
