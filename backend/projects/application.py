@@ -12,8 +12,8 @@ class Application():
         self.id = -1
     
     
-    def get_by_id(conn, project_id,role_id):
-        query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
+    def get_by_id(conn, application_id):
+        query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
         application_list = []
         if result.rowcount == 0:
