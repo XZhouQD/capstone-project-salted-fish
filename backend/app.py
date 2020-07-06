@@ -113,6 +113,15 @@ role_post_model = api.model('Role_Post', {
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
 
+role_patch_model = api.model('Role_Patch', {
+    'title': fields.String(required=False, description='Role title'),
+    'amount': fields.Integer(required=False, description='Amount required'),
+    'skill': fields.Integer(required=False, description='Skill id'),
+    'experience': fields.Integer(required=False, description='Experience required in years'),
+    'education': fields.Integer(required=False, description='Education required'),
+    'general_enquiry': fields.String(required=False, description='other enquiry')
+})
+
 change_password_model = api.model('Change_Password', {
     'original_password': fields.String(required=True, description='Your original password', min_length=8),
     'new_password': fields.String(required=True, description='Your new password', min_length=8)
@@ -390,7 +399,7 @@ class PostRole(CorsResource):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
-        if not Project.check_owner(conn, id, dreamer_id):
+        if not Project.check_owner(conn, int(id), dreamer_id):
             return {'message': 'You are not the owner of the project'}, 400
         role_info = request.json
         try:
@@ -401,6 +410,51 @@ class PostRole(CorsResource):
         if new_role == None:
             return {'message': 'role create duplicate'}, 400
         return {'message': 'role create success', 'project_id': int(id), 'role_id': new_role.info()['id']}, 200
+
+@api.route('/project/<int:pID>/role/<int:rID>')
+@api.param('pID', 'The project id')
+@api.param('rID', 'The role id')
+class PatchRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Update a role information')
+    @api.expect(role_patch_model, validate=True)
+    @require_auth
+    def patch(self, pID, rID):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, int(pID), dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        role_info = request.json
+        cursor_role = Role.get_object_by_id(conn, int(rID))
+        try:
+            cursor_role.title = role_info['title']
+        except:
+            pass
+        try:
+            cursor_role.amount = role_info['amount']
+        except:
+            pass
+        try:
+            cursor_role.skill = role_info['skill']
+        except:
+            pass
+        try:
+            cursor_role.experience = role_info['experience']
+        except:
+            pass
+        try:
+            cursor_role.education = role_info['education']
+        except:
+            pass
+        try:
+            cursor_role.general_enquiry = role_info['general_enquiry']
+        except:
+            pass
+        result = cursor_role.patch(conn).info()
+        return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project')
 class PostProject(CorsResource):

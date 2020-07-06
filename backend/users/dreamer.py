@@ -23,7 +23,6 @@ class Dreamer():
         elif self.user_level >= 5: self.level_text='Senior'
         elif self.user_level >= 3: self.level_text='Medium'
 
-
     @staticmethod
     def login(conn, email, password_plain='', password_encrypted=''):
         email = email.lower()
