@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { postProjectRole } from "../../actions/projects";
 
-const AddRoleProject = ({ postProjectRole }) => {
+const AddRoleProject = (props) => {
   const [flag, setFlag] = useState(0);
   function handleFlag(e) {
     const Flag = 1;
@@ -57,8 +57,10 @@ const AddRoleProject = ({ postProjectRole }) => {
     setFields(values);
   }
 
+  const id = props.match.params.id;
   function handleAdd(e) {
     e.preventDefault();
+
     const {
       title,
       amount,
@@ -68,14 +70,14 @@ const AddRoleProject = ({ postProjectRole }) => {
       general_enquiry,
     } = fields[fields.length - 1];
 
-    console.log();
-    postProjectRole({
+    props.postProjectRole({
       title,
       amount,
       skill,
       experience,
       education,
       general_enquiry,
+      id,
     });
 
     const values = [...fields];
@@ -91,21 +93,6 @@ const AddRoleProject = ({ postProjectRole }) => {
     setFields(values);
   }
 
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   var skillsArr = [];
-  //   var experienceArr = [];
-
-  //   for (var i of fields) {
-  //     skillsArr.push(i.skill);
-  //     experienceArr.push(i.experience);
-  //   }
-
-  //   var skills = skillsArr.join(",");
-  //   var experience = experienceArr.join(",");
-  //   // post project
-  // };
-
   if (flag === 1) {
     return <Redirect to="/dashboard" />;
   }
@@ -114,7 +101,7 @@ const AddRoleProject = ({ postProjectRole }) => {
     <div className="container">
       <div className="valign-wrapper" style={{ marginTop: "50px" }}>
         <div className="row center">
-          this is your {fields.length} roles
+          <p>THIS IS YOUR FIRST {fields.length} ROLES</p>
           <div className="col s12 m10 l12 card-panel z-depth-6">
             <form onSubmit={(e) => handleAdd(e)}>
               {fields.map((field, idx) => {
