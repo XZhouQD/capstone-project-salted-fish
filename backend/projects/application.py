@@ -12,6 +12,7 @@ class Application():
         self.id = -1
     
     
+    @staticmethod
     def get_by_aid(conn, application_id):
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
@@ -24,6 +25,7 @@ class Application():
         application['apply_status'] = row['status']
         return application
 
+    @staticmethod
     def get_by_pid_rid(conn, project_id,role_id):
         query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
         result = conn.execute(query)
