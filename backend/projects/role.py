@@ -13,6 +13,17 @@ class Role():
         self.id = -1
 
     @staticmethod
+    def get_object_by_id(conn, role_id):
+        query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+        role.id = row['ID']
+        return role
+
+    @staticmethod
     def get_by_id(conn, role_id):
         query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
         result = conn.execute(query)
@@ -34,7 +45,6 @@ class Role():
         role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role.info()
-    
 
     @staticmethod
     def get_by_proj_id(conn, proj_id):
@@ -69,4 +79,10 @@ class Role():
         result = conn.execute(query)
         row = result.fetchone()
         self.id = row['ID']
+        return self
+
+    def patch(self, conn):
+        query = "UPDATE project_role SET title = \'" + self.title + "\', amount = " + str(self.amount) + ", skill = " + str(self.skill) + ", experience = " + str(self.experience) + ", education = " + str(self.education) + ", general_enquiry = \'" + self.general_enquiry + "\' WHERE ID = " + str(self.id) + ";"
+        print(query)
+        result = conn.execute(query)
         return self
