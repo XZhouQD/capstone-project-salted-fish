@@ -264,14 +264,14 @@ class DreamerFinishProject(CorsResource):
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
-        email = userinfo['email']
-        my_user = Dreamer.getObject(conn, email)
+        #email = userinfo['email']
+        #my_user = Dreamer.getObject(conn, email)
         dreamer_id = userinfo['id']
         result1 = Project.get_by_id(conn, int(id))
         if result1 is None:
             return {'message': 'Requesting non-existing project information'}, 404
         result = Project.finish_a_project(conn, int(id), dreamer_id)
-        if result['project_status'] != 9:
+        if result.project_status != 9:
             return {'message': 'Failed to finish the project'}, 400
         return result, 200
 
