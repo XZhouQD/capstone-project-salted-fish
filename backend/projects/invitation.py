@@ -55,13 +55,13 @@ class Invitation():
     @staticmethod
     #
     def is_all_members_recruited(conn, proj_ID, role_ID):
-        query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied " + str(role_ID) + " and status = 1;"
+        query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
         row_1 = result_1.fetchone()
-        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(proj_ID) + " and role_invited " + str(role_ID) + " and status = 1;"
+        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status = 1;"
         result_2 = conn.execute(query_2)
         row_2 = result_2.fetchone()
-        query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID " + str(role_ID) + ";"
+        query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID = " + str(role_ID) + ";"
         result_3 = conn.execute(query_3)
         row_3 = result_3.fetchone()
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
@@ -83,9 +83,9 @@ class Invitation():
         is_member_full = Invitation.is_all_members_recruited(conn, proj_ID, role_ID)
         #decline all other applications/invitation for the same project role if all members have been recruited; 
         if is_member_full:
-            query_2 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied " + str(role_ID) + ";"
+            query_2 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
             conn.execute(query_2)
-            query_3 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied " + str(role_ID) + ";"
+            query_3 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
             conn.execute(query_3)
         #return the accepted invitation;
         return Invitation.get_by_iid(conn, invitation_id)
