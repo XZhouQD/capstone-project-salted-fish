@@ -36,6 +36,8 @@ class Project():
             proj.id = row['ID']
             proj.is_modified_after_hidden = row['is_modified_after_hidden']
             proj.roles = Role.get_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
             project_list.append(proj.info())
         return {'projects': project_list, 'amount': result.rowcount}
 
@@ -50,6 +52,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_proj_id(conn, proj_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -64,6 +68,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_id_skill(conn, proj.id, skill)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -77,6 +83,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_proj_id(conn, proj.id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -92,6 +100,8 @@ class Project():
             proj.id = row['ID']
             proj.is_modified_after_hidden = row['is_modified_after_hidden']
             proj.roles = Role.get_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
             project_list.append(proj.info())
         return project_list
     
@@ -172,7 +182,7 @@ class Project():
         return False
 
     def info(self):
-        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles}
+        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
@@ -190,5 +200,7 @@ class Project():
         result = conn.execute(query)
         row = result.fetchone()
         self.id = row['ID']
+        self.create_time = row['create_time']
+        self.last_update = row['last_update']
         return self
 
