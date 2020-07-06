@@ -143,10 +143,10 @@ class Project():
         query_1 = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
         conn.execute(query_1)
         #update applicant status as finish coorporation for application table
-        query_2 = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
+        query_2 = "UPDATE application set status = 9 where projectID = " + str(proj_ID) + ";"
         conn.execute(query_2)
         #update invitation status as finish coorporation for invitation table
-        query_3 = "UPDATE invitation set status = 9 where ID = " + str(proj_ID) + ";"
+        query_3 = "UPDATE invitation set status = 9 where projectID = " + str(proj_ID) + ";"
         conn.execute(query_3)
 
         #further update user_level for dreamer based on the statistic count;
