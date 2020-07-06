@@ -59,9 +59,11 @@ class Application():
     @staticmethod
     def approve_an_application(conn, application_id):
         #get the application;
-        curr_application = Application.get_by_aid(conn, application_id)
-        proj_ID = curr_application['project_id']
-        role_ID = curr_application['role_apply']
+        query = "SELECT * FROM application where ID = " + str(application_id) + ";"
+        result = conn.execute(query)
+        row = result.fetchone()
+        proj_ID = row['projectID']
+        role_ID = row['role_applied']
         # update the application status as 1 - application approved;
         query_1 = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
         conn.execute(query_1)       
