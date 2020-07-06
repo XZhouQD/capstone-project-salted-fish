@@ -439,6 +439,8 @@ class ViewAllApplication(CorsResource):
         return result, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
 @api.param('aid', 'The application id')
 class ApproveAnApplication(CorsResource):
     @api.response(200, 'Success')
@@ -447,7 +449,7 @@ class ApproveAnApplication(CorsResource):
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to approve an application')
     @api.doc(description='Approve an application')
-    def get(self, pid, aid):
+    def get(self, pid, rid, aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
