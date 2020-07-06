@@ -130,7 +130,7 @@ class Project():
     @staticmethod
     def finish_a_project(conn, proj_ID, dreamer_ID):
         # update project_status = 9 as finished
-        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " ID = " + str(proj_ID) + ";"
+        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
         conn.execute(query)
         #update applicant status as finish coorporation for application table
         query = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
