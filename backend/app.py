@@ -280,7 +280,7 @@ class DreamerFinishProject(CorsResource):
         if result1 is None:
             return {'message': 'Requesting non-existing project information'}, 404
         result = Project.finish_a_project(conn, int(id), dreamer_id)
-        if result.project_status != 9:
+        if result['status'] != 9:
             return {'message': 'Failed to finish the project'}, 400
         return result, 200
 
