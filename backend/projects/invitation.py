@@ -23,7 +23,7 @@ class Invitation():
         invitation = Collaborator.get_by_id(conn,row['invitee'])
         if len(invitation) == 0: return None
         invitation['general_text'] = row['general_text']
-        invitation['apply_status'] = row['status']
+        invitation['invite_status'] = row['status']
         return invitation
 
     @staticmethod
