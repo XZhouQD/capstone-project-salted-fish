@@ -34,3 +34,15 @@ Use YAML config files for backend configuration.
 Keep udpating Github project board and Jira.
 
 Next Week Plan: 5-1. Make a first version of Demo backend; 5-2. Move more stuff into YAML config files;
+
+Week 5
+
+Finished sprint 1. [5-1]
+Created all subtasks and issues for sprint 2.
+Invitation structure, API.
+
+Next Week Plan: 6-1. Invitation acception API; 6-2. Update/Delete Role API; 6-3. Configurable database
+
+Week 6
+
+
