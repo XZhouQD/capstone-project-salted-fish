@@ -1,10 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 class DreamerOwnProject extends React.Component {
   render() {
     const url =
       "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 20);
+      Math.floor(Math.random() * 100);
+
+    const projectDetails = "/projects/" + this.props.id;
+    const addRoleUrl = "/project/" + this.props.id + "/role";
     return (
       <div class="card medium event-card">
         <div class="card-image">
@@ -15,15 +19,17 @@ class DreamerOwnProject extends React.Component {
             <b>{this.props.title}</b>
           </div>
           <div class="left">
-            <p>01/10/2019 - USA</p>
             <p>
-              <a href="#">View Details</a>
+              <Link to={projectDetails}>View Details</Link>
             </p>
+            <p>create project time: {this.props.create_time.split(" ")[0]}</p>
           </div>
           <div class="right-align">
-            <button class="waves-effect waves-light btn">
-              <i class="material-icons left">add</i>Join
-            </button>
+            <Link to={addRoleUrl}>
+              <button class="waves-effect waves-light btn">
+                <i class="material-icons left">add</i>Add roles
+              </button>
+            </Link>
             <p>
               <b>category:</b> {this.props.category}
             </p>

@@ -113,6 +113,7 @@ export const postProjectRole = ({
   experience,
   education,
   general_enquiry,
+  id,
 }) => async (dispatch) => {
   const a = localStorage.getItem("token");
 
@@ -128,6 +129,7 @@ export const postProjectRole = ({
   skill = Number(skill);
   experience = Number(experience);
   education = Number(education);
+  id = Number(id);
 
   const body = JSON.stringify({
     title,
@@ -141,7 +143,7 @@ export const postProjectRole = ({
 
   try {
     // need to change
-    const id = 3;
+
     const res = await axios.post("/project/" + id + "/role", body, config);
     console.log(res.data);
 
