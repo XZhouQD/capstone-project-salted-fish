@@ -3,81 +3,128 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 
+import axios from "axios";
+
 class ProjectDetails extends Component {
-  componentDidMount() {
-    // Auto initialize all the materailize css!
-    M.AutoInit();
+  constructor() {
+    super();
+    this.handlebutton = this.handlebutton.bind(this);
   }
 
+  state = {
+    roles: [],
+    follow: true,
+    apply: true,
+    description: "",
+    category: 0,
+    title: "",
+  };
+
+  async componentDidMount() {
+    M.AutoInit();
+    const res = await axios.get("/project/" + this.props.match.params.id);
+    console.log(res.data);
+    this.setState({
+      roles: res.data.roles,
+      category: res.data.category,
+      title: res.data.title,
+      description: res.data.description,
+    });
+  }
+
+  handlebutton() {
+    this.setState({ follow: !this.state.follow });
+  }
+
+  handlebuttona() {
+    this.setState({ apply: !this.state.apply });
+  }
+
+  renderRole() {
+    const skill_list = [
+      "Web Development",
+      "Java",
+      "Python",
+      "PHP",
+      "Script Language",
+      "Database Management",
+      "Computer Vision",
+      "Security Engineering",
+      "Testing",
+      "Algorithm Design",
+      "Operating System",
+      "Data Science",
+      "Human Computer Interaction",
+      "Deep Learning/Neural Network",
+      "Distribution System",
+    ];
+
+    const education_list = ["Other", "Bachelor", "Master", "Phd"];
+    return (
+      <div>
+        <div>Needed roles table</div>
+        {this.state.roles.map((a, key) => {
+          return (
+            <div class="row">
+              <div class="input-field col s8 m4 l8" value={key} key={key}>
+                {a.title} {a.amount}people {education_list[a.education]}{" "}
+                {skill_list[a.skill]} {a.experience}years
+              </div>
+
+              <div class="input-field col s4 m4 l4">
+                <button
+                  className="blue-grey darken-1 waves-light btn-small right"
+                  onClick={() => {
+                    this.handlebuttona();
+                  }}
+                >
+                  <i className="material-icons left">favorite</i>
+                  {this.state.apply ? "apply" : "unapply"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
   render() {
     // const { auth } = this.props;
     // if (!auth.uid) return <Redirect to="/signin" />;
     return (
       <div>
         <div className="container">
-          <br />
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Project title</h5>
-            <p>related topics provided by the owner</p>
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <div class="card">
+                <div class="card-image">
+                  <img src="https://source.unsplash.com/collection/12" />
+                  <span class="card-title">{this.state.title}</span>
+                  <a class="btn-floating halfway-fab waves-effect waves-light red">
+                    <i class="material-icons">add</i>
+                  </a>
+                </div>
+                <div class="card-content">
+                  <p>{this.state.description}</p>
+                  <button
+                    className="blue-grey darken-1 waves-light btn-small right"
+                    onClick={() => {
+                      this.handlebutton();
+                    }}
+                  >
+                    <i className="material-icons left">favorite</i>
+                    {this.state.follow ? "follow" : "unfollow"}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Descriptions</h5>
-            <p>This is the whole descriptions provided by the owner</p>
-          </div>
-          <div className="divider"></div>
-          <div className="section">
-            <h5>Roles Required</h5>
-            <table className="striped responsive-table">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>Experience</th>
-                  <th>Comment</th>
-                  <th></th>
-                </tr>
-              </thead>
 
-              <tbody>
-                <tr>
-                  <td>Skill_A</td>
-                  <td>1 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Skill_B</td>
-                  <td>2 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Skill_C</td>
-                  <td>3 year</td>
-                  <td>NA</td>
-                  <td>
-                    <a className="blue-grey darken-1 waves-effect waves-light btn">
-                      apply
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <br />
-            <br />
-            <a className="blue-grey darken-1 waves-effect waves-light btn right">
-              <i className="material-icons left">favorite</i>follow
-            </a>
-          </div>
+          {this.state.roles.length > 0
+            ? this.renderRole()
+            : "The project owner has not add any roles yet"}
+
+          <div className="row">comment section</div>
         </div>
       </div>
     );

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
+import { Link } from "react-router-dom";
 
 class EachProject extends Component {
   render() {
@@ -31,31 +32,20 @@ class EachProject extends Component {
           <p className="truncate">Description: {this.props.description}</p>
         </div>
         <div className="card-action">
-          <a
-            className="waves-effect waves-light btn-small"
-            style={{ marginRight: "5px" }}
-          >
-            follow
-          </a>
-          <a
-            className="waves-effect waves-light btn-small"
-            style={{ marginRight: "5px" }}
-          >
-            Apply
-          </a>
-          <a
+          <Link
+            to={"/projects/" + this.props.id}
             className="waves-effect waves-light btn-small"
             style={{ marginRight: "5px" }}
           >
             More info
-          </a>
+          </Link>
         </div>
         <div className="card-reveal">
           <span className="card-title grey-text text-darken-4">
             {this.props.title}
             <i className="material-icons right">close</i>
           </span>
-          <p >Description: {this.props.description}</p>
+          <p>Description: {this.props.description}</p>
         </div>
       </div>
     );

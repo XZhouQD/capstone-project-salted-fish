@@ -158,9 +158,10 @@ class Project():
             result_4 = conn.execute(query_4)
             collabor_level = result_4.fetchone()
             Project.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
-            
-                    
 
+        #finally return the updated project info;
+        return Project.get_by_id(conn, proj_ID)
+            
     @staticmethod
     def check_owner(conn, proj_id, owner_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
