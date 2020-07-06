@@ -71,9 +71,11 @@ class Invitation():
     @staticmethod
     def accept_an_invitation(conn, invitation_id):
         #get the application;
-        curr_invitation = Invitation.get_by_iid(conn, invitation_id)
-        proj_ID = curr_invitation['project_id']
-        role_ID = curr_invitation['role_invite']
+        query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
+        result = conn.execute(query)
+        row = result.fetchone()
+        proj_ID = row['projectID']
+        role_ID = row['role_invited']
         # update the invitation status as 1 -  accepte the invitaiton;
         query_1 = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + ";"
         conn.execute(query_1)       
