@@ -152,11 +152,11 @@ class Project():
         #further update user_level for dreamer based on the statistic count;
         query_1 = "select count(*) as count from project where dreamerID = " + str(dreamer_ID) + " and project_status = 9;"
         result_1 = conn.execute(query_1)
-        count_dreamer_finished_proj = result_1.fetchone()
+        row_1 = result_1.fetchone()
         query_2 = "select user_level from dreamer where ID= " + str(dreamer_ID) + ";"
         result_2 = conn.execute(query_2)
-        dreamer_level = result_2.fetchone()
-        Project.update_user_level(conn, 'D', count_dreamer_finished_proj, dreamer_level, dreamer_ID)
+        row_2 = result_2.fetchone()
+        Project.update_user_level(conn, 'D', row_1['count'], row_2['user_level'], dreamer_ID)
 
         #further update user_level for all collaborators of this project based on the statistic count;
         query_3 = "select applicant from application where projectID = "+ str(proj_ID) + ";"
@@ -166,8 +166,8 @@ class Project():
             count_collabor_finished_proj = Project.total_project_finished_by_collabor(conn, row_3['applicant'])
             query_4 = "select user_level from collaborator where ID= " + str(row_3['applicant']) + ";"
             result_4 = conn.execute(query_4)
-            collabor_level = result_4.fetchone()
-            Project.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
+            row_4 = result_4.fetchone()
+            Project.update_user_level(conn, 'C', count_collabor_finished_proj, row_4['user_level'], row_3['applicant'])
 
         #finally return the updated project info;
         return Project.get_by_id(conn, proj_ID)
