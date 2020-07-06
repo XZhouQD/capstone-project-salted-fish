@@ -326,6 +326,8 @@ class InviteRole(CorsResource):
         return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
 @api.param('iid', 'The invitation id')
 class AcceptAnInvitation(CorsResource):
     @api.response(200, 'Success')
@@ -333,7 +335,7 @@ class AcceptAnInvitation(CorsResource):
     @api.response(401, 'Invitation not found')
     @api.response(404, 'Failed to accept an invitation')
     @api.doc(description='Accept an invitation')
-    def get(self, iid):
+    def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
@@ -347,6 +349,8 @@ class AcceptAnInvitation(CorsResource):
         return result, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
 @api.param('iid', 'The invitation id')
 class DeclineAnInvitation(CorsResource):
     @api.response(200, 'Success')
@@ -354,7 +358,7 @@ class DeclineAnInvitation(CorsResource):
     @api.response(401, 'Invitation not found')
     @api.response(404, 'Failed to decline an invitation')
     @api.doc(description='Decline an invitation')
-    def get(self, iid):
+    def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
