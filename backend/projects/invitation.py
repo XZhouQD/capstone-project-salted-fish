@@ -28,7 +28,7 @@ class Invitation():
 
     @staticmethod
     def get_by_pid_rid(conn, project_id,role_id):
-        query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
+        query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_invited = " + str(role_id) + ";"
         result = conn.execute(query)
         invitees = []
         if result.rowcount == 0:
@@ -83,9 +83,9 @@ class Invitation():
         is_member_full = Invitation.is_all_members_recruited(conn, proj_ID, role_ID)
         #decline all other applications/invitation for the same project role if all members have been recruited; 
         if is_member_full:
-            query_2 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            query_2 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
             conn.execute(query_2)
-            query_3 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            query_3 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
             conn.execute(query_3)
         #return the accepted invitation;
         return Invitation.get_by_iid(conn, invitation_id)
@@ -102,7 +102,7 @@ class Invitation():
         return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee,  'general_text': self.general_text, 'status': self.status}
 
     def duplicate_check(self, conn):
-        query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_applied = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
+        query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
