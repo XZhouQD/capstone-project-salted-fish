@@ -12,7 +12,7 @@ class Application():
         self.id = -1
     
     
-    def get_by_id(conn, application_id):
+    def get_by_aid(conn, application_id):
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -20,10 +20,26 @@ class Application():
         row = result.fetchone()
         application= Collaborator.get_by_id(conn,row['applicant'])
         if len(application) == 0: return None
+        application['general_text'] = row['general_text']
         application['apply_status'] = row['status']
         return application
 
-
+    def get_by_pid_rid(conn, project_id,role_id):
+        query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
+        result = conn.execute(query)
+        all_application = {}
+        if result.rowcount == 0:
+            return None
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            application= Collaborator.get_by_id(conn,row['applicant'])
+            application['general_text'] = row['general_text']
+            application['apply_status'] = row['status']
+            all_application['appicant'+str(i+1)] = application
+        if len(application) == 0: return None
+        return all_application
+    
+    
     def info(self):
         return {'id': self.id, 'project_id': self.project_id, 'role_apply': self.role_apply, 'applicant': self.applicant, 'general_text': self.general_text}
 

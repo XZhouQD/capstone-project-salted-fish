@@ -260,17 +260,15 @@ class CollaboratorsRecommendation(CorsResource):
             return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/project/<int:id>')
+@api.route('/project/<int:id>/finish')
 @api.param('id', 'The project id')
-@api.route('/project/finishProject')
 class DreamerFinishProject(CorsResource):
     @api.response(200, 'Success')
-    @api.response(400, 'Validate Failed')
+    @api.response(400, 'Failed to finish the project')
     @api.response(401, 'Auth Failed')
+    @api.response(404, 'Project not found')
     @api.doc(description='Finish a project')
-    #@api.expect(project_finish_model, validate=True)
-    @require_auth
-    def post(self):
+    def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Dreamer':
@@ -278,10 +276,12 @@ class DreamerFinishProject(CorsResource):
         email = userinfo['email']
         my_user = Dreamer.getObject(conn, email)
         dreamer_id = userinfo['id']
-        my_user.finish_a_project(conn, int(id), dreamer_id)
-        result = Project.get_by_id(conn, int(id))
+        result1 = Project.get_by_id(conn, int(id))
+        if result1 is None:
+            return {'message': 'Requesting non-existing project information'}, 404
+        result = Project.finish_a_project(conn, int(id), dreamer_id)
         if result['project_status'] != 9:
-            return {'message': 'Failed to finish the project!'}, 404
+            return {'message': 'Failed to finish the project'}, 400
         return result, 200
 
 @api.route('/collaborator/invitations')
@@ -355,7 +355,7 @@ class ApplyRole(CorsResource):
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 @api.param('aid', 'The application id')
-class ViewApplication(CorsResource):
+class ViewSingleApplication(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
@@ -369,7 +369,29 @@ class ViewApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
-        result = Application.get_by_id(conn, int(aid))
+        result = Application.get_by_aid(conn, int(aid))
+        if result is None:
+            return {'message': 'Application not found'}, 404
+        return result, 200
+    
+@api.route('/project/<int:pid>/role/<int:rid>/application')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
+class ViewAllApplication(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Application not found')
+    @api.doc(description=' View applications for each role')
+    def get(self, pid,rid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, pid, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        result = Application.get_by_pid_rid(conn,int(pid),int(rid))
         if result is None:
             return {'message': 'Application not found'}, 404
         return result, 200

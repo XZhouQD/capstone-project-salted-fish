@@ -140,7 +140,7 @@ class Project():
     @staticmethod
     def finish_a_project(conn, proj_ID, dreamer_ID):
         # update project_status = 9 as finished
-        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " ID = " + str(proj_ID) + ";"
+        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
         conn.execute(query)
         #update applicant status as finish coorporation for application table
         query = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
@@ -168,9 +168,10 @@ class Project():
             result_4 = conn.execute(query_4)
             collabor_level = result_4.fetchone()
             Project.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
-            
-                    
 
+        #finally return the updated project info;
+        return Project.get_by_id(conn, proj_ID)
+            
     @staticmethod
     def check_owner(conn, proj_id, owner_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
