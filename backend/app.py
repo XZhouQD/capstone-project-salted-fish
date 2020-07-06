@@ -320,10 +320,52 @@ class InviteRole(CorsResource):
             general_text = invite_info['general_text']
         except:
             general_text = ''
-        new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=genera_text).create(conn)
+        new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=general_text).create(conn)
         if new_invite == None:
             return {'message': 'invite role duplicate'}, 400
         return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
+
+@api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
+@api.param('iid', 'The invitation id')
+class AcceptAnInvitation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Auth Failed')
+    @api.response(401, 'Invitation not found')
+    @api.response(404, 'Failed to accept an invitation')
+    @api.doc(description='Accept an invitation')
+    def get(self, iid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 400
+        result_1 = Invitation.get_by_iid(conn, int(iid))
+        if result_1 is None:
+            return {'message': 'Invitation not found'}, 401
+        result = Invitation.accept_an_invitation(conn, int(iid))
+        if result['status'] != 1:
+            return {'message': 'Failed to accept an invitation'}, 404            
+        return result, 200
+
+@api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
+@api.param('iid', 'The invitation id')
+class DeclineAnInvitation(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Auth Failed')
+    @api.response(401, 'Invitation not found')
+    @api.response(404, 'Failed to decline an invitation')
+    @api.doc(description='Decline an invitation')
+    def get(self, iid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 400
+        result_1 = Invitation.get_by_iid(conn, int(iid))
+        if result_1 is None:
+            return {'message': 'Invitation not found'}, 401
+        result = Invitation.decline_an_invitation(conn, int(iid))
+        if result['status'] != 0:
+            return {'message': 'Failed to decline an invitation'}, 404            
+        return result, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
@@ -365,10 +407,10 @@ class ViewSingleApplication(CorsResource):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
-        if not Project.check_owner(conn, pid, dreamer_id):
-            return {'message': 'You are not the owner of the project'}, 400
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
+        if not Project.check_owner(conn, pid, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
         result = Application.get_by_aid(conn, int(aid))
         if result is None:
             return {'message': 'Application not found'}, 404
@@ -387,15 +429,40 @@ class ViewAllApplication(CorsResource):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
-        if not Project.check_owner(conn, pid, dreamer_id):
-            return {'message': 'You are not the owner of the project'}, 400
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
+        if not Project.check_owner(conn, pid, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
         result = Application.get_by_pid_rid(conn,int(pid),int(rid))
         if result is None:
             return {'message': 'Application not found'}, 404
         return result, 200
 
+@api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
+@api.param('aid', 'The application id')
+class ApproveAnApplication(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Application not found')
+    @api.response(405, 'Failed to approve an application')
+    @api.doc(description='Approve an application')
+    def get(self, aid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        if not Project.check_owner(conn, pid, dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        result_1 = Application.get_by_aid(conn, int(aid))
+        if result_1 is None:
+            return {'message': 'Application not found'}, 404
+        result = Application.approve_an_application(conn, int(aid))
+        if result['status'] != 1:
+            return {'message': 'Failed to approve an application'}, 405            
+        return result, 200
+    
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
