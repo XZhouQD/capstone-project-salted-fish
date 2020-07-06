@@ -2,18 +2,48 @@ import React, { useState } from "react";
 import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import DreamerOwnProject from "./dreamerOwnProject";
 
 class DreamerDash extends React.Component {
   constructor() {
     super();
   }
 
-  componentDidMount() {
+  state = {
+    myProjects: [],
+  };
+
+  async componentDidMount() {
     // Auto initialize all the materailize css!
     M.AutoInit();
+    const a = localStorage.getItem("token");
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+
+    const res = await axios.get("/dreamer/my_projects", config);
+    console.log(res.data);
+    this.setState({ myProjects: res.data.projects });
   }
 
   render() {
+    const category_list = [
+      "All other",
+      "A web based application",
+      "A desktop application",
+      "A mobile application",
+
+      "A library for other project to reference",
+
+      "A modification to existing platform",
+      "A research oriented project",
+    ];
     return (
       <div>
         <header>
@@ -84,61 +114,19 @@ class DreamerDash extends React.Component {
                         </form>
                       </div>
                     </nav>
-
-                    <div class="card medium event-card">
-                      <div class="card-image">
-                        <img
-                          src="https://source.unsplash.com/collection/1"
-                          alt="banner"
-                        />
-                      </div>
-                      <div class="card-content">
-                        <div class="card-title">
-                          <b>Event Title</b>
-                        </div>
-                        <div class="left">
-                          <p>01/10/2019 - USA</p>
-                          <p>
-                            <a href="#">View Details</a>
-                          </p>
-                        </div>
-                        <div class="right-align">
-                          <Link
-                            class="waves-effect waves-light btn-small"
-                            to="./project/:id/role"
-                          >
-                            <i class="material-icons left">add</i>Add role
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card medium event-card">
-                      <div class="card-image">
-                        <img
-                          src="https://source.unsplash.com/collection/2"
-                          alt="banner"
-                        />
-                      </div>
-                      <div class="card-content">
-                        <div class="card-title">
-                          <b>Event Title</b>
-                        </div>
-                        <div class="left">
-                          <p>01/10/2019 - USA</p>
-                          <p>
-                            <a href="#">View Details</a>
-                          </p>
-                        </div>
-                        <div class="right-align">
-                          <button class="waves-effect waves-light btn">
-                            <i class="material-icons left">add</i>Join
-                          </button>
-                          <p>
-                            <b>Capacity: </b> 3/100
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    {this.state.myProjects.length > 0
+                      ? this.state.myProjects.map((each, index) => {
+                          return (
+                            <DreamerOwnProject
+                              key={index}
+                              title={each.title}
+                              description={each.description}
+                              category={category_list[each.category]}
+                              id={each.id}
+                            />
+                          );
+                        })
+                      : "loading"}
                   </div>
                 </div>
               </div>
