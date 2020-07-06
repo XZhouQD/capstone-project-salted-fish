@@ -39,6 +39,26 @@ class ProjectList extends Component {
     this.props.searchProject({ description, category, order_by, sorting });
   };
 
+  renderProject() {
+    return (
+      <div className="flexLayout">
+        {this.props.ProjectLists.map((each, index) => {
+          return (
+            <EachProject
+              title={each.title}
+              category={each.category}
+              description={each.description}
+              key={index}
+              id={each.id}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+  renderLoading() {
+    return <div>loading....</div>;
+  }
   render() {
     return (
       <div>
@@ -121,20 +141,9 @@ class ProjectList extends Component {
               </form>
             </div>
           </div>
-
-          <div className="flexLayout">
-            {this.props.ProjectLists.map((each, index) => {
-              return (
-                <EachProject
-                  title={each.title}
-                  category={each.category}
-                  description={each.description}
-                  key={index}
-                  id={each.id}
-                />
-              );
-            })}
-          </div>
+          {this.props.ProjectLists.length === 0
+            ? this.renderLoading()
+            : this.renderProject()}
         </div>
       </div>
     );

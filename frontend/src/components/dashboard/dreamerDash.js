@@ -29,7 +29,7 @@ class DreamerDash extends React.Component {
               style={{ position: "fixed" }}
             >
               <li class="bold">
-                <Link class="waves-effect waves-teal" to="./projects">
+                <Link class="waves-effect waves-teal" to="./dashboard">
                   My Projects
                 </Link>
               </li>

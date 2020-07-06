@@ -12,15 +12,24 @@ class ProjectDetails extends Component {
   }
 
   state = {
-    role: [],
+    roles: [],
     follow: true,
     apply: true,
+    description: "",
+    category: 0,
+    title: "",
   };
 
   async componentDidMount() {
     M.AutoInit();
     const res = await axios.get("/project/" + this.props.match.params.id);
     console.log(res.data);
+    this.setState({
+      roles: res.data.roles,
+      category: res.data.category,
+      title: res.data.title,
+      description: res.data.description,
+    });
   }
 
   handlebutton() {
@@ -31,6 +40,54 @@ class ProjectDetails extends Component {
     this.setState({ apply: !this.state.apply });
   }
 
+  renderRole() {
+    const skill_list = [
+      "Web Development",
+      "Java",
+      "Python",
+      "PHP",
+      "Script Language",
+      "Database Management",
+      "Computer Vision",
+      "Security Engineering",
+      "Testing",
+      "Algorithm Design",
+      "Operating System",
+      "Data Science",
+      "Human Computer Interaction",
+      "Deep Learning/Neural Network",
+      "Distribution System",
+    ];
+
+    const education_list = ["Other", "Bachelor", "Master", "Phd"];
+    return (
+      <div>
+        <div>Needed roles table</div>
+        {this.state.roles.map((a, key) => {
+          return (
+            <div class="row">
+              <div class="input-field col s8 m4 l8" value={key} key={key}>
+                {a.title} {a.amount}people {education_list[a.education]}{" "}
+                {skill_list[a.skill]} {a.experience}years
+              </div>
+
+              <div class="input-field col s4 m4 l4">
+                <button
+                  className="blue-grey darken-1 waves-light btn-small right"
+                  onClick={() => {
+                    this.handlebuttona();
+                  }}
+                >
+                  <i className="material-icons left">favorite</i>
+                  {this.state.apply ? "apply" : "unapply"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
   render() {
     // const { auth } = this.props;
     // if (!auth.uid) return <Redirect to="/signin" />;
@@ -42,21 +99,18 @@ class ProjectDetails extends Component {
               <div class="card">
                 <div class="card-image">
                   <img src="https://source.unsplash.com/collection/12" />
-                  <span class="card-title">卡片标题</span>
+                  <span class="card-title">{this.state.title}</span>
                   <a class="btn-floating halfway-fab waves-effect waves-light red">
                     <i class="material-icons">add</i>
                   </a>
                 </div>
                 <div class="card-content">
-                  <p>
-                    我是一个很简单的卡片。我很擅长于包含少量的信息。我很方便，因为我只需要一个小标记就可以有效地使用。
-                  </p>
+                  <p>{this.state.description}</p>
                   <button
                     className="blue-grey darken-1 waves-light btn-small right"
                     onClick={() => {
                       this.handlebutton();
                     }}
-                    style={{ paddingBottom: "10px" }}
                   >
                     <i className="material-icons left">favorite</i>
                     {this.state.follow ? "follow" : "unfollow"}
@@ -65,30 +119,11 @@ class ProjectDetails extends Component {
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="input-field col s8 m4 l8">
-              <select multiple>
-                <option value="" disabled selected>
-                  Choose your option
-                </option>
-                <option value="1">选项 1</option>
-                <option value="2">选项 2</option>
-                <option value="3">选项 3</option>
-              </select>
-              <label>Materialize多选下拉列表</label>
-            </div>
-            <div class="input-field col s4 m4 l4">
-              <button
-                className="blue-grey darken-1 waves-light btn-small right"
-                onClick={() => {
-                  this.handlebuttona();
-                }}
-              >
-                <i className="material-icons left">favorite</i>
-                {this.state.apply ? "apply" : "unapply"}
-              </button>
-            </div>
-          </div>
+
+          {this.state.roles.length > 0
+            ? this.renderRole()
+            : "The project owner has not add any roles yet"}
+
           <div className="row">comment section</div>
         </div>
       </div>
