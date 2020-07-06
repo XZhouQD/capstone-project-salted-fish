@@ -140,14 +140,14 @@ class Project():
     @staticmethod
     def finish_a_project(conn, proj_ID, dreamer_ID):
         # update project_status = 9 as finished
-        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_1 = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
+        conn.execute(query_1)
         #update applicant status as finish coorporation for application table
-        query = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_2 = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
+        conn.execute(query_2)
         #update invitation status as finish coorporation for invitation table
-        query = "UPDATE invitation set status = 9 where ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_3 = "UPDATE invitation set status = 9 where ID = " + str(proj_ID) + ";"
+        conn.execute(query_3)
 
         #further update user_level for dreamer based on the statistic count;
         query_1 = "select count(*) as count from project where dreamerID = " + str(dreamer_ID) + " and project_status = 9;"
