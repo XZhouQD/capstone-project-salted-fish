@@ -58,9 +58,9 @@ class Application():
         row_3 = result_3.fetchone()
         #decline all other applications/invitations for the same project if all members have been recruited; 
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
-            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
-            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
             conn.execute(query_5)
         #return approved application;
         return Application.get_by_aid(conn, application_id)

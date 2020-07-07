@@ -79,9 +79,9 @@ class Invitation():
         row_3 = result_3.fetchone()
         #decline all other applications/invitation for the same project role if all members have been recruited; 
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
-            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
+            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
-            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
+            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
             conn.execute(query_5)
         #return the accepted invitation;
         return Invitation.get_by_iid(conn, invitation_id)
