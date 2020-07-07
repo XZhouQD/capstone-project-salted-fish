@@ -21,6 +21,7 @@ from itsdangerous import JSONWebSignatureSerializer, BadSignature
 from db import create_conn
 from auth_token import AuthToken
 from util import check_email, CorsResource
+from smtp import SMTP
 
 from users.admin import Admin
 from users.dreamer import Dreamer
@@ -321,6 +322,7 @@ class InviteRole(CorsResource):
         new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=general_text).create(conn)
         if new_invite == None:
             return {'message': 'invite role duplicate'}, 400
+        new_invite.notify_invitee(smtp)
         return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
@@ -717,4 +719,5 @@ class ChangePassword(CorsResource):
 
 if __name__ == '__main__':
     conn = create_conn()
+    smtp = SMTP()
     app.run(debug=True)
