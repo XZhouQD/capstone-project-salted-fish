@@ -65,7 +65,6 @@ class Dreamer():
         row = result.fetchone()
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
 
-    #@staticmethod
     def collaborators_recommdation(self, conn):
         owner = self.id
         #fetch all project owned by dreamer;
@@ -116,46 +115,6 @@ class Dreamer():
             project_role_recomm_collabors_list.append(project_role_recomm_collabors)
         if len(project_role_recomm_collabors_list) == 0: return None
         return project_role_recomm_collabors_list
-
-    def collaborators_recommdation_1(self, conn):
-        owner = self.id
-        roles_needed = {}
-        proj_role_collaborator_list = []
-        query = "SELECT project_role.ID as roleID, project_role.projectID as proj_ID, project_role.skill as ski, project_role.experience as exp, project_role.education as edu FROM project, project_role WHERE project.ID = project_role.projectID and project.dreamerID = " + str(owner) + " ORDER BY project_role.ID asc;"
-        result = conn.execute(query)
-        if result.rowcount == 0:
-            return None
-        for i in range(result.rowcount):
-            row = result.fetchone()
-            roles_needed[row['roleID']] = (row['proj_ID'], row['ski'], row['exp'], row['edu'],)
-        #strict matching
-        strict_matching_count = 0
-        for role_i in roles_needed:
-            print(roles_needed[role_i])
-            query = "select collaborator.ID as ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][1]) + " and experience = " + str(roles_needed[role_i][2]) + " and education = " + str(roles_needed[role_i][3]) + " ORDER BY ID;"
-            result = conn.execute(query)
-            if result.rowcount != 0:
-                for j in range(result.rowcount):
-                    row = result.fetchone()
-                    collabor = {'CollaboratorID':row['ID'],'Name':row['name'],'Email':row['email'],'Phone_no':row['phone_no'],'Skill':row['skill'],'Experience':row['experience'],'Education':row['education'],'User_level':row['user_level'],'Description':row['description']}
-                    proj_role_info = Project.get_by_id_skill(conn, roles_needed[role_i][0], roles_needed[role_i][1])
-                    proj_role_collaborator_list.append((proj_role_info, collabor))
-                    strict_matching_count += 1
-        #relaxing matching
-        relaxing_matching_count = 0
-        for role_i in roles_needed:
-            print(roles_needed[role_i])
-            query = "select collaborator.ID as ID, name, email, phone_no, education, skill, experience, user_level, description from collaborator, skills where collaborator.ID = skills.collaboratorID and skill = " + str(roles_needed[role_i][1]) + " and experience >= " + str(roles_needed[role_i][2] - 1) + " and education >= " + str(roles_needed[role_i][3] - 1) + " ORDER BY experience Desc, education Desc;"
-            result = conn.execute(query)
-            if result.rowcount != 0:
-                for j in range(result.rowcount):
-                    row = result.fetchone()
-                    collabor = {'CollaboratorID':row['ID'],'Name':row['name'],'Email':row['email'],'Phone_no':row['phone_no'],'Skill':row['skill'],'Experience':row['experience'],'Education':row['education'],'User_level':row['user_level'],'Description':row['description']}
-                    proj_role_info = Project.get_by_id_skill(conn, roles_needed[role_i][0], roles_needed[role_i][1])
-                    proj_role_collaborator_list.append((proj_role_info, collabor))
-                    relaxing_matching_count += 1
-        if len(proj_role_collaborator_list) == 0: return None
-        return {'project_role_collaborator': proj_role_collaborator_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
 
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
