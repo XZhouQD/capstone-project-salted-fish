@@ -343,7 +343,7 @@ class AcceptAnInvitation(CorsResource):
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 400
         invitation = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
-        if invitation['invitee'] == userinfo['id']:
+        if invitation['invitee'] != userinfo['id']:
             return {'message': 'You are not authorized to accept this invitation'}, 401
         if invitation['status'] == 0:
             return {'message': 'This invitation has been declined'}, 403
