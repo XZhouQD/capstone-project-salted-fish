@@ -341,7 +341,7 @@ class AcceptAnInvitation(CorsResource):
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 400
-        collabor = Collaborator.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
+        collabor = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
         if collabor['invitee'] == userinfo['id']:
             return {'message': 'You are not authorized to accept this invitation'}, 401
         result_1 = Invitation.get_by_iid(conn, int(iid))
@@ -368,7 +368,7 @@ class DeclineAnInvitation(CorsResource):
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 400
-        collabor = Collaborator.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
+        collabor = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
         if collabor['invitee'] == userinfo['id']:
             return {'message': 'You are not authorized to decline this invitation'}, 401
         result_1 = Invitation.get_by_iid(conn, int(iid))
