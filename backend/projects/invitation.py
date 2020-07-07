@@ -65,7 +65,7 @@ class Invitation():
     @staticmethod
     def accept_an_invitation(conn, proj_ID, role_ID, invitation_id):
         # update the invitation status as 1 -  accepte the invitaiton;
-        query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+        query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)       
         #check if all members have been recruited or notfor the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
@@ -89,7 +89,7 @@ class Invitation():
     @staticmethod
     def decline_an_invitation(conn, proj_ID, role_ID, invitation_id):
         # update the invitation status as 0 -  decline the invitaiton;
-        query_1 = "UPDATE invitation set status = 0 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+        query_1 = "UPDATE invitation set status = 0 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_ainvited = " + str(role_ID) + ";"
         conn.execute(query_1)       
         #return the accepted invitation;
         return Invitation.get_by_iid(conn, invitation_id)
