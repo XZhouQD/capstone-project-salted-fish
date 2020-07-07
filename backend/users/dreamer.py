@@ -94,7 +94,7 @@ class Dreamer():
                     proj_role_collaborator_list.append((proj_role_info, collabor))
                     relaxing_matching_count += 1
         if len(proj_role_collaborator_list) == 0: return None
-        return {'project-role-collaborator': proj_role_collaborator_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
+        return {'project_role_collaborator': proj_role_collaborator_list, 'strict matching count': strict_matching_count, 'relaxing matching count': relaxing_matching_count}
 
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):

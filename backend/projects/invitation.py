@@ -67,7 +67,7 @@ class Invitation():
         # update the invitation status as 1 -  accepte the invitaiton;
         query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)       
-        #check if all members have been recruited or notfor the same project role;
+        #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
         row_1 = result_1.fetchone()
