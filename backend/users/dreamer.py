@@ -68,7 +68,7 @@ class Dreamer():
         for i in range(result_1.rowcount):
             row_1 = result_1.fetchone()
             #fetch roles for each project;
-            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role WHERE projectID " + str(row_1['proj_ID']) + " ORDER BY ID;"
+            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role WHERE projectID = " + str(row_1['proj_ID']) + " ORDER BY ID;"
             result_2 = conn.execute(query_2)
             if result_2.rowcount == 0:
                 continue
@@ -95,7 +95,7 @@ class Dreamer():
                     if result_4.rowcount != 0:
                         for l in range(result_4.rowcount):
                             row_4 = result_4.fetchone()
-                            collabor = {'CollaboratorID':row_4['ID'],'Name':row_4['name'],'Email':row_4['email'],'Phone_no':row_5['phone_no'],'Skill':row_4['skill'],'Experience':row_4['experience'],'Education':row_4['education'],'User_level':row_4['user_level'],'Description':row_4['description']}
+                            collabor = {'CollaboratorID':row_4['ID'],'Name':row_4['name'],'Email':row_4['email'],'Phone_no':row_4['phone_no'],'Skill':row_4['skill'],'Experience':row_4['experience'],'Education':row_4['education'],'User_level':row_4['user_level'],'Description':row_4['description']}
                             if collabor not in collaborator_list:
                                 collaborator_list.append(collabor)
                             relaxing_matching_count += 1
@@ -105,6 +105,8 @@ class Dreamer():
             #project info + role info + recommendation collabor list
             project_role_recomm_collabors = {'Project_ID':row_1['proj_ID'], 'Project_title':row_1['project_title'], 'Description':row_1['description'], 'Category':row_1['category'], 'DreamerID':row_1['dreamerID'], 'Project_status':row_1['project_status'], 'Is_hidden':row_1['is_hidden'], 'Hidden_reason':row_1['hidden_reason'], 'Is_modified_after_hidden':row_1['is_modified_after_hidden'], 'Role_recomm_collabors_list':role_recomm_collabors_list}
             project_role_recomm_collabors_list.append(project_role_recomm_collabors)
+        if len(project_role_recomm_collabors_list) == 0: return None
+        return project_role_recomm_collabors_list
 
     def collaborators_recommdation_1(self, conn):
         owner = self.id
