@@ -107,7 +107,7 @@ class Dreamer():
                             collabor = {'CollaboratorID':row_4['ID'],'Name':row_4['name'],'Email':row_4['email'],'Phone_no':row_4['phone_no'],'Skill':row_4['skill'],'Experience':row_4['experience'],'Education':row_4['education'],'User_level':row_4['user_level'],'Description':row_4['description']}
                             if collabor not in collaborator_list:
                                 collaborator_list.append(collabor)
-                            relaxing_matching_count += 1
+                                relaxing_matching_count += 1
                     #role info + recommendation collabor list
                     role_recomm_collabors = {'Role_ID':row_2['role_ID'], 'Title':row_2['title'], 'Amount':row_2['amount'], 'Skill':row_2['skill'], 'Experience':row_2['experience'], 'Education':row_2['education'], 'General_enquiry':row_2['general_enquiry'],'Strict_matching_count':strict_matching_count, 'Relaxing_matching_count':relaxing_matching_count, 'Collaborator_list':collaborator_list}
                     role_recomm_collabors_list.append(role_recomm_collabors)
