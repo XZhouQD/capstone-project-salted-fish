@@ -332,7 +332,8 @@ class InviteRole(CorsResource):
 class AcceptAnInvitation(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Auth Failed')
-    @api.response(401, 'Invitation not found')
+    @api.response(401, 'Not authorized to accept this invitation')
+    @api.response(402, 'Invitation not found')
     @api.response(404, 'Failed to accept an invitation')
     @api.doc(description='Accept an invitation')
     def get(self, pid, rid, iid):
@@ -340,9 +341,12 @@ class AcceptAnInvitation(CorsResource):
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 400
+        collabor = Collaborator.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
+        if collabor['invitee'] == userinfo['id']:
+            return {'message': 'You are not authorized to accept this invitation'}, 401
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
-            return {'message': 'Invitation not found'}, 401
+            return {'message': 'Invitation not found'}, 402
         result = Invitation.accept_an_invitation(conn, int(pid), int(rid), int(iid))
         if result['invite_status'] != 1:
             return {'message': 'Failed to accept an invitation'}, 404            
@@ -355,7 +359,8 @@ class AcceptAnInvitation(CorsResource):
 class DeclineAnInvitation(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Auth Failed')
-    @api.response(401, 'Invitation not found')
+    @api.response(401, 'Not authorized to decline this invitation')
+    @api.response(402, 'Invitation not found')
     @api.response(404, 'Failed to decline an invitation')
     @api.doc(description='Decline an invitation')
     def get(self, pid, rid, iid):
@@ -363,9 +368,12 @@ class DeclineAnInvitation(CorsResource):
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 400
+        collabor = Collaborator.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
+        if collabor['invitee'] == userinfo['id']:
+            return {'message': 'You are not authorized to decline this invitation'}, 401
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
-            return {'message': 'Invitation not found'}, 401
+            return {'message': 'Invitation not found'}, 402
         result = Invitation.decline_an_invitation(conn, int(pid), int(rid), int(iid))
         if result['invite_status'] != 0:
             return {'message': 'Failed to decline an invitation'}, 404            

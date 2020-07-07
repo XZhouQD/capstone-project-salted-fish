@@ -42,7 +42,11 @@ class Application():
         return all_application
 
     @staticmethod
-    def is_all_members_recruited(conn, proj_ID, role_ID):
+    def approve_an_application(conn, proj_ID, role_ID, application_id):
+        # update the application status as 1 - application approved;
+        query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
+        conn.execute(query)       
+        #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
         row_1 = result_1.fetchone()
@@ -52,29 +56,12 @@ class Application():
         query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID = " + str(role_ID) + ";"
         result_3 = conn.execute(query_3)
         row_3 = result_3.fetchone()
-        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
-            return True
-        return False
-
-    @staticmethod
-    def approve_an_application(conn, proj_ID, role_ID, application_id):
-        #get the application;
-        #query = "SELECT * FROM application where ID = " + str(application_id) + ";"
-        #result = conn.execute(query)
-        #row = result.fetchone()
-        #proj_ID = row['projectID']
-        #role_ID = row['role_applied']
-        # update the application status as 1 - application approved;
-        query_1 = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
-        conn.execute(query_1)       
-        #check if all members have been recruited for the same project role;
-        is_member_full = Application.is_all_members_recruited(conn, proj_ID, role_ID)
         #decline all other applications/invitations for the same project if all members have been recruited; 
-        if is_member_full:
-            query_2 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
-            conn.execute(query_2)
-            query_3 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
-            conn.execute(query_3)
+        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
+            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            conn.execute(query_4)
+            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + ";"
+            conn.execute(query_5)
         #return approved application;
         return Application.get_by_aid(conn, application_id)
         
