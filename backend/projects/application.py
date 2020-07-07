@@ -57,13 +57,13 @@ class Application():
         return False
 
     @staticmethod
-    def approve_an_application(conn, application_id):
+    def approve_an_application(conn, proj_ID, role_ID, application_id):
         #get the application;
-        query = "SELECT * FROM application where ID = " + str(application_id) + ";"
-        result = conn.execute(query)
-        row = result.fetchone()
-        proj_ID = row['projectID']
-        role_ID = row['role_applied']
+        #query = "SELECT * FROM application where ID = " + str(application_id) + ";"
+        #result = conn.execute(query)
+        #row = result.fetchone()
+        #proj_ID = row['projectID']
+        #role_ID = row['role_applied']
         # update the application status as 1 - application approved;
         query_1 = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
         conn.execute(query_1)       

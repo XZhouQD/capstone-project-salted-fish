@@ -69,13 +69,13 @@ class Invitation():
         return False
 
     @staticmethod
-    def accept_an_invitation(conn, invitation_id):
+    def accept_an_invitation(conn, proj_ID, role_ID, invitation_id):
         #get the application;
-        query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
-        result = conn.execute(query)
-        row = result.fetchone()
-        proj_ID = row['projectID']
-        role_ID = row['role_invited']
+        #query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
+        #result = conn.execute(query)
+        #row = result.fetchone()
+        #proj_ID = row['projectID']
+        #role_ID = row['role_invited']
         # update the invitation status as 1 -  accepte the invitaiton;
         query_1 = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + ";"
         conn.execute(query_1)       

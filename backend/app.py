@@ -343,7 +343,7 @@ class AcceptAnInvitation(CorsResource):
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             return {'message': 'Invitation not found'}, 401
-        result = Invitation.accept_an_invitation(conn, int(iid))
+        result = Invitation.accept_an_invitation(conn, int(pid), int(rid), int(iid))
         if result['invite_status'] != 1:
             return {'message': 'Failed to accept an invitation'}, 404            
         return result, 200
@@ -366,7 +366,7 @@ class DeclineAnInvitation(CorsResource):
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             return {'message': 'Invitation not found'}, 401
-        result = Invitation.decline_an_invitation(conn, int(iid))
+        result = Invitation.decline_an_invitation(conn, int(pid), int(rid), int(iid))
         if result['invite_status'] != 0:
             return {'message': 'Failed to decline an invitation'}, 404            
         return result, 200
@@ -464,7 +464,7 @@ class ApproveAnApplication(CorsResource):
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             return {'message': 'Application not found'}, 404
-        result = Application.approve_an_application(conn, int(aid))
+        result = Application.approve_an_application(conn, int(pid), int(rid), int(aid))
         if result['apply_status'] != 1:
             return {'message': 'Failed to approve an application'}, 405            
         return result, 200
