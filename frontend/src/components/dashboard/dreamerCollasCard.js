@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-class DreamerRecommend extends React.Component {
+class DreamerCollasCard extends React.Component {
   constructor() {
     super();
   }
@@ -15,23 +15,7 @@ class DreamerRecommend extends React.Component {
 
   async componentDidMount() {
     M.AutoInit();
-    const a = localStorage.getItem("token");
-
-    const config = {
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*",
-        "AUTH-KEY": a,
-      },
-    };
-
-    const res = await axios.get("/dreamer/recommendation", config);
-    console.log(res.data);
-    var b = res.data.project_role_collaborator;
-
-    this.setState({ drecommend: res.data.project_role_collaborator });
   }
-
   render() {
     const url =
       "https://source.unsplash.com/collection/" +
@@ -109,50 +93,24 @@ class DreamerRecommend extends React.Component {
                         </form>
                       </div>
                     </nav>
-
-                    <div className="col s12 m12 l12">
-                      <div className="card horizontal small">
-                        <div className="card-stacked">
-                          <div
-                            className="card-content"
-                            style={{ overflowY: "scroll" }}
-                          >
-                            <p>11111</p>
-
-                            <div className="collection card-content">
-                              <a href="#!" className="collection-item">
-                                白菜
-                              </a>
-                              <a href="#!" className="collection-item active">
-                                青菜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                萝卜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                土豆
-                              </a>
-                            </div>
-                            <div className="collection card-content">
-                              <a href="#!" className="collection-item">
-                                白菜
-                              </a>
-                              <a href="#!" className="collection-item active">
-                                青菜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                萝卜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                土豆
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="card-image right">
-                          <img src={url} />
-                        </div>
+                    <div class="container1" style={{ position: "relative" }}>
+                      <div class="cover-photo">
+                        <img
+                          src="https://images.unsplash.com/photo-1565464027194-7957a2295fb7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"
+                          class="profile"
+                        />
+                      </div>
+                      <div class="profile-name">Beni Smith</div>
+                      <p class="about">
+                        User Interface Designer and front-end developer
+                      </p>
+                      <button class="msg-btn button1">Message</button>
+                      <button class="follow-btn button1">Following</button>
+                      <div>
+                        <i class="fab fa-facebook-f"></i>
+                        <i class="fab fa-instagram"></i>
+                        <i class="fab fa-youtube"></i>
+                        <i class="fab fa-twitter"></i>
                       </div>
                     </div>
                   </div>
@@ -166,4 +124,4 @@ class DreamerRecommend extends React.Component {
   }
 }
 
-export default DreamerRecommend;
+export default DreamerCollasCard;
