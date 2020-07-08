@@ -5,23 +5,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 class DreamerCollasCard extends React.Component {
-  constructor() {
-    super();
-  }
-
-  state = {
-    drecommend: [],
-  };
-
   async componentDidMount() {
     M.AutoInit();
   }
   render() {
-    const url =
-      "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 100) +
-      "/800x600";
-
     return (
       <div>
         <header>
@@ -93,7 +80,7 @@ class DreamerCollasCard extends React.Component {
                         </form>
                       </div>
                     </nav>
-                    <div class="container1" style={{ position: "relative" }}>
+                    <div class="container1">
                       <div class="cover-photo">
                         <img
                           src="https://images.unsplash.com/photo-1565464027194-7957a2295fb7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"
@@ -107,10 +94,8 @@ class DreamerCollasCard extends React.Component {
                       <button class="msg-btn button1">Message</button>
                       <button class="follow-btn button1">Following</button>
                       <div>
-                        <i class="fab fa-facebook-f"></i>
-                        <i class="fab fa-instagram"></i>
-                        <i class="fab fa-youtube"></i>
-                        <i class="fab fa-twitter"></i>
+                        <i class="fab material-icons">call</i>
+                        <i class="fab material-icons">supervisor_account</i>
                       </div>
                     </div>
                   </div>

@@ -30,7 +30,7 @@ function App() {
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/admindash" component={AdminDash} />
         <Route exact path="/projects/:id" component={projectDetails} />
-        <Route exact path="/projects/2/3" component={DreamerCollasCard} />
+        <Route exact path="/collaborators/:id" component={DreamerCollasCard} />
       </Switch>
     </Router>
   );
