@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 class DreamerOwnRecommend extends React.Component {
-  renderColla() {}
   render() {
     const skill_list = [
       "Web Development",

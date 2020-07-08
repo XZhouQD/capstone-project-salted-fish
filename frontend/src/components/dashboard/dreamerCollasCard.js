@@ -5,10 +5,58 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 class DreamerCollasCard extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      info: {},
+    };
+  }
+
   async componentDidMount() {
     M.AutoInit();
+    const a = localStorage.getItem("token");
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+    console.log(this.props.match.params.id);
+    const res = await axios.get(
+      "/collaborator/" + this.props.match.params.id,
+      config
+    );
+    console.log(res.data);
+    this.setState({ info: res.data });
+    console.log(this.state.info);
   }
+
   render() {
+    const url =
+      "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
+
+    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
+
+    const skill_list = [
+      "Web Development",
+      "Java",
+      "Python",
+      "PHP",
+      "Script Language",
+      "Database Management",
+      "Computer Vision",
+      "Security Engineering",
+      "Testing",
+      "Algorithm Design",
+      "Operating System",
+      "Data Science",
+      "Human Computer Interaction",
+      "Deep Learning/Neural Network",
+      "Distribution System",
+    ];
+
     return (
       <div>
         <header>
@@ -82,20 +130,54 @@ class DreamerCollasCard extends React.Component {
                     </nav>
                     <div class="container1">
                       <div class="cover-photo">
-                        <img
-                          src="https://images.unsplash.com/photo-1565464027194-7957a2295fb7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"
-                          class="profile"
-                        />
+                        <img src={url} class="profile" />
                       </div>
-                      <div class="profile-name">Beni Smith</div>
+                      <div class="profile-name">{this.state.info.Name}</div>
                       <p class="about">
-                        User Interface Designer and front-end developer
+                        This is my profile as a collaborator{" "}
+                        {this.state.info.Description}
                       </p>
                       <button class="msg-btn button1">Message</button>
-                      <button class="follow-btn button1">Following</button>
+                      <button class="follow-btn button1">Invite</button>
                       <div>
-                        <i class="fab material-icons">call</i>
-                        <i class="fab material-icons">supervisor_account</i>
+                        <div>
+                          <i class="fab material-icons icon">call</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
+                            {this.state.info.Phone_no}
+                          </span>
+                        </div>
+                        <div>
+                          <i class="fab material-icons icon">email</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
+                            {this.state.info.Email}
+                          </span>
+                        </div>
+                        <div>
+                          <i class="fab material-icons icon">perm_identity</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
+                            {this.state.info.Education}
+                          </span>
+                        </div>
+                        <div>
+                          <i class="fab material-icons icon">trending_up</i>{" "}
+                          <span style={{ position: "relative", bottom: "4px" }}>
+                            {a[this.state.info.User_level]}
+                          </span>
+                        </div>
+                        <div>
+                          <i class="fab material-icons icon">grade</i>{" "}
+                          <span style={{ position: "relative", bottom: "4px" }}>
+                            {this.state.info.Skills &&
+                              Object.keys(this.state.info.Skills).map((key) => {
+                                return (
+                                  <span>
+                                    {skill_list[key]}:{" "}
+                                    {this.state.info.Skills[key]} years{" "}
+                                  </span>
+                                );
+                              })}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
