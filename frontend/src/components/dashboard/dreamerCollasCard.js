@@ -76,24 +76,24 @@ class DreamerCollasCard extends React.Component {
               style={{ position: "fixed" }}
             >
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./dashboard">
+                <Link className="waves-effect waves-teal" to="/dashboard">
                   My Projects
                 </Link>
               </li>
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to="/drecommend">
                   Recommend Collaborators
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to="/drecommend">
                   Followed collaborators
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to="/drecommend">
                   My Info
                 </Link>
               </li>
