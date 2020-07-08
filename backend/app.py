@@ -209,6 +209,13 @@ class CollaboratorsList(CorsResource):
         co_list = Collaborator.get_all(conn)
         return {'Collaborator_list': co_list}, 200
 
+@api.route('/collaborator/<int:id>')
+class CollaboratorInfo(CorsResource):
+    @api.response(200, 'Success')
+    @api.doc(Description='Get single collaborator information')
+    def get(self, id):
+        return Collaborator.get_object_by_id(conn, int(id)).info_2(), 200
+
 @api.route('/collaborator/projects')
 class CollaboratorProjectsList(CorsResource):
     @api.response(200, 'Success')
