@@ -31,6 +31,17 @@ class Collaborator():
         self.skill_dict = skill_dict
 
     @staticmethod
+    def get_all(conn):
+        query = "select * from collaborator;"
+        result = conn.execute(query)
+        co_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            collabor = {'collaboratorID':row['ID'],'Name':row['name'],'Email':row['email'],'Phone_no':row['phone_no'],'skill':row['skill'],'experience':row['experience'],'education':row['education'],'user_level':row['user_level'],'description':row['description']}
+            co_list.append(collabor)
+        return co_list
+
+    @staticmethod
     def get_by_id(conn, id):
         query = "select * from collaborator where ID = " + str(id) + ";"
         result = conn.execute(query)
