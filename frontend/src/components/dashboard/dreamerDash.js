@@ -47,47 +47,41 @@ class DreamerDash extends React.Component {
     return (
       <div>
         <header>
-          <div class="navbar-fixed" style={{ position: "fixed" }}>
-            <a href="#" data-target="nav-mobile" class="sidenav-trigger">
-              <i class="material-icons">menu</i>
-            </a>
+          <div className="navbar-fixed" style={{ position: "fixed" }}>
+            <Link data-target="nav-mobile" className="sidenav-trigger">
+              <i className="material-icons">menu</i>
+            </Link>
           </div>
           <div>
             <ul
               id="nav-mobile"
-              class="sidenav sidenav-fixed"
+              className="sidenav sidenav-fixed"
               style={{ position: "fixed" }}
             >
-              <li class="bold">
-                <Link class="waves-effect waves-teal" to="./dashboard">
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./dashboard">
                   My Projects
                 </Link>
               </li>
-              <li class="bold">
-                <a href="#" class="waves-effect waves-teal">
-                  <Link class="waves-effect waves-teal" to="./drecommend">
-                    Recommend Collaborators
-                  </Link>
-                </a>
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./drecommend">
+                  Recommend Collaborators
+                </Link>
               </li>
 
-              <li class="bold">
-                <a href="#" class="waves-effect waves-teal">
-                  <Link class="waves-effect waves-teal" to="./drecommend">
-                    Followed collaborators
-                  </Link>
-                </a>
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./drecommend">
+                  Followed collaborators
+                </Link>
               </li>
 
-              <li class="bold">
-                <a href="#" class="waves-effect waves-teal">
-                  <Link class="waves-effect waves-teal" to="./drecommend">
-                    My Info
-                  </Link>
-                </a>
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./drecommend">
+                  My Info
+                </Link>
               </li>
 
-              <div class="logo">
+              <div className="logo">
                 <h3>Logo</h3>
               </div>
             </ul>
@@ -95,40 +89,46 @@ class DreamerDash extends React.Component {
         </header>
 
         <main>
-          <div class="container">
-            <div class="row">
-              <div class="col s12 l12 dashboard">
-                <div class="card grey lighten-3">
-                  <div class="card-content posts">
-                    <nav class="pink darken-1">
-                      <div class="nav-wrapper">
-                        <h4 class="left event-title">EVENTS</h4>
-                        <form class="search-field right">
-                          <div class="input-field">
+          <div className="container">
+            <div className="row">
+              <div className="col s12 l12 dashboard">
+                <div className="card grey lighten-3">
+                  <div className="card-content posts">
+                    <nav className="pink darken-1">
+                      <div className="nav-wrapper">
+                        <h4 className="left event-title">EVENTS</h4>
+                        <form className="search-field right">
+                          <div className="input-field">
                             <input id="search" type="search" required />
-                            <label class="label-icon search-icon" for="search">
-                              <i class="material-icons">search</i>
+                            <label
+                              className="label-icon search-icon"
+                              for="search"
+                            >
+                              <i className="material-icons">search</i>
                             </label>
-                            <i class="material-icons close-icon">close</i>
+                            <i className="material-icons close-icon">close</i>
                           </div>
                         </form>
                       </div>
                     </nav>
-                    {this.state.myProjects.length > 0
-                      ? this.state.myProjects.map((each, index) => {
-                          return (
-                            <DreamerOwnProject
-                              key={index}
-                              title={each.title}
-                              description={each.description}
-                              category={category_list[each.category]}
-                              id={each.id}
-                              create_time={each.create_time}
-                              last_update={each.last_update}
-                            />
-                          );
-                        })
-                      : "loading"}
+
+                    {this.state.myProjects.length > 0 ? (
+                      this.state.myProjects.map((each, index) => {
+                        return (
+                          <DreamerOwnProject
+                            key={index}
+                            title={each.title}
+                            description={each.description}
+                            category={category_list[each.category]}
+                            id={each.id}
+                            create_time={each.create_time}
+                            last_update={each.last_update}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p>Create your first project</p>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,33 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 class DreamerOwnProject extends React.Component {
   render() {
     const url =
       "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 100);
+      Math.floor(Math.random() * 500) +
+      "/800x600";
 
     const projectDetails = "/projects/" + this.props.id;
     const addRoleUrl = "/project/" + this.props.id + "/role";
     return (
-      <div class="card medium event-card">
-        <div class="card-image">
+      <div className="card medium event-card">
+        <div className="card-image">
           <img src={url} alt="banner" />
         </div>
-        <div class="card-content">
-          <div class="card-title">
+        <div className="card-content">
+          <div className="card-title">
             <b>{this.props.title}</b>
           </div>
-          <div class="left">
+          <div className="left" style={{ marginTop: "15px" }}>
             <p>
               <Link to={projectDetails}>View Details</Link>
             </p>
             <p>create project time: {this.props.create_time.split(" ")[0]}</p>
           </div>
-          <div class="right-align">
+          <div className="right-align" style={{ marginTop: "20px" }}>
             <Link to={addRoleUrl}>
-              <button class="waves-effect waves-light btn">
-                <i class="material-icons left">add</i>Add roles
+              <button className="waves-effect waves-light btn-small">
+                <i className="material-icons left">add</i>Add roles
               </button>
             </Link>
             <p>
