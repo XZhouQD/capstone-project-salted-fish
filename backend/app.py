@@ -337,7 +337,7 @@ class InviteRole(CorsResource):
         new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=general_text).create(conn)
         if new_invite == None:
             return {'message': 'invite role duplicate'}, 400
-        new_invite.notify_invitee(smtp)
+        new_invite.notify_invitee(conn, smtp)
         return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
@@ -365,9 +365,9 @@ class AcceptAnInvitation(CorsResource):
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             return {'message': 'Invitation not found'}, 402
-        result = Invitation.accept_an_invitation(conn, int(pid), int(rid), int(iid))
+        result = Invitation.accept_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         if result['invite_status'] != 1:
-            return {'message': 'Failed to accept an invitation'}, 404            
+            return {'message': 'Failed to accept an invitation'}, 404
         return result, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
@@ -395,9 +395,11 @@ class DeclineAnInvitation(CorsResource):
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             return {'message': 'Invitation not found'}, 402
-        result = Invitation.decline_an_invitation(conn, int(pid), int(rid), int(iid))
+        result = Invitation.decline_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         if result['invite_status'] != 0:
-            return {'message': 'Failed to decline an invitation'}, 404            
+            return {'message': 'Failed to decline an invitation'}, 404
+        invite = Invitation.get_object_by_id(conn, iid)
+        invite.notify_invitor(conn, smtp, accpet=False)
         return result, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/appllication')
@@ -424,6 +426,8 @@ class ApplyRole(CorsResource):
         new_apply = Application(int(pid), int(rid), collaborator_id,general_text=general_text).create(conn)
         if new_apply == None:
             return {'message': 'apply role duplicate'}, 400
+        new_apply.notify_owner(conn, smtp)
+        new_apply.notify_applicant(conn, smtp)
         return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
@@ -493,11 +497,11 @@ class ApproveAnApplication(CorsResource):
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             return {'message': 'Application not found'}, 404
-        result = Application.approve_an_application(conn, int(pid), int(rid), int(aid))
+        result = Application.approve_an_application(conn, smtp, int(pid), int(rid), int(aid))
         if result['apply_status'] != 1:
-            return {'message': 'Failed to approve an application'}, 405            
+            return {'message': 'Failed to approve an application'}, 405
         return result, 200
-    
+
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
 class GetProject(CorsResource):
