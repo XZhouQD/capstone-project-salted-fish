@@ -30,6 +30,7 @@ class Application():
         query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
         result = conn.execute(query)
         all_application = {}
+        application_list = []
         if result.rowcount == 0:
             return None
         for i in range(result.rowcount):
@@ -37,8 +38,9 @@ class Application():
             application= Collaborator.get_by_id(conn,row['applicant'])
             application['general_text'] = row['general_text']
             application['apply_status'] = row['status']
-            all_application['appicant'+str(i+1)] = application
+            application_list.append(application)
         if len(application) == 0: return None
+        all_application['application'] = application_list
         return all_application
 
     @staticmethod
