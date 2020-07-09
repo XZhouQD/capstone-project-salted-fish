@@ -313,9 +313,9 @@ class InvitationsReceived(CorsResource):
         result = Invitation.get_by_invitee(conn, collaborator_id)
         return result, 200
 
-@api.route('/project/<int:pID>/role/<int:rID>/invitation')
-@api.param('pID', 'The project id')
-@api.param('rID', 'The project_role id')
+@api.route('/project/<int:pid>/role/<int:rid>/invitation')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
 class InviteRole(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -323,7 +323,7 @@ class InviteRole(CorsResource):
     @api.doc(description='Invite a collaborator for a role')
     @api.expect(invite_role_model, validate=True)
     @require_auth
-    def post(self, pID, rID):
+    def post(self, pid, rid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
@@ -334,11 +334,11 @@ class InviteRole(CorsResource):
             general_text = invite_info['general_text']
         except:
             general_text = ''
-        new_invite = Invitation(int(pID), int(rID), dreamer_id, invite_info['collaborator_id'], general_text=general_text).create(conn)
+        new_invite = Invitation(int(pid), int(rid), dreamer_id, invite_info['collaborator_id'], general_text=general_text).create(conn)
         if new_invite == None:
             return {'message': 'invite role duplicate'}, 400
         new_invite.notify_invitee(conn, smtp)
-        return {'message': 'role invite success', 'project_id': int(pID), 'project_role_id': int(rID), 'invitation_id': new_invite.info()['id']}, 200
+        return {'message': 'role invite success', 'project_id': int(pid), 'project_role_id': int(rid), 'invitation_id': new_invite.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
 @api.param('pid', 'The project id')
@@ -539,9 +539,9 @@ class PostRole(CorsResource):
             return {'message': 'role create duplicate'}, 400
         return {'message': 'role create success', 'project_id': int(id), 'role_id': new_role.info()['id']}, 200
 
-@api.route('/project/<int:pID>/role/<int:rID>')
-@api.param('pID', 'The project id')
-@api.param('rID', 'The role id')
+@api.route('/project/<int:pid>/role/<int:rid>')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The role id')
 class PatchRole(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -549,14 +549,14 @@ class PatchRole(CorsResource):
     @api.doc(description='Update a role information')
     @api.expect(role_patch_model, validate=True)
     @require_auth
-    def patch(self, pID, rID):
+    def patch(self, pid, rid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
-        if not Project.check_owner(conn, int(pID), dreamer_id):
+        if not Project.check_owner(conn, int(pid), dreamer_id):
             return {'message': 'You are not the owner of the project'}, 400
         role_info = request.json
-        cursor_role = Role.get_object_by_id(conn, int(rID))
+        cursor_role = Role.get_object_by_id(conn, int(rid))
         try:
             cursor_role.title = role_info['title']
         except:
