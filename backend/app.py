@@ -400,7 +400,7 @@ class DeclineAnInvitation(CorsResource):
             return {'message': 'Failed to decline an invitation'}, 404            
         return result, 200
 
-@api.route('/project/<int:pid>/role/<int:rid>/appllications')
+@api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
@@ -449,7 +449,7 @@ class ViewSingleApplication(CorsResource):
             return {'message': 'Application not found'}, 404
         return result, 200
     
-@api.route('/project/<int:pid>/role/<int:rid>/application')
+@api.route('/project/<int:pid>/role/<int:rid>/applications')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ViewAllApplication(CorsResource):
