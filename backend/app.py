@@ -400,7 +400,7 @@ class DeclineAnInvitation(CorsResource):
             return {'message': 'Failed to decline an invitation'}, 404            
         return result, 200
 
-@api.route('/project/<int:pid>/role/<int:rid>/appllication')
+@api.route('/project/<int:pid>/role/<int:rid>/appllications')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
 class ApplyRole(CorsResource):
