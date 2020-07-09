@@ -16,6 +16,17 @@ class Invitation():
         self.id = -1
 
     @staticmethod
+    def get_object_by_id(conn, id):
+        query = "SELECT * FROM invitation where ID = " + str(id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        my_invi = Invitation(row['projectID'], row['role_invited'], row['invitor'], row['invitee'], row['general_text'], row['status'])
+        my_invi.id = row['ID']
+        return my_invi
+
+    @staticmethod
     def get_by_iid(conn, invitation_id):
         query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
         result = conn.execute(query)
@@ -65,10 +76,11 @@ class Invitation():
         return {'invitations': invitations, 'amount': result.rowcount}
 
     @staticmethod
-    def accept_an_invitation(conn, proj_ID, role_ID, invitation_id):
+    def accept_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
         # update the invitation status as 1 -  accepte the invitaiton;
         query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)
+        Invitation.get_object_by_id(conn, invitation_id).notify_invitor(conn, smtp)
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
@@ -83,17 +95,35 @@ class Invitation():
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
             query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
+            # notify applicants for result
+            query_4_1 = "SELECT * from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 0;"
+            result = conn.execute(query_4_1)
+            from projects.application import Application
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                temp_app = Application(row['projectID'], row['role_applied'], row['applicant'], row['general_text'], row['status'])
+                temp_app.id = row['ID']
+                temp_app.notify_result(conn, smtp, accept=False)
             query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
             conn.execute(query_5)
+            #notify invitees for auto cancel
+            query_5_1 = "SELECT * FROM invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " AND status = 0;"
+            result = conn.execute(query_5_1)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                temp_inv = Invitation(row['projectID'], row['role_invited'], row['invitor'], row['invitee'], row['general_text'], row['status'])
+                temp_inv.id = row['ID']
+                temp_inv.notify_invitee_auto_decline(conn, smtp)
         #return the accepted invitation;
         return Invitation.get_by_iid(conn, invitation_id)
 
     @staticmethod
-    def decline_an_invitation(conn, proj_ID, role_ID, invitation_id):
+    def decline_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
         # update the invitation status as 0 -  decline the invitaiton;
         query_1 = "UPDATE invitation set status = 0 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query_1)
-        #return the accepted invitation;
+        #return the declined invitation;
+        Invitation.get_object_by_id(conn, invitation_id).notify_invitor(conn, smtp, accept=False)
         return Invitation.get_by_iid(conn, invitation_id)
 
     def notify_invitee(self, conn, smtp):
@@ -103,12 +133,47 @@ class Invitation():
         dre = Dreamer.get_by_id(conn, self.invitor)
         subject = '[DreamMatchmaker]You have a new project invitation'
         content = f'''<p>Hello {col['name']},</p>
-<p>   {dre['name']} has invited you to join project "{proj['title']}" as "{role['title']}".</p>
+<p>   <b>{dre['name']}</b> has invited you to join project <b>"{proj['title']}"</b> as <b>"{role['title']}"</b>.</p>
+<p>   The following message is from the invitor:</p>
+<p>      {self.general_text}<p>
 <p>   You can view the invitation in your dashboard.</p>
 <p>Dream Matchmaker Team</p>
 '''
         result = smtp.send_email_html(col['email'], content, subject)
         return result
+
+    def notify_invitor(self, conn, smtp, accept=True):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_invite)
+        col = Collaborator.get_by_id(conn, self.invitee)
+        dre = Dreamer.get_by_id(conn, self.invitor)
+        subject = '[DreamMatchmaker]You have a invitation status update'
+        if accept:
+            acceptance = 'accepted'
+        else:
+            acceptance = 'declined'
+        content = f'''<p>Hello {dre['name']},</p>
+<p>   Your invitation to <b>{col['name']}</b> for project <b>"{proj['title']}"</b>, role <b>"{role['title']}"</b></p>
+<p>   has been <b>{acceptance}</b>.</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(dre['email'], content, subject)
+        return result
+
+    def notify_invitee_auto_decline(self, conn, smtp):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_invite)
+        col = Collaborator.get_by_id(conn, self.invitee)
+        dre = Dreamer.get_by_id(conn, self.invitor)
+        subject = '[DreamMatchmaker]You have a invitation status update'
+        content = f'''<p>Hello {col['name']},</p>
+<p>   Your invitation from <b>{dre['name']}</b> for project <b>"{proj['title']}"</b>, role <b>"{role['title']}"</b></p>
+<p>   has been automaticlly cancelled due to "Role is fullfilled".</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(dre['email'], content, subject)
+        return result
+
 
     def info(self):
         return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee,  'general_text': self.general_text, 'status': self.status}
