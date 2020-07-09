@@ -40,7 +40,7 @@ class Application():
             application['apply_status'] = row['status']
             application_list.append(application)
         if len(application) == 0: return None
-        all_application['application'] = application_list
+        all_application['applications'] = application_list
         return all_application
 
     @staticmethod
