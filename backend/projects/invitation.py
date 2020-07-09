@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 from users.collaborator import Collaborator
 from users.dreamer import Dreamer
+from projects.project import Project
+from projects.role import Role
 
 class Invitation():
     def __init__(self, project_id, role_invite, invitor, invitee, general_text = '', status = -1):
@@ -14,8 +16,31 @@ class Invitation():
         self.id = -1
 
     @staticmethod
-    def get_by_id(conn, project_id,role_id):
-        query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
+    def get_by_iid(conn, invitation_id):
+        query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        invitation = Collaborator.get_by_id(conn,row['invitee'])
+        if len(invitation) == 0: return None
+        invitation['general_text'] = row['general_text']
+        invitation['invite_status'] = row['status']
+        return invitation
+
+    @staticmethod
+    def get_by_pid_rid_iid(conn, project_id,role_id, invitation_ID):
+        query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_invited = " + str(role_id) + " AND ID = " + str(invitation_ID) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        invitation = {"invitation_Id":row['ID'], "projectID":row['projectID'], "role_invited":row['role_invited'], "invitor":row['invitor'], "invitee":row['invitee'], "status":row['status'], "general_text":row['general_text']}
+        return invitation
+
+    @staticmethod
+    def get_by_pid_rid(conn, project_id,role_id):
+        query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_invited = " + str(role_id) + ";"
         result = conn.execute(query)
         invitees = []
         if result.rowcount == 0:
@@ -39,11 +64,57 @@ class Invitation():
             invitations.append(invitation)
         return {'invitations': invitations, 'amount': result.rowcount}
 
+    @staticmethod
+    def accept_an_invitation(conn, proj_ID, role_ID, invitation_id):
+        # update the invitation status as 1 -  accepte the invitaiton;
+        query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
+        conn.execute(query)
+        #check if all members have been recruited or not for the same project role;
+        query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
+        result_1 = conn.execute(query_1)
+        row_1 = result_1.fetchone()
+        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status = 1;"
+        result_2 = conn.execute(query_2)
+        row_2 = result_2.fetchone()
+        query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID = " + str(role_ID) + ";"
+        result_3 = conn.execute(query_3)
+        row_3 = result_3.fetchone()
+        #decline all other applications/invitation for the same project role if all members have been recruited; 
+        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
+            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
+            conn.execute(query_4)
+            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
+            conn.execute(query_5)
+        #return the accepted invitation;
+        return Invitation.get_by_iid(conn, invitation_id)
+
+    @staticmethod
+    def decline_an_invitation(conn, proj_ID, role_ID, invitation_id):
+        # update the invitation status as 0 -  decline the invitaiton;
+        query_1 = "UPDATE invitation set status = 0 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
+        conn.execute(query_1)
+        #return the accepted invitation;
+        return Invitation.get_by_iid(conn, invitation_id)
+
+    def notify_invitee(self, conn, smtp):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_invite)
+        col = Collaborator.get_by_id(conn, self.invitee)
+        dre = Dreamer.get_by_id(conn, self.invitor)
+        subject = '[DreamMatchmaker]You have a new project invitation'
+        content = f'''<p>Hello {col['name']},</p>
+<p>   {dre['name']} has invited you to join project "{proj['title']}" as "{role['title']}".</p>
+<p>   You can view the invitation in your dashboard.</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(col['email'], content, subject)
+        return result
+
     def info(self):
         return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee,  'general_text': self.general_text, 'status': self.status}
 
     def duplicate_check(self, conn):
-        query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_applied = " + str(self.role_apply) + " AND invitee = " + str(self.invitee)  + ";"
+        query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True

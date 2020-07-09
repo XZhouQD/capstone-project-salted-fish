@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import CommentApp from "../comments/CommentApp";
 import M from "materialize-css";
 
 import axios from "axios";
@@ -125,6 +126,7 @@ class ProjectDetails extends Component {
             : "The project owner has not add any roles yet"}
 
           <div className="row">comment section</div>
+          <CommentApp />
         </div>
       </div>
     );

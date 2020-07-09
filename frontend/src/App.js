@@ -12,6 +12,7 @@ import AddRoleProject from "./components/projects/addRoleProject";
 import ProjectList from "./components/projects/projectList";
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
 import projectDetails from "./components/projects/projectDetails";
+import DreamerCollasCard from "./components/dashboard/dreamerCollasCard";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/admindash" component={AdminDash} />
         <Route exact path="/projects/:id" component={projectDetails} />
+        <Route exact path="/projects/2/3" component={DreamerCollasCard} />
       </Switch>
     </Router>
   );

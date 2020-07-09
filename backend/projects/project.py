@@ -36,6 +36,8 @@ class Project():
             proj.id = row['ID']
             proj.is_modified_after_hidden = row['is_modified_after_hidden']
             proj.roles = Role.get_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
             project_list.append(proj.info())
         return {'projects': project_list, 'amount': result.rowcount}
 
@@ -50,6 +52,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_proj_id(conn, proj_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -64,6 +68,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_id_skill(conn, proj.id, skill)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -77,6 +83,8 @@ class Project():
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
         proj.roles = Role.get_by_proj_id(conn, proj.id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
         return proj.info()
 
     @staticmethod
@@ -92,6 +100,8 @@ class Project():
             proj.id = row['ID']
             proj.is_modified_after_hidden = row['is_modified_after_hidden']
             proj.roles = Role.get_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
             project_list.append(proj.info())
         return project_list
     
@@ -130,23 +140,23 @@ class Project():
     @staticmethod
     def finish_a_project(conn, proj_ID, dreamer_ID):
         # update project_status = 9 as finished
-        query = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_1 = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
+        conn.execute(query_1)
         #update applicant status as finish coorporation for application table
-        query = "UPDATE application set status = 9 where ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_2 = "UPDATE application set status = 9 where projectID = " + str(proj_ID) + ";"
+        conn.execute(query_2)
         #update invitation status as finish coorporation for invitation table
-        query = "UPDATE invitation set status = 9 where ID = " + str(proj_ID) + ";"
-        conn.execute(query)
+        query_3 = "UPDATE invitation set status = 9 where projectID = " + str(proj_ID) + ";"
+        conn.execute(query_3)
 
         #further update user_level for dreamer based on the statistic count;
         query_1 = "select count(*) as count from project where dreamerID = " + str(dreamer_ID) + " and project_status = 9;"
         result_1 = conn.execute(query_1)
-        count_dreamer_finished_proj = result_1.fetchone()
+        row_1 = result_1.fetchone()
         query_2 = "select user_level from dreamer where ID= " + str(dreamer_ID) + ";"
         result_2 = conn.execute(query_2)
-        dreamer_level = result_2.fetchone()
-        Project.update_user_level(conn, 'D', count_dreamer_finished_proj, dreamer_level, dreamer_ID)
+        row_2 = result_2.fetchone()
+        Project.update_user_level(conn, 'D', row_1['count'], row_2['user_level'], dreamer_ID)
 
         #further update user_level for all collaborators of this project based on the statistic count;
         query_3 = "select applicant from application where projectID = "+ str(proj_ID) + ";"
@@ -156,8 +166,8 @@ class Project():
             count_collabor_finished_proj = Project.total_project_finished_by_collabor(conn, row_3['applicant'])
             query_4 = "select user_level from collaborator where ID= " + str(row_3['applicant']) + ";"
             result_4 = conn.execute(query_4)
-            collabor_level = result_4.fetchone()
-            Project.update_user_level(conn, 'C', count_collabor_finished_proj, collabor_level, row_3['applicant'])
+            row_4 = result_4.fetchone()
+            Project.update_user_level(conn, 'C', count_collabor_finished_proj, row_4['user_level'], row_3['applicant'])
 
         #finally return the updated project info;
         return Project.get_by_id(conn, proj_ID)
@@ -172,7 +182,7 @@ class Project():
         return False
 
     def info(self):
-        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles}
+        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
@@ -190,5 +200,7 @@ class Project():
         result = conn.execute(query)
         row = result.fetchone()
         self.id = row['ID']
+        self.create_time = row['create_time']
+        self.last_update = row['last_update']
         return self
 

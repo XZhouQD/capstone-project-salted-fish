@@ -29,20 +29,41 @@ class Collaborator():
         elif self.education == 3: self.education_text='Master'
         elif self.education == 4: self.education_text='PhD'
         self.skill_dict = skill_dict
-    
+
+    @staticmethod
+    def get_all(conn):
+        query = "select id from collaborator ORDER BY id ASC;"
+        result = conn.execute(query)
+        co_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            co_list.append(Collaborator.get_object_by_id(conn, row['id']).info_2())
+        return co_list
+
     @staticmethod
     def get_by_id(conn, id):
         query = "select * from collaborator where ID = " + str(id) + ";"
         result = conn.execute(query)
         row = result.fetchone()
-        application = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
-        application.skill_dict = Collaborator.getSkills(conn, row['ID'])
-        application_info = application.info()
-        del application_info['creation_time']
-        del application_info['last_update']
-        return application_info
-    
-    
+        my_col = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
+        my_col.skill_dict = Collaborator.getSkills(conn, row['ID'])
+        my_col_info = my_col.info()
+        del my_col_info['creation_time']
+        del my_col_info['last_update']
+        return my_col_info
+
+    @staticmethod
+    def get_object_by_id(conn, id):
+        query = "select * from collaborator where ID = " + str(id) + ";"
+        result = conn.execute(query)
+        row = result.fetchone()
+        my_col = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
+        my_col.skill_dict = Collaborator.getSkills(conn, row['ID'])
+        return my_col
+
+    def info_2(self):
+        return {'Name': self.name, 'Email': self.email, 'collaboratorID': self.id, 'Phone_no': self.phone_no, 'User_level': self.user_level, 'Description': self.description, 'Education': self.education_text, 'Skills': self.skill_dict}
+
     @staticmethod
     def getSkills(conn, id):
         skills = {}
