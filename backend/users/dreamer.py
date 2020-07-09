@@ -58,12 +58,12 @@ class Dreamer():
 
     @staticmethod
     def get_by_id(conn, id):
-        query = "select * from dreamer where ID = " + int(id) + ";"
+        query = "select * from dreamer where ID = " + str(int(id)) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
+        return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description']).info()
 
     def collaborators_recommdation(self, conn):
         owner = self.id
