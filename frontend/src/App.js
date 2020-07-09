@@ -13,6 +13,7 @@ import ProjectList from "./components/projects/projectList";
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
 import projectDetails from "./components/projects/projectDetails";
 import DreamerCollasCard from "./components/dashboard/dreamerCollasCard";
+import ChangeRoleDetails from "./components/projects/changeRoleDetails";
 
 function App() {
   return (
@@ -29,6 +30,11 @@ function App() {
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/admindash" component={AdminDash} />
+        <Route
+          exact
+          path="/projects/:pid/role/:rid"
+          component={ChangeRoleDetails}
+        />
         <Route exact path="/projects/:id" component={projectDetails} />
         <Route exact path="/collaborators/:id" component={DreamerCollasCard} />
       </Switch>
