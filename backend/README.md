@@ -14,7 +14,7 @@ For first time using the project:
 
 2. Install pypi libraries by: pip3 install -r requirements.txt
 
-3. Edit db.py for a valid mysql database
+3. Edit db.config for a valid mysql database
 
 4. Run pre_init.py to generate required tables
 

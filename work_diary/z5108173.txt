@@ -45,4 +45,8 @@ Next Week Plan: 6-1. Invitation acception API; 6-2. Update/Delete Role API; 6-3.
 
 Week 6
 
+Role Patch API finished. [6-2]
+Configurable database finished. [6-3]
+Email notification for invitation system.
+Email notification for application system.
 
