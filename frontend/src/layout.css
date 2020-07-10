@@ -235,3 +235,12 @@ nav .input-field .search-icon,
 @import url("https://fonts.googleapis.com/css?family=Cherry+Swash");
 @import url("https://fonts.googleapis.com/css?family=Shadows+Into+Light");
 @import url(https://fonts.googleapis.com/css?family=Ubuntu);
+
+.custom-dialog {
+  background-color: #b3b8cd;
+  width: 48% !important;
+  top: 50% !important;
+  left: 50%;
+  max-width: 500 !important;
+  min-height: 300;
+}

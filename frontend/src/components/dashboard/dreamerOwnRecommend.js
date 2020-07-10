@@ -56,7 +56,13 @@ class DreamerOwnRecommend extends React.Component {
                         {res.Collaborator_list.length > 0 ? (
                           res.Collaborator_list.map((colla, index) => {
                             const collaboratorUrl =
-                              "./collaborators/" + colla.CollaboratorID;
+                              "/project/" +
+                              this.props.each.Project_ID +
+                              "/role/" +
+                              res.Role_ID +
+                              "/collaborators/" +
+                              colla.CollaboratorID;
+
                             return (
                               <div
                                 key={index}

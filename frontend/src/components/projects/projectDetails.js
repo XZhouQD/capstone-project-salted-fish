@@ -111,7 +111,12 @@ class ProjectDetails extends Component {
         {this.state.roles.map((a, key) => {
           return (
             <div class="row">
-              <div value={key} key={key} style={{ fontFamily: "Ubuntu" }}>
+              <div
+                class="input-field col s8 m8 l8"
+                value={key}
+                key={key}
+                style={{ fontFamily: "Ubuntu" }}
+              >
                 <p>
                   <span style={{ fontFamily: "Cherry Swash" }}>ROLE</span>:{" "}
                   Project {a.title} needs {a.amount} people who have{" "}
@@ -167,15 +172,11 @@ class ProjectDetails extends Component {
               </div>
             </div>
           </div>
-          <ul class="collection with-header">
-            {this.state.roles.length > 0 ? (
-              this.renderRole()
-            ) : (
-              <li class="collection-header">
-                <h4>The project owner has not add any roles yet</h4>
-              </li>
-            )}
-          </ul>
+          <div class="card">
+            {this.state.roles.length > 0
+              ? this.renderRole()
+              : "The project owner has not add any roles yet"}
+          </div>
           <div className="row">comment section</div>
           <CommentApp />
         </div>

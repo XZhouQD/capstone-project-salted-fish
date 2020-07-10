@@ -10,6 +10,7 @@ import {
   POST_PROJECT_ROLE_FAIL,
   CHANGE_PROJECT_ROLE,
   CHANGE_PROJECT_ROLE_FAIL,
+  SEND_INVITATION,
 } from "./actionTypes";
 
 // createProject
@@ -228,5 +229,45 @@ export const changeProjectRole = ({
     dispatch({
       type: CHANGE_PROJECT_ROLE_FAIL,
     });
+  }
+};
+
+// sendInvitation
+export const sendInvitation = ({ general_text, pid, rid, cid }) => async (
+  dispatch
+) => {
+  const a = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+
+  const collaborator_id = Number(cid);
+  const body = JSON.stringify({
+    collaborator_id,
+    general_text,
+  });
+  console.log(body);
+
+  try {
+    const url = "/project/" + pid + "/role/" + rid + "/invitation";
+    const res = await axios.post(url, body, config);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: SEND_INVITATION,
+      payload: res.data.message,
+    });
+
+    setTimeout(() => dispatch({ type: UNDO_FLAG }), 100);
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
   }
 };
