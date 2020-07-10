@@ -341,13 +341,10 @@ class FollowAProject(CorsResource):
         user_ID = userinfo['id']
         if userinfo['role'] == 'Dreamer':
             result = Project.follow_a_project(conn, int(id), 'Dreamer', user_ID)
-            if result['projectID'] == int(id) and result['d_subsciber'] == user_ID:
-                return {'message': 'Successfully follow the project!'}, 200
         else:
             result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
-            if result['projectID'] == int(id) and result['c_subsciber'] == user_ID:
-                return {'message': 'Successfully follow the project!'}, 200
-        return {'message': 'Fail to follow the project!'}, 400
+        if result:return {'message': 'Successfully follow the project!'}, 200
+        else:return {'message': 'Fail to follow the project!'}, 400
 
 @api.route('/project/<int:id>/unfollow')
 @api.param('id', 'The project id')
@@ -361,11 +358,10 @@ class UnfollowAProject(CorsResource):
         user_ID = userinfo['id']
         if userinfo['role'] == 'Dreamer':
             result = Project.unfollow_a_project(conn, int(id), 'Dreamer', user_ID)
-            if result:return {'message': 'Successfully unfollow the project!'}, 200
         else:
             result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
-            if result:return {'message': 'Successfully unfollow the project!'}, 200
-        return {'message': 'Fail to unfollow the project!'}, 400
+        if result:return {'message': 'Successfully unfollow the project!'}, 200
+        else:return {'message': 'Fail to unfollow the project!'}, 400
 
 @api.route('/collaborator/invitations')
 class InvitationsReceived(CorsResource):

@@ -185,10 +185,8 @@ class Project():
                 #query one more time to return the subscription info;
                 query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
                 result = conn.execute(query_2)
-                if result.rowcount > 0:
-                    row = result.fetchone()
-            else:
-                row = result.fetchone()
+            row = result.fetchone()
+            userid = row['d_subscriber']  
         else:
             #check if the user has subscribed the project or not;
             query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
@@ -200,11 +198,9 @@ class Project():
                 #query one more time to return the subscription info;
                 query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
                 result = conn.execute(query_2)
-                if result.rowcount > 0:
-                    row = result.fetchone()  
-            else:
-                    row = result.fetchone()
-        return {'subscription_info':row}
+            row = result.fetchone()
+            userid = row['c_subscriber']  
+        return {'projectID':row['projectID'], 'user_ID':userid}
 
     @staticmethod
     def unfollow_a_project(conn, proj_ID, user_role, user_ID):
