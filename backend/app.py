@@ -117,7 +117,7 @@ role_post_model = api.model('Role_Post', {
 project_patch_model = api.model('Project_Patch', {
     'project_title': fields.String(required=False, description='project title'),
     'description': fields.String(required=False, description='project description'),
-    'category': fields.String(required=False, description='project category'),
+    'category': fields.Integer(required=False, description='project category'),
 })
 
 role_patch_model = api.model('Role_Patch', {
