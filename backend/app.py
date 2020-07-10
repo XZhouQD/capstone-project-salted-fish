@@ -114,6 +114,12 @@ role_post_model = api.model('Role_Post', {
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
 
+project_patch_model = api.model('Project_Patch', {
+    'project_title': fields.String(required=False, description='project title'),
+    'description': fields.Integer(required=False, description='project description'),
+    'category': fields.Integer(required=False, description='project category'),
+})
+
 role_patch_model = api.model('Role_Patch', {
     'title': fields.String(required=False, description='Role title'),
     'amount': fields.Integer(required=False, description='Amount required'),
@@ -282,7 +288,7 @@ class PatchProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.doc(description='Update the information of a project')
-    @api.expect(role_patch_model, validate=True)
+    @api.expect(project_patch_model, validate=True)
     @require_auth
     def patch(self, pid):
         token = request.headers.get('AUTH_KEY')
