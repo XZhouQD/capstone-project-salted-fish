@@ -282,37 +282,6 @@ class CollaboratorsRecommendation(CorsResource):
             return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
-@api.route('/project/<int:pid>')
-@api.param('pid', 'The project id')
-class PatchProject(CorsResource):
-    @api.response(200, 'Success')
-    @api.response(400, 'Validate Failed')
-    @api.doc(description='Update the information of a project')
-    @api.expect(project_patch_model, validate=True)
-    @require_auth
-    def patch(self, pid):
-        token = request.headers.get('AUTH_KEY')
-        userinfo = auth.decode(token)
-        dreamer_id = userinfo['id']
-        if not Project.check_owner(conn, int(pid), dreamer_id):
-            return {'message': 'You are not the owner of the project'}, 400
-        project_info = request.json
-        cursor_project = Project.get_by_proj_id(conn, int(pid))
-        try:
-            cursor_project.title = project_info['title']
-        except:
-            pass
-        try:
-            cursor_project.description = project_info['description']
-        except:
-            pass
-        try:
-            cursor_project.category = project_info['category']
-        except:
-            pass
-        result = cursor_project.patch(conn).info()
-        return {'message': 'Patch success', 'info': result}, 200
-
 @api.route('/project/<int:id>/finish')
 @api.param('id', 'The project id')
 class DreamerFinishProject(CorsResource):
@@ -584,6 +553,34 @@ class GetProject(CorsResource):
         if result is None:
             return {'message': 'Requesting non-existing project information'}, 404
         return result, 200
+
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.doc(description='Update the information of a project')
+    @api.expect(project_patch_model, validate=True)
+    @require_auth
+    def patch(self, pid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, int(pid), dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        project_info = request.json
+        cursor_project = Project.get_by_proj_id(conn, int(pid))
+        try:
+            cursor_project.title = project_info['title']
+        except:
+            pass
+        try:
+            cursor_project.description = project_info['description']
+        except:
+            pass
+        try:
+            cursor_project.category = project_info['category']
+        except:
+            pass
+        result = cursor_project.patch(conn).info()
+        return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
