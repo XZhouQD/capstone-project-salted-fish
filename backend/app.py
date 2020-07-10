@@ -297,7 +297,7 @@ class PatchProject(CorsResource):
         if not Project.check_owner(conn, int(pid), dreamer_id):
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
-        cursor_project = Project.get_by_id(conn, int(pid))
+        cursor_project = Project.get_by_proj_id(conn, int(pid))
         try:
             cursor_project.title = project_info['title']
         except:
