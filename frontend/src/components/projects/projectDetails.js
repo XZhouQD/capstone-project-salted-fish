@@ -15,7 +15,7 @@ class ProjectDetails extends Component {
   state = {
     roles: [],
     follow: true,
-    apply: true,
+    apply: [],
     description: "",
     category: 0,
     title: "",
@@ -33,14 +33,25 @@ class ProjectDetails extends Component {
       title: res.data.title,
       description: res.data.description,
     });
+
+    var a = 0;
+    var arr = [];
+    while (a < this.state.roles.length) {
+      arr.push(true);
+      a++;
+    }
+    this.setState({ apply: arr });
   }
 
   handlebutton() {
     this.setState({ follow: !this.state.follow });
   }
 
-  handlebuttona() {
-    this.setState({ apply: !this.state.apply });
+  handlebuttona(index) {
+    this.state.apply[index] = !this.state.apply[index];
+
+    this.setState({ apply: this.state.apply });
+    console.log(this.state.apply);
   }
 
   renderOwner(rid) {
@@ -67,7 +78,7 @@ class ProjectDetails extends Component {
     );
   }
 
-  renderUser() {
+  renderUser(index) {
     return (
       <div
         class="input-field col s4 m4 l4"
@@ -76,11 +87,11 @@ class ProjectDetails extends Component {
         <button
           className="blue-grey darken-1 waves-light btn-small right"
           onClick={() => {
-            this.handlebuttona();
+            this.handlebuttona(index);
           }}
         >
           <i className="material-icons icon left">done_all</i>
-          {this.state.apply ? "apply" : "unapply"}
+          {this.state.apply[index] ? "apply" : "unapply"}
         </button>
       </div>
     );
@@ -105,6 +116,7 @@ class ProjectDetails extends Component {
     ];
 
     const education_list = ["Other", "Bachelor", "Master", "Phd"];
+
     return (
       <div>
         <div style={{ fontFamily: "Cherry Swash" }}>Roles Description</div>
@@ -128,9 +140,10 @@ class ProjectDetails extends Component {
                   degree
                 </p>
               </div>
+
               {this.state.owner === this.props.id
                 ? this.renderOwner(a.id)
-                : this.renderUser()}
+                : this.renderUser(key)}
             </div>
           );
         })}
