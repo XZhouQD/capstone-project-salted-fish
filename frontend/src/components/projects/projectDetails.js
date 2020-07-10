@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import CommentApp from "../comments/CommentApp";
 import M from "materialize-css";
-
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 class ProjectDetails extends Component {
@@ -19,6 +19,7 @@ class ProjectDetails extends Component {
     description: "",
     category: 0,
     title: "",
+    owner: null,
   };
 
   async componentDidMount() {
@@ -26,6 +27,7 @@ class ProjectDetails extends Component {
     const res = await axios.get("/project/" + this.props.match.params.id);
     console.log(res.data);
     this.setState({
+      owner: res.data.owner,
       roles: res.data.roles,
       category: res.data.category,
       title: res.data.title,
@@ -41,6 +43,48 @@ class ProjectDetails extends Component {
     this.setState({ apply: !this.state.apply });
   }
 
+  renderOwner(rid) {
+    const pid = this.props.match.params.id;
+    const url = "/projects/" + pid + "/role/" + rid;
+
+    return (
+      <div
+        class="input-field col s4 m4 l4"
+        style={{ position: "relative", top: "10px" }}
+      >
+        <Link to={url}>
+          <button
+            className="blue-grey darken-1 waves-light btn-small right"
+            onClick={() => {
+              this.handlebuttona();
+            }}
+          >
+            <i className="material-icons icon left">star</i>
+            change
+          </button>
+        </Link>
+      </div>
+    );
+  }
+
+  renderUser() {
+    return (
+      <div
+        class="input-field col s4 m4 l4"
+        style={{ position: "relative", top: "10px" }}
+      >
+        <button
+          className="blue-grey darken-1 waves-light btn-small right"
+          onClick={() => {
+            this.handlebuttona();
+          }}
+        >
+          <i className="material-icons icon left">done_all</i>
+          {this.state.apply ? "apply" : "unapply"}
+        </button>
+      </div>
+    );
+  }
   renderRole() {
     const skill_list = [
       "Web Development",
@@ -63,26 +107,30 @@ class ProjectDetails extends Component {
     const education_list = ["Other", "Bachelor", "Master", "Phd"];
     return (
       <div>
-        <div>Needed roles table</div>
+        <div style={{ fontFamily: "Cherry Swash" }}>Roles Description</div>
         {this.state.roles.map((a, key) => {
           return (
             <div class="row">
-              <div class="input-field col s8 m4 l8" value={key} key={key}>
-                {a.title} {a.amount}people {education_list[a.education]}{" "}
-                {skill_list[a.skill]} {a.experience}years
+              <div
+                class="input-field col s8 m8 l8"
+                value={key}
+                key={key}
+                style={{ fontFamily: "Ubuntu" }}
+              >
+                <p>
+                  <span style={{ fontFamily: "Cherry Swash" }}>ROLE</span>:{" "}
+                  Project {a.title} needs {a.amount} people who have{" "}
+                  {skill_list[a.skill]} skill, and experience at least{" "}
+                  {a.experience} years with{" "}
+                  {education_list[a.education] === "Other"
+                    ? "any"
+                    : education_list[a.education]}{" "}
+                  degree
+                </p>
               </div>
-
-              <div class="input-field col s4 m4 l4">
-                <button
-                  className="blue-grey darken-1 waves-light btn-small right"
-                  onClick={() => {
-                    this.handlebuttona();
-                  }}
-                >
-                  <i className="material-icons left">favorite</i>
-                  {this.state.apply ? "apply" : "unapply"}
-                </button>
-              </div>
+              {this.state.owner === this.props.id
+                ? this.renderOwner(a.id)
+                : this.renderUser()}
             </div>
           );
         })}
@@ -105,26 +153,30 @@ class ProjectDetails extends Component {
                     <i class="material-icons">add</i>
                   </a>
                 </div>
-                <div class="card-content">
+                <div
+                  class="card-content"
+                  style={{ fontFamily: "Cherry Swash" }}
+                >
                   <p>{this.state.description}</p>
                   <button
                     className="blue-grey darken-1 waves-light btn-small right"
                     onClick={() => {
                       this.handlebutton();
                     }}
+                    style={{ position: "relative", top: "-10px" }}
                   >
-                    <i className="material-icons left">favorite</i>
+                    <i className="material-icons icon left">favorite</i>
                     {this.state.follow ? "follow" : "unfollow"}
                   </button>
                 </div>
               </div>
             </div>
           </div>
-
-          {this.state.roles.length > 0
-            ? this.renderRole()
-            : "The project owner has not add any roles yet"}
-
+          <div class="card">
+            {this.state.roles.length > 0
+              ? this.renderRole()
+              : "The project owner has not add any roles yet"}
+          </div>
           <div className="row">comment section</div>
           <CommentApp />
         </div>
@@ -132,4 +184,9 @@ class ProjectDetails extends Component {
     );
   }
 }
-export default ProjectDetails;
+
+const mapStateToProps = (state) => ({
+  id: state.auth.id,
+});
+
+export default connect(mapStateToProps, null)(ProjectDetails);
