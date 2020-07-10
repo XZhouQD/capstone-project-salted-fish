@@ -173,6 +173,60 @@ class Project():
         return Project.get_by_id(conn, proj_ID)
             
     @staticmethod
+    def follow_a_project(conn, proj_ID, user_role, user_ID):
+        if user_role == 'Dreamer':
+            #check if the user has subscribed the project or not;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                #user has not subscribed this project, proceed to subscribe it;
+                query = "INSERT INTO subscription (projectID, is_dreamer, d_subscriber) VALUES (" + str(proj_ID) + ", " + str(1) + ", " + str(user_ID) + ");"
+                conn.execute(query)
+                #query one more time to return the subscription info;
+                query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+                result = conn.execute(query_2)
+                if result.rowcount > 0:
+                    row = result.fetchone()
+            else:
+                row = result.fetchone()
+        else:
+            #check if the user has subscribed the project or not;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                #user has not subscribed this project, proceed to subscribe it;
+                query = "INSERT INTO subscription (projectID, is_dreamer, c_subscriber) VALUES (" + str(proj_ID) + ", " + str(0) + ", " + str(user_ID) + ");"
+                conn.execute(query)
+                #query one more time to return the subscription info;
+                query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+                result = conn.execute(query_2)
+                if result.rowcount > 0:
+                    row = result.fetchone()  
+            else:
+                    row = result.fetchone()
+        return {'subscription_info':row}
+
+    @staticmethod
+    def unfollow_a_project(conn, proj_ID, user_role, user_ID):
+        if user_role == 'Dreamer':
+            query = "DELETE FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            conn.execute(query)
+            #query one more time to return the subscription info;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                return True
+        else:
+            query = "DELETE FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            conn.execute(query)
+            #query one more time to return the subscription info;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                return True        
+        return False
+            
+    @staticmethod
     def check_owner(conn, proj_id, owner_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
@@ -190,6 +244,12 @@ class Project():
         if result.rowcount > 0:
             return True
         return False
+
+    def patch(self, conn):
+        query = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
+        print(query)
+        result = conn.execute(query)
+        return self
 
     def create(self, conn):
         if self.duplicate_check(conn):

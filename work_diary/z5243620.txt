@@ -55,11 +55,11 @@ Next week plan:
 3. hold retrospect meeting with team;
 
 week 6
-1. complete satistic function for dreamer SF-64 and collaborator SF-66 and finish a project function;
+1. complete satistic function for dreamer SF-64 and collaborator SF-66 and finishing a project function;
 2. complete dreamer approve an application SF-55；
 3. complete collaborator accept/decline an invitation SF-70;
 4. add get_by_id function for Invitation;
-5. took part in the retrospect meeting with teammates and do summerization and draft a retrospect report;
+5. took part in the retrospect meeting with teammates， do summerization and draft a retrospective report;
 
 Next week plan:
 1. Get done for sprint2;

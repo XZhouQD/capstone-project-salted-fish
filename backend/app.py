@@ -276,6 +276,37 @@ class CollaboratorsRecommendation(CorsResource):
             return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
         return result, 200
 
+@api.route('/project/<int:pid>')
+@api.param('pid', 'The project id')
+class PatchProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.doc(description='Update the information of a project')
+    @api.expect(role_patch_model, validate=True)
+    @require_auth
+    def patch(self, pid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if not Project.check_owner(conn, int(pid), dreamer_id):
+            return {'message': 'You are not the owner of the project'}, 400
+        project_info = request.json
+        cursor_project = Project.get_by_id(conn, int(pid))
+        try:
+            cursor_project.title = project_info['title']
+        except:
+            pass
+        try:
+            cursor_project.description = project_info['description']
+        except:
+            pass
+        try:
+            cursor_project.category = project_info['category']
+        except:
+            pass
+        result = cursor_project.patch(conn).info()
+        return {'message': 'Patch success', 'info': result}, 200
+
 @api.route('/project/<int:id>/finish')
 @api.param('id', 'The project id')
 class DreamerFinishProject(CorsResource):
@@ -297,6 +328,44 @@ class DreamerFinishProject(CorsResource):
         if result['status'] != 9:
             return {'message': 'Failed to finish the project'}, 400
         return result, 200
+
+@api.route('/project/<int:id>/follow')
+@api.param('id', 'The project id')
+class FollowAProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Failed to follow the project')
+    @api.doc(description='Follow a project')
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        user_ID = userinfo['id']
+        if userinfo['role'] == 'Dreamer':
+            result = Project.follow_a_project(conn, int(id), 'Dreamer', user_ID)
+            if result['projectID'] == int(id) and result['d_subsciber'] == user_ID:
+                return {'message': 'Successfully follow the project!'}, 200
+        else:
+            result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
+            if result['projectID'] == int(id) and result['c_subsciber'] == user_ID:
+                return {'message': 'Successfully follow the project!'}, 200
+        return {'message': 'Fail to follow the project!'}, 400
+
+@api.route('/project/<int:id>/unfollow')
+@api.param('id', 'The project id')
+class UnfollowAProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Failed to unfollow the project')
+    @api.doc(description='Unfollow a project')
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        user_ID = userinfo['id']
+        if userinfo['role'] == 'Dreamer':
+            result = Project.unfollow_a_project(conn, int(id), 'Dreamer', user_ID)
+            if result:return {'message': 'Successfully unfollow the project!'}, 200
+        else:
+            result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
+            if result:return {'message': 'Successfully unfollow the project!'}, 200
+        return {'message': 'Fail to unfollow the project!'}, 400
 
 @api.route('/collaborator/invitations')
 class InvitationsReceived(CorsResource):
@@ -368,7 +437,7 @@ class AcceptAnInvitation(CorsResource):
         result = Invitation.accept_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         if result['invite_status'] != 1:
             return {'message': 'Failed to accept an invitation'}, 404
-        return result, 200
+        return {'message': 'Accept invitation successfully','Invitation':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
 @api.param('pid', 'The project id')
@@ -400,7 +469,7 @@ class DeclineAnInvitation(CorsResource):
             return {'message': 'Failed to decline an invitation'}, 404
         invite = Invitation.get_object_by_id(conn, iid)
         invite.notify_invitor(conn, smtp, accpet=False)
-        return result, 200
+        return {'message': 'Invitation has been declined!','Invitation':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
@@ -500,7 +569,7 @@ class ApproveAnApplication(CorsResource):
         result = Application.approve_an_application(conn, smtp, int(pid), int(rid), int(aid))
         if result['apply_status'] != 1:
             return {'message': 'Failed to approve an application'}, 405
-        return result, 200
+        return {'message': 'Approve application successfully','Application':result}, 200
 
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
