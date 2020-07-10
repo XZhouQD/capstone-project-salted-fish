@@ -57,6 +57,19 @@ class Project():
         return proj.info()
 
     @staticmethod
+    #return a Project object with project generail info without roles;
+    def get_by_proj_id(conn, proj_id):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        return proj
+
+    @staticmethod
     #search by project id and role skill for one type of role 
     def get_by_id_skill(conn, proj_id, skill):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
