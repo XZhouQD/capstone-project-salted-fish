@@ -57,7 +57,7 @@ class Project():
         return proj.info()
 
     @staticmethod
-    #return a Project object with project generail info without roles;
+    #return a Project object with project generail info;
     def get_by_proj_id(conn, proj_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
@@ -237,7 +237,39 @@ class Project():
             if result.rowcount == 0:
                 return True        
         return False
-            
+
+    @staticmethod
+    def get_discussion_about_one_project(conn, proj_ID):
+        #get all discussion records by one given project_ID;
+        query = "SELECT * FROM discussion WHERE projectID = " + str(proj_ID) + " ORDER BY ID;"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        discussion_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion_list.append(discussion)
+        return discussion_list
+
+    @staticmethod
+    def get_discussion_about_followed_projects(conn, user_type, user_ID):
+        #get all discussion records of the projects which user followed;
+        if user_type == 'Dreamer':
+            query = "SELECT d.ID as ID, d.projectID as projectID, parent_discussion_ID, text, d.is_dreamer as is_dreamer, d_author, c_author, d.last_update as last_update FROM subscription s, discussion d WHERE s.projectID = d.projectID and s.is_dreamer = 1 and s.d_subscriber = " + str(user_ID) + " ORDER BY d.ID, d.projectID;"
+            result = conn.execute(query)
+        else:
+            query = "SELECT d.ID as ID, d.projectID as projectID, parent_discussion_ID, text, d.is_dreamer as is_dreamer, d_author, c_author, d.last_update as last_update FROM subscription s, discussion d WHERE s.projectID = d.projectID and s.c_subscriber = " + str(user_ID) + " ORDER BY d.ID, d.projectID;"
+            result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        discussion_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion_list.append(discussion)
+        return discussion_list
+
     @staticmethod
     def check_owner(conn, proj_id, owner_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
