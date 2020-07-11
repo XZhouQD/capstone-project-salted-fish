@@ -13,7 +13,11 @@ class GetApplication extends React.Component {
     const a = localStorage.getItem("token");
     console.log(this.props.url_1);
     console.log(a);
-    const res = await axios.get(this.props.url_1);
+    const res = await axios.get(this.props.url_1, {
+      headers: {
+        "AUTH-KEY": a,
+      },
+    });
 
     this.setState({ a: res.data.applications });
   }
