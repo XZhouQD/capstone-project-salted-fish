@@ -9,6 +9,7 @@ import {
   CHANGE_PROJECT_ROLE,
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
+  APPLY_ROLE,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -65,6 +66,12 @@ export default function (state = initialState, action) {
         hasChange: false,
       };
     case SEND_INVITATION:
+      return {
+        ...state,
+        payload,
+      };
+
+    case APPLY_ROLE:
       return {
         ...state,
         payload,

@@ -62,7 +62,7 @@ class CreateProject extends Component {
               </div>
 
               <div className="row">
-                <div class="input-field col s12">
+                <div className="input-field col s12">
                   <select
                     name="category"
                     onChange={(e) => this.handleonChange(e)}
@@ -97,7 +97,7 @@ class CreateProject extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     required
                   ></textarea>
-                  <label for="description">Describe your project!</label>
+                  <label htmlFor="description">Describe your project!</label>
                 </div>
               </div>
               <div className="row">

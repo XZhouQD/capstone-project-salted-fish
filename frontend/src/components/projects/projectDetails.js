@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { Modal, Button } from "react-materialize";
 import CommentApp from "../comments/CommentApp";
 import M from "materialize-css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { applyRole } from "../../actions/projects";
+import GetApplications from "./getApplications";
 
 class ProjectDetails extends Component {
   constructor() {
@@ -15,11 +18,11 @@ class ProjectDetails extends Component {
   state = {
     roles: [],
     follow: true,
-    apply: [],
     description: "",
     category: 0,
     title: "",
     owner: null,
+    general_text: "",
   };
 
   async componentDidMount() {
@@ -33,69 +36,82 @@ class ProjectDetails extends Component {
       title: res.data.title,
       description: res.data.description,
     });
-
-    var a = 0;
-    var arr = [];
-    while (a < this.state.roles.length) {
-      arr.push(true);
-      a++;
-    }
-    this.setState({ apply: arr });
   }
 
   handlebutton() {
     this.setState({ follow: !this.state.follow });
   }
 
-  handlebuttona(index) {
-    this.state.apply[index] = !this.state.apply[index];
+  handleonChange = (e) => {
+    // get target element name
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
-    this.setState({ apply: this.state.apply });
-    console.log(this.state.apply);
-  }
+  handleonSubmit = (e, rid) => {
+    e.preventDefault();
+    const { general_text } = this.state;
+    const pid = this.props.match.params.id;
+    this.props.applyRole({ general_text, pid, rid });
+  };
 
   renderOwner(rid) {
     const pid = this.props.match.params.id;
-    const url = "/projects/" + pid + "/role/" + rid;
-
+    const url = "/project/" + pid + "/role/" + rid;
+    const url1 = "/project/" + pid + "/role/" + rid + "/applications";
     return (
-      <div
-        class="input-field col s4 m4 l4"
-        style={{ position: "relative", top: "10px" }}
-      >
-        <Link to={url}>
-          <button
-            className="blue-grey darken-1 waves-light btn-small right"
-            onClick={() => {
-              this.handlebuttona();
-            }}
-          >
+      <div>
+        <Link to={url} style={{ marginRight: "10px" }}>
+          <button className="btn-small">
             <i className="material-icons icon left">star</i>
             change
           </button>
         </Link>
+        <Modal
+          trigger={
+            <Button className="btn-small">
+              <i className="material-icons icon left">done_all</i>
+              application
+            </Button>
+          }
+        >
+          <GetApplications url_1={url1} />
+        </Modal>
       </div>
     );
   }
 
-  renderUser(index) {
+  renderUser(rid) {
     return (
-      <div
-        class="input-field col s4 m4 l4"
-        style={{ position: "relative", top: "10px" }}
+      <Modal
+        trigger={
+          <Button className="blue-grey darken-1 waves-light btn-small right">
+            <i className="material-icons icon left">done_all</i>
+            apply
+          </Button>
+        }
       >
-        <button
-          className="blue-grey darken-1 waves-light btn-small right"
-          onClick={() => {
-            this.handlebuttona(index);
-          }}
-        >
-          <i className="material-icons icon left">done_all</i>
-          {this.state.apply[index] ? "apply" : "unapply"}
-        </button>
-      </div>
+        <form className="col s12" onSubmit={(e) => this.handleonSubmit(e, rid)}>
+          <div className="input-field ">
+            <input
+              placeholder="Say HI"
+              type="text"
+              name="general_text"
+              onChange={(e) => this.handleonChange(e)}
+              required
+            />
+            <label htmlFor="title">Send the apply message!</label>
+          </div>
+          <input
+            type="submit"
+            className="btn-small left"
+            value="send"
+            style={{ marginTop: "38px" }}
+          />
+        </form>
+      </Modal>
     );
   }
+
   renderRole() {
     const skill_list = [
       "Web Development",
@@ -118,33 +134,21 @@ class ProjectDetails extends Component {
     const education_list = ["Other", "Bachelor", "Master", "Phd"];
 
     return (
-      <div>
-        <div style={{ fontFamily: "Cherry Swash" }}>Roles Description</div>
+      <div className="collection-item">
         {this.state.roles.map((a, key) => {
           return (
-            <div class="row">
-              <div
-                class="input-field col s8 m8 l8"
-                value={key}
-                key={key}
-                style={{ fontFamily: "Ubuntu" }}
-              >
-                <p>
-                  <span style={{ fontFamily: "Cherry Swash" }}>ROLE</span>:{" "}
-                  Project {a.title} needs {a.amount} people who have{" "}
-                  {skill_list[a.skill]} skill, and experience at least{" "}
-                  {a.experience} years with{" "}
-                  {education_list[a.education] === "Other"
-                    ? "any"
-                    : education_list[a.education]}{" "}
-                  degree
-                </p>
-              </div>
-
+            <p key={key} style={{ fontFamily: "Ubuntu" }}>
+              <span style={{ fontFamily: "Cherry Swash" }}>ROLE</span>: Project{" "}
+              {a.title} needs {a.amount} people who have {skill_list[a.skill]}{" "}
+              skill, and experience at least {a.experience} years with{" "}
+              {education_list[a.education] === "Other"
+                ? "any"
+                : education_list[a.education]}{" "}
+              degree
               {this.state.owner === this.props.id
                 ? this.renderOwner(a.id)
-                : this.renderUser(key)}
-            </div>
+                : this.renderUser(a.id)}
+            </p>
           );
         })}
       </div>
@@ -153,21 +157,31 @@ class ProjectDetails extends Component {
   render() {
     // const { auth } = this.props;
     // if (!auth.uid) return <Redirect to="/signin" />;
+    const url =
+      "https://source.unsplash.com/collection/" +
+      Math.floor(Math.random() * 20) +
+      "/1600*900";
+
+    // const url_1 = "/projects/" + this.props.match.params.id;
+    // if (this.props.applySuccess === "role apply success") {
+    //   return <Redirect to={url_1} />;
+    // }
+
     return (
       <div>
         <div className="container">
-          <div class="row">
-            <div class="col s12 m12 l12">
-              <div class="card">
-                <div class="card-image">
-                  <img src="https://source.unsplash.com/collection/12" />
-                  <span class="card-title">{this.state.title}</span>
-                  <a class="btn-floating halfway-fab waves-effect waves-light red">
-                    <i class="material-icons">add</i>
+          <div className="row">
+            <div className="col s12 m12 l12">
+              <div className="card">
+                <div className="card-image">
+                  <img src={url} />
+                  <span className="card-title">{this.state.title}</span>
+                  <a className="btn-floating halfway-fab waves-effect waves-light red">
+                    <i className="material-icons">add</i>
                   </a>
                 </div>
                 <div
-                  class="card-content"
+                  className="card-content"
                   style={{ fontFamily: "Cherry Swash" }}
                 >
                   <p>{this.state.description}</p>
@@ -185,7 +199,7 @@ class ProjectDetails extends Component {
               </div>
             </div>
           </div>
-          <div class="card">
+          <div className="collection">
             {this.state.roles.length > 0
               ? this.renderRole()
               : "The project owner has not add any roles yet"}
@@ -200,6 +214,7 @@ class ProjectDetails extends Component {
 
 const mapStateToProps = (state) => ({
   id: state.auth.id,
+  applySuccess: state.project.payload,
 });
 
-export default connect(mapStateToProps, null)(ProjectDetails);
+export default connect(mapStateToProps, { applyRole })(ProjectDetails);
