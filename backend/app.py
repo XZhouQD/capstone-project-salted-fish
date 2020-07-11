@@ -582,6 +582,35 @@ class GetProject(CorsResource):
         result = cursor_project.patch(conn).info()
         return {'message': 'Patch success', 'info': result}, 200
 
+@api.route('/project/<int:id>/discussionAboutOneProject')
+@api.param('id', 'The project id')
+class GetDiscussionAboutOneProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'No discussion records')
+    @api.doc(description='Get discussion records about one project')
+    def get(self, pid):
+        result = Project.get_discussion_about_one_project(conn, int(pid))
+        if result:return result, 200
+        else:return {'message': 'No discussion records found about this project'}, 400
+
+@api.route('/project/<int:id>/discussionAboutFollowedProjects')
+@api.param('id', 'The project id')
+class GetDiscussionAboutFollowedProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'No discussion records')
+    @api.doc(description='Get discussion records about one project')
+    @require_auth
+    def get(self, pid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        user_id = userinfo['id']
+        if userinfo['role'] == 'Dreamer':
+            result = Project.get_discussion_about_followed_projects(conn, 'Dreamer', user_id)
+        else:
+            result = Project.get_discussion_about_followed_projects(conn, 'Collaborator', user_id)
+        if result:return result, 200
+        else:return {'message': 'No discussion records found about your followed project'}, 400
+
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
 class PostRole(CorsResource):
