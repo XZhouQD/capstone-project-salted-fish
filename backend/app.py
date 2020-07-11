@@ -293,8 +293,8 @@ class CollaboratorsRecommendation(CorsResource):
         result = my_user.collaborators_recommdation(conn)
         conn.close()
         if result is None:
-            return {'collaborators': [], 'message': 'No matching collaborators were found.'}, 200
-        return result, 200
+            return {'collaborators': [], 'amount': 0, 'message': 'No matching collaborators were found.'}, 200
+        return {'collaborators': result, 'amount': len(result), 'message': 'Some matching collaborators were found for your projects.'}, 200
 
 @api.route('/project/<int:id>/finish')
 @api.param('id', 'The project id')
