@@ -26,10 +26,9 @@ class DreamerRecommend extends React.Component {
     };
 
     const res = await axios.get("/dreamer/recommendation", config);
-    var b = res.data;
-
+    var b = res.data.collaborators;
+    console.log(b);
     this.setState({ drecommend: b });
-    console.log(this.state.drecommend);
   }
 
   render() {
@@ -105,10 +104,13 @@ class DreamerRecommend extends React.Component {
                       </div>
                     </nav>
 
-                    {this.state.drecommend &&
+                    {this.state.drecommend.length !== 0 ? (
                       this.state.drecommend.map((each, index) => (
                         <DreamerOwnRecommend each={each} key={index} />
-                      ))}
+                      ))
+                    ) : (
+                      <p>no projects</p>
+                    )}
                   </div>
                 </div>
               </div>
