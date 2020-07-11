@@ -10,7 +10,7 @@ class DB:
         self.engine = create_engine(full_address, pool_size=config['MySQL']['PoolSize'], max_overflow=config['MySQL']['PoolOverflow'], pool_timeout=config['MySQL']['PoolTimeout'])
         f.close()
 
-    def conn():
-        conn = engine.connect()
+    def conn(self):
+        conn = self.engine.connect()
         return conn
 
