@@ -11,6 +11,7 @@ import {
   CHANGE_PROJECT_ROLE,
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
+  APPLY_ROLE,
 } from "./actionTypes";
 
 // createProject
@@ -70,7 +71,7 @@ export const getProject = () => async (dispatch) => {
   } catch (err) {
     // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;
-    console.log(errors);
+    console.log(err.response);
   }
 };
 
@@ -263,8 +264,40 @@ export const sendInvitation = ({ general_text, pid, rid, cid }) => async (
       type: SEND_INVITATION,
       payload: res.data.message,
     });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
 
-    setTimeout(() => dispatch({ type: UNDO_FLAG }), 100);
+// apply role
+export const applyRole = ({ general_text, pid, rid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  pid = Number(pid);
+  rid = Number(rid);
+  const body = JSON.stringify({
+    general_text,
+  });
+
+  try {
+    const url = "/project/" + pid + "/role/" + rid + "/appllication";
+    console.log(url);
+    const res = await axios.post(url, body, config);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: APPLY_ROLE,
+      payload: res.data.message,
+    });
   } catch (err) {
     // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;

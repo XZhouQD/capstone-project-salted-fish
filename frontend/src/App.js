@@ -32,7 +32,7 @@ function App() {
         <Route exact path="/admindash" component={AdminDash} />
         <Route
           exact
-          path="/projects/:pid/role/:rid"
+          path="/project/:pid/role/:rid"
           component={ChangeRoleDetails}
         />
         <Route exact path="/projects/:id" component={projectDetails} />
