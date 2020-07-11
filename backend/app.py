@@ -807,4 +807,4 @@ class ChangePassword(CorsResource):
 if __name__ == '__main__':
     conn = create_conn()
     smtp = SMTP()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
