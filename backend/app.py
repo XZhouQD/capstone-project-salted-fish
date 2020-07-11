@@ -582,7 +582,7 @@ class GetProject(CorsResource):
         result = cursor_project.patch(conn).info()
         return {'message': 'Patch success', 'info': result}, 200
 
-@api.route('/project/<int:id>')
+@api.route('/project/<int:id>/discussionAboutOneProject')
 @api.param('id', 'The project id')
 class GetDiscussionAboutOneProject(CorsResource):
     @api.response(200, 'Success')
@@ -593,7 +593,7 @@ class GetDiscussionAboutOneProject(CorsResource):
         if result:return result, 200
         else:return {'message': 'No discussion records found about this project'}, 400
 
-@api.route('/project/<int:id>')
+@api.route('/project/<int:id>/discussionAboutFollowedProjects')
 @api.param('id', 'The project id')
 class GetDiscussionAboutFollowedProjects(CorsResource):
     @api.response(200, 'Success')
