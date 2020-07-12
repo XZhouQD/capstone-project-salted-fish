@@ -14,6 +14,8 @@ import {
   APPLY_ROLE,
   APPPROVE_APPLICATION,
   DECLINE_APPLICATION,
+  GET_COLLA_PROJECT_LIST,
+  SEARCH_COLLA_PROJECT_LIST,
 } from "./actionTypes";
 
 // createProject
@@ -339,6 +341,30 @@ export const approve = ({ aid, rid, pid }) => async (dispatch) => {
     dispatch(setAlert(errors));
   }
 };
+// getCollaProject list
+export const getCollaProject = () => async (dispatch) => {
+  try {
+    const a = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+    const res = await axios.get("/collaborator/projects", config);
+    console.log("COLLA!!!", res.data);
+
+    dispatch({
+      type: GET_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
 
 // approve application
 export const decline = ({ aid, rid, pid }) => async (dispatch) => {
@@ -368,6 +394,40 @@ export const decline = ({ aid, rid, pid }) => async (dispatch) => {
     });
   } catch (err) {
     // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// search
+export const searchCollaProject = ({
+  description,
+  category,
+  order_by,
+  sorting,
+}) => async (dispatch) => {
+  category = Number(category) - 1;
+  try {
+    const res = await axios.get(
+      "/collaborator/projects?description=" +
+        description +
+        "&category=" +
+        category +
+        "&order_by=" +
+        order_by +
+        "&sorting=" +
+        sorting
+    );
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: SEARCH_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
     const errors = err.response.data.message;
     dispatch(setAlert(errors));
   }
