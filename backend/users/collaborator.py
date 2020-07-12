@@ -53,12 +53,16 @@ class Collaborator():
         return my_col_info
 
     @staticmethod
-    def get_object_by_id(conn, id):
+    def get_object_by_id(conn, id, applied_role=-1):
         query = "select * from collaborator where ID = " + str(id) + ";"
         result = conn.execute(query)
         row = result.fetchone()
         my_col = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
         my_col.skill_dict = Collaborator.getSkills(conn, row['ID'])
+        if applied_role != -1:
+            query_2 = "SELECT * FROM application where role_applied = " + str(applied_role) + " AND applicant = " + str(id) + " AND status = -1;"
+            result = conn.execute(query_2)
+            return my_col, result.rowcount
         return my_col
 
     def info_2(self):
