@@ -34,7 +34,7 @@ class EachProject extends Component {
         <div className="card-action">
           <Link
             to={"/projects/" + this.props.id}
-            className="waves-effect waves-light btn-small"
+            className="waves-effect waves-light btn-small blue-grey darken-1"
             style={{ marginRight: "5px" }}
           >
             More info
