@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import DreamerOwnProject from "./dreamerOwnProject";
 
-class CollaDash extends React.Component {
+class CollaOwnRecommend extends React.Component {
     constructor() {
         super();
     }
@@ -111,7 +111,23 @@ class CollaDash extends React.Component {
                                                 </form>
                                             </div>
                                         </nav>
-                                        <h5>This should be my applied projects</h5>
+                                        {this.state.myProjects.length > 0 ? (
+                                            this.state.myProjects.map((each, index) => {
+                                                return (
+                                                    <DreamerOwnProject
+                                                        key={index}
+                                                        title={each.title}
+                                                        description={each.description}
+                                                        category={category_list[each.category]}
+                                                        id={each.id}
+                                                        create_time={each.create_time}
+                                                        last_update={each.last_update}
+                                                    />
+                                                );
+                                            })
+                                        ) : (
+                                            <p>Apply for your first project</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -123,4 +139,4 @@ class CollaDash extends React.Component {
     }
 }
 
-export default CollaDash;
+export default CollaOwnRecommend;
