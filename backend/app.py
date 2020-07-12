@@ -404,11 +404,11 @@ class CollaboratorJoinedProjects(CorsResource):
     def get(self):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
-        collaborator_id = userinfo['id']
+        user_ID = userinfo['id']
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 401
         conn = db.conn()
-        result = Collaborator.get_my_projects(conn, collaborator_id)
+        result = Collaborator.get_my_projects(conn, user_ID)
         conn.close()
         return result, 200
 
@@ -421,11 +421,11 @@ class ApplicationsOfCollaborator(CorsResource):
     def get(self):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
-        collaborator_id = userinfo['id']
+        user_ID = userinfo['id']
         if userinfo['role'] != 'Collaborator':
             return {'message': 'You are not logged in as collaborator'}, 401
         conn = db.conn()
-        result = Application.get_by_applicant(conn, collaborator_id)
+        result = Application.get_by_applicant(conn, user_ID)
         conn.close()
         return result, 200
 
