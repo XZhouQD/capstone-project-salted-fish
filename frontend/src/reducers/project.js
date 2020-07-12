@@ -10,6 +10,8 @@ import {
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
   APPLY_ROLE,
+    GET_COLLA_PROJECT_LIST,
+    SEARCH_COLLA_PROJECT_LIST,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -34,8 +36,19 @@ export default function (state = initialState, action) {
       };
     case CREATE_PROJECT_FAIL:
       return { ...state };
+
+    case GET_COLLA_PROJECT_LIST:
+      return {...state, CollaProjectLists: payload.projects}
+
     case GET_PROJECT_LIST:
       return { ...state, ProjectLists: payload.projects };
+
+    case SEARCH_COLLA_PROJECT_LIST:
+      return {
+        ...state,
+        ProjectLists: payload.projects,
+        flag: "search project",
+      };
 
     case SEARCH_PROJECT_LIST:
       return {

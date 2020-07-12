@@ -4,6 +4,7 @@ import { setAlert } from "../../actions/alert";
 import { loginUser } from "../../actions/auth";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
+import Dashboard from "../dashboard/Dashboard";
 
 const LoginForm = (props) => {
   function componentDidMount() {
@@ -17,7 +18,7 @@ const LoginForm = (props) => {
     password: "",
   });
 
-  const { role, loginUser, isAuthenticated } = props;
+  const { role, loginUser, isAuthenticated,authRole } = props;
   const { email, password } = formData;
 
   const onChange = (e) => {
@@ -31,8 +32,10 @@ const LoginForm = (props) => {
     console.log("success");
   };
 
-  if (isAuthenticated) {
+  if (authRole==="Dreamer" && isAuthenticated) {
     return <Redirect to="/dashboard" />;
+  }else if(authRole==="Collaborator" && isAuthenticated){
+    return <Redirect to="/colladash" />;
   }
 
   return (
@@ -70,6 +73,7 @@ const LoginForm = (props) => {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  authRole: state.auth.role,
 });
 
 export default connect(mapStateToProps, { loginUser })(LoginForm);
