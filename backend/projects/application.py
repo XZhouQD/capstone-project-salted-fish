@@ -15,6 +15,17 @@ class Application():
         self.id = -1
 
     @staticmethod
+    def get_object_by_aid(conn, application_id):
+        query = "SELECT * FROM application where ID = " + str(application_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        appli = Application(row['projectID'], row['role_applied'], row['applicant'], row['general_text'], row['status'])
+        appli.id = row['ID']
+        return appli
+
+    @staticmethod
     def get_by_aid(conn, application_id):
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
@@ -51,7 +62,7 @@ class Application():
         query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
         conn.execute(query)
         # notify applicant for result
-        appli = Application.get_by_aid(conn, application_id)
+        appli = Application.get_object_by_aid(conn, application_id)
         appli.notify_result(conn, smtp)
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
