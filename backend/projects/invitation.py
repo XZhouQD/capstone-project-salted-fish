@@ -64,15 +64,22 @@ class Invitation():
         return {'invitees': invitees, 'amount': result.rowcount}
 
     @staticmethod
-    def get_by_invitee(conn, invitee_id):
-        query = "SELECT * FROM invitation where invitee = " + str(invitee_id) + " AND status = -1;"
+    def get_by_invitee(conn, user_id):
+        query = "SELECT * FROM invitation where invitee = " + str(user_id) + " order by ID desc;"
         result = conn.execute(query)
         invitations = []
         for i in range(result.rowcount):
             row = result.fetchone()
-            invitation = Invitation(row['projectID'], row['role_invited'], row['invitor'], row['invitee'], row['general_text'], row['status'])
-            invitation.id = row['ID']
-            invitations.append(invitation)
+            if row['status'] == -1:
+                invitation_status = 'Pending'
+            if row['status'] == 0:
+                invitation_status = 'Declined'
+            if row['status'] == 1:
+                invitation_status = 'Approved'
+            if row['status'] == 9:
+                invitation_status = 'Finished'
+            invi = {'InvitationID':row['ID'], 'projectID':row['projectID'], 'Role_invited':row['role_invited'], 'Invitor':row['invitor'], 'Invitee':row['invitee'], 'Invitation_status':invitation_status, 'General_text':row['general_text']}
+            invitations.append(invi)
         return {'invitations': invitations, 'amount': result.rowcount}
 
     @staticmethod
