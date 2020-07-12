@@ -72,6 +72,9 @@ projects_parser.add_argument('category', type=int, default=-1) # -1 for all cate
 projects_parser.add_argument('order_by', choices=['last_update','project_title'], default='last_update')
 projects_parser.add_argument('sorting', choices=['ASC','DESC'], default='DESC')
 
+collaborator_parser = reqparse.RequestParser()
+collaborator_parser.add_argument('applied_role', type=int, default=-1) # -1 for no request on this
+
 # Post Models
 login_model = api.model('Login', {
     'email': fields.String(required=True, description='Your email address'),
@@ -162,6 +165,7 @@ class AdminAPI(CorsResource):
 @api.route('/categories')
 class Categories(CorsResource):
     @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
     @api.doc(description="Get project categories list")
     def get(self):
         return {"categories": config['Project']['Categories'], "description": config['Project']['Categories_description']}, 200
@@ -223,11 +227,22 @@ class CollaboratorsList(CorsResource):
 @api.route('/collaborator/<int:id>')
 class CollaboratorInfo(CorsResource):
     @api.response(200, 'Success')
+    @api.response(400, 'Validation Error')
     @api.doc(Description='Get single collaborator information')
+    @api.expect(collaborator_parser, validate=True)
     def get(self, id):
+        args = collaborator_parser.parse_args()
+        role_id = args.get('applied_role')
         conn = db.conn()
-        result = Collaborator.get_object_by_id(conn, int(id)).info_2()
+        appli = 0
+        if role_id != -1:
+            colla, appli = Collaborator.get_object_by_id(conn, int(id), role_id)
+        else:
+            colla = Collaborator.get_object_by_id(conn, int(id))
         conn.close()
+        result = colla.info_2()
+        result['role_applied'] = role_id
+        result['wait_approve'] = bool(appli)
         return result, 200
 
 @api.route('/collaborator/projects')
