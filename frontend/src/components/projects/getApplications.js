@@ -29,7 +29,8 @@ class GetApplication extends React.Component {
             "/role/" +
             this.props.rid +
             "/collaborators/" +
-            each.id;
+            each.id +
+            "/applications";
           return (
             <div key={index} style={{ fontFamily: "Ubuntu" }}>
               <Link to={url} style={{ marginRight: "10px" }}>

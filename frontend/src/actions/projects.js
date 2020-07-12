@@ -13,6 +13,7 @@ import {
   SEND_INVITATION,
   APPLY_ROLE,
   APPPROVE_APPLICATION,
+  DECLINE_APPLICATION,
 } from "./actionTypes";
 
 // createProject
@@ -330,6 +331,39 @@ export const approve = ({ aid, rid, pid }) => async (dispatch) => {
 
     dispatch({
       type: APPPROVE_APPLICATION,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// approve application
+export const decline = ({ aid, rid, pid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  aid = Number(aid);
+  pid = Number(pid);
+  rid = Number(rid);
+
+  try {
+    const url =
+      "/project/" + pid + "/role/" + rid + "/application/" + aid + "/decline";
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res);
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: DECLINE_APPLICATION,
       payload: res.data.message,
     });
   } catch (err) {

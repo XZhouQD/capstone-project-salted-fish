@@ -11,6 +11,7 @@ import {
   SEND_INVITATION,
   APPLY_ROLE,
   APPPROVE_APPLICATION,
+  DECLINE_APPLICATION,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -84,6 +85,11 @@ export default function (state = initialState, action) {
         payload,
       };
 
+    case DECLINE_APPLICATION:
+      return {
+        ...state,
+        payload,
+      };
     default:
       return state;
   }
