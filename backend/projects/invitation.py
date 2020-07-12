@@ -176,8 +176,8 @@ class Invitation():
 
 
     def info(self, conn):
-        from projects.project import Project
-        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'project_info': Project.get_by_id(conn, self.project_id)}
+        from projects.role import Role
+        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'role_info': Role.get_by_id(conn, self.role_invite)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
