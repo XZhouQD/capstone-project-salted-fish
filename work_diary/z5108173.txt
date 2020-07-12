@@ -47,6 +47,12 @@ Week 6
 
 Role Patch API finished. [6-2]
 Configurable database finished. [6-3]
-Email notification for invitation system.
-Email notification for application system.
+Email notification for invitation system, application system.
+Fix invitations API, collaborator API.
+Move from single thread database connection (unsafe) to multi-thread connection pool.
+*Prepared new demo server on GCP, database moved.
+Conducted retro A online meeting on Zoom, wrote part of retro A report.
 
+Next Week Paln: 7-1. Start work on admin functions; 7-2. Try API view times statistics; 7-3. Prepare all tasks in Sprint 3/4; 7-4. Prepare demo server; 7-5. Start to draft final report.
+
+Week 7
