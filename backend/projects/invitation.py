@@ -72,7 +72,7 @@ class Invitation():
             row = result.fetchone()
             invitation = Invitation(row['projectID'], row['role_invited'], row['invitor'], row['invitee'], row['general_text'], row['status'])
             invitation.id = row['ID']
-            invitations.append(invitation)
+            invitations.append(invitation.info(conn))
         return {'invitations': invitations, 'amount': result.rowcount}
 
     @staticmethod
@@ -175,8 +175,9 @@ class Invitation():
         return result
 
 
-    def info(self):
-        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee,  'general_text': self.general_text, 'status': self.status}
+    def info(self, conn):
+        from projects.project import Project
+        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'project_info': Project.get_by_id(conn, self.project_id)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"

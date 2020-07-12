@@ -422,8 +422,9 @@ class InviteRole(CorsResource):
             conn.close()
             return {'message': 'invite role duplicate'}, 400
         new_invite.notify_invitee(conn, smtp)
+        invi_id = new_invite.info(conn)['id']
         conn.close()
-        return {'message': 'role invite success', 'project_id': int(pid), 'project_role_id': int(rid), 'invitation_id': new_invite.info()['id']}, 200
+        return {'message': 'role invite success', 'project_id': int(pid), 'project_role_id': int(rid), 'invitation_id': invi_id}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/accept')
 @api.param('pid', 'The project id')
