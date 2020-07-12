@@ -23,3 +23,16 @@ Week4
 I wrote the first version of smtp.py and first version of function of check_email.
 Create database system with team.
 Next week:Modify code of backend and prepare  for the demo
+
+week5
+Prepare for the first demo with team
+Wrote the first version of application.py
+Apply a role api finished
+Next week: Start sprint2 and join retrospect meeting with team
+
+week6
+
+Dreamer view single application api finished
+Dreamer view all applications api finished 
+Join the retrospect meeting with team
+Next week: Finished sprint 2 and start sprint3
