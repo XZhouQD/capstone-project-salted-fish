@@ -65,6 +65,7 @@ class Invitation():
 
     @staticmethod
     def get_by_invitee(conn, user_id):
+        from projects.role import Role
         query = "SELECT * FROM invitation where invitee = " + str(user_id) + " order by ID desc;"
         result = conn.execute(query)
         invitations = []
@@ -78,7 +79,7 @@ class Invitation():
                 invitation_status = 'Approved'
             if row['status'] == 9:
                 invitation_status = 'Finished'
-            invi = {'InvitationID':row['ID'], 'projectID':row['projectID'], 'Role_invited':row['role_invited'], 'Invitor':row['invitor'], 'Invitee':row['invitee'], 'Invitation_status':invitation_status, 'General_text':row['general_text']}
+            invi = {'InvitationID':row['ID'], 'projectID':row['projectID'], 'Role_invited':row['role_invited'], 'Invitor':row['invitor'], 'Invitee':row['invitee'], 'Invitation_status':invitation_status, 'General_text':row['general_text'], 'Role_information': Role.get_by_id(conn, row['role_invited'])}
             invitations.append(invi)
         return {'invitations': invitations, 'amount': result.rowcount}
 
@@ -182,9 +183,8 @@ class Invitation():
         return result
 
 
-    def info(self, conn):
-        from projects.project import Project
-        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'project_info': Project.get_by_id(conn, self.project_id)}
+    def info(self):
+        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
