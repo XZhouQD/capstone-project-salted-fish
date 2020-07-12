@@ -140,7 +140,7 @@ class Collaborator():
 
     @staticmethod
     #get projects which I collaborated with;
-    def get_my_projects(self, conn, user_ID):
+    def get_my_projects(conn, user_ID):
         projects_joined = []
         query_1 = "SELECT distinct(projectID) FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
         result_1 = conn.execute(query_1)
