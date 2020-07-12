@@ -138,6 +138,30 @@ class Collaborator():
         query = "UPDATE collaborator set password = \'" + new_pass + "\' where email = \'" + email + "\';"
         conn.execute(query)
 
+    @staticmethod
+    #get projects which I collaborated with;
+    def get_my_projects(self, conn, user_ID):
+        projects_joined = []
+        query_1 = "SELECT distinct(projectID) FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        result_1 = conn.execute(query_1)
+        for i in range(result_1.rowcount):
+            row_1 = result_1.fetchone()
+            if row_1['projectID'] not in projects_joined:
+                projects_joined.append(row_1['projectID'])
+        query_2 = "SELECT distinct(projectID) FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        result_2 = conn.execute(query_2)
+        for j in range(result_2.rowcount):
+            row_2 = result_2.fetchone()
+            if row_2['projectID'] not in projects_joined:
+                projects_joined.append(row_2['projectID'])        
+
+        project_list = []
+        for k in range(len([projects_joined])):
+            proj = Project.get_by_id(conn, projects_joined[i])
+            project_list.append(proj)
+        if len(project_list) == 0: return None
+        return {'projects': project_list, 'amount': len(project_list)}
+
     def search_list(self, conn, description, category, order_by, order):
         skills = self.skill_dict
         edu = self.education

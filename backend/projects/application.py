@@ -57,6 +57,25 @@ class Application():
         return all_application
 
     @staticmethod
+    def get_by_applicant(conn, user_ID):
+        query = "SELECT * FROM application where applicant = " + str(user_ID) + " order by ID desc;"
+        result = conn.execute(query)
+        applications = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            if row['status'] == -1:
+                application_status = 'Pending'
+            if row['status'] == 0:
+                application_status = 'Declined'
+            if row['status'] == 1:
+                application_status = 'Approved'
+            if row['status'] == 9:
+                application_status = 'Finished'
+            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'Role_applied':row['role_applied'], 'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
+            applications.append(appli)
+        return {'applications': applications, 'amount': result.rowcount}
+
+    @staticmethod
     def approve_an_application(conn, smtp, proj_ID, role_ID, application_id):
         # update the application status as 1 - application approved;
         query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
@@ -98,6 +117,17 @@ class Application():
                 temp_inv.id = row['ID']
                 temp_inv.notify_invitee_auto_decline(conn, smtp)
         #return approved application;
+        return Application.get_by_aid(conn, application_id)
+
+    @staticmethod
+    def decline_an_application(conn, smtp, application_id):
+        # update the application status as 0 - application declined;
+        query = "UPDATE application set status = 0 where ID = " + str(application_id) + ";"
+        conn.execute(query)
+        # notify applicant for result
+        appli = Application.get_object_by_aid(conn, application_id)
+        appli.notify_result(conn, smtp, accept=False)
+        #return the declined application;
         return Application.get_by_aid(conn, application_id)
 
     def notify_owner(self, conn, smtp):

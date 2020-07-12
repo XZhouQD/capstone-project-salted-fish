@@ -395,6 +395,40 @@ class InvitationsReceived(CorsResource):
         conn.close()
         return result, 200
 
+@api.route('/collaborator/myProjects')
+class CollaboratorJoinedProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='All projects I collaborated')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        conn = db.conn()
+        result = Collaborator.get_my_projects(conn, collaborator_id)
+        conn.close()
+        return result, 200
+
+@api.route('/collaborator/myApplications')
+class ApplicationsOfCollaborator(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='All applications that collaborator has applied')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        conn = db.conn()
+        result = Application.get_by_applicant(conn, collaborator_id)
+        conn.close()
+        return result, 200
+
 @api.route('/project/<int:pid>/role/<int:rid>/invitation')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
@@ -611,6 +645,37 @@ class ApproveAnApplication(CorsResource):
         if result['apply_status'] != 1:
             return {'message': 'Failed to approve an application'}, 405
         return {'message': 'Approve application successfully','Application':result}, 200
+
+@api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/decline')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
+@api.param('aid', 'The application id')
+class DeclineAnApplication(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Application not found')
+    @api.response(405, 'Failed to decline an application')
+    @api.doc(description='Decline an application')
+    def get(self, pid, rid, aid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        conn = db.conn()
+        if not Project.check_owner(conn, pid, dreamer_id):
+            conn.close()
+            return {'message': 'You are not the owner of the project'}, 400
+        result_1 = Application.get_by_aid(conn, int(aid))
+        if result_1 is None:
+            conn.close()
+            return {'message': 'Application not found'}, 404
+        result = Application.decline_an_application(conn, smtp, int(aid))
+        conn.close()
+        if result['apply_status'] != 0:
+            return {'message': 'Failed to decline an application'}, 405
+        return {'message': 'Decline the application successfully','Application':result}, 200
 
 @api.route('/project/<int:id>')
 @api.param('id', 'The project id')
