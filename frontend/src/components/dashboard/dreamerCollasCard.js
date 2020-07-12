@@ -3,7 +3,7 @@ import M from "materialize-css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Modal, Button } from "react-materialize";
-import { sendInvitation } from "../../actions/projects";
+import { sendInvitation, approve } from "../../actions/projects";
 import { connect } from "react-redux";
 
 class DreamerCollasCard extends React.Component {
@@ -33,7 +33,6 @@ class DreamerCollasCard extends React.Component {
     );
     console.log(res.data);
     this.setState({ info: res.data });
-    console.log(this.state.info);
   }
 
   handleonChange = (e) => {
@@ -50,6 +49,13 @@ class DreamerCollasCard extends React.Component {
     const cid = this.props.match.params.cid;
     this.props.sendInvitation({ general_text, pid, rid, cid });
   };
+
+  async approveApplication(e) {
+    const pid = this.props.match.params.pid;
+    const rid = this.props.match.params.rid;
+    const aid = this.props.match.params.cid;
+    await this.props.approve({ aid, rid, pid });
+  }
 
   render() {
     const url =
@@ -131,7 +137,9 @@ class DreamerCollasCard extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">RECOMMENDATION</h4>
+                        <h4 className="left event-title">
+                          COLLARBORATOR INFOMATION
+                        </h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -152,10 +160,15 @@ class DreamerCollasCard extends React.Component {
                       </div>
                       <div className="profile-name">{this.state.info.Name}</div>
                       <p className="about">
-                        This is my profile as a collaborator{" "}
-                        {this.state.info.Description}
+                        This is {this.state.info.Name}'s profile as a
+                        collaborator {this.state.info.Description}
                       </p>
-                      <button className="msg-btn button1">Message</button>
+                      <button
+                        className="msg-btn button1"
+                        onClick={(e) => this.approveApplication(e)}
+                      >
+                        Approve
+                      </button>
 
                       <Modal
                         dialogClassName="custom-dialog"
@@ -247,4 +260,4 @@ class DreamerCollasCard extends React.Component {
   }
 }
 
-export default connect(null, { sendInvitation })(DreamerCollasCard);
+export default connect(null, { sendInvitation, approve })(DreamerCollasCard);

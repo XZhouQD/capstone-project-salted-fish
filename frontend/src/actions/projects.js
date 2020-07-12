@@ -12,6 +12,7 @@ import {
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
   APPLY_ROLE,
+  APPPROVE_APPLICATION,
 } from "./actionTypes";
 
 // createProject
@@ -296,6 +297,39 @@ export const applyRole = ({ general_text, pid, rid }) => async (dispatch) => {
 
     dispatch({
       type: APPLY_ROLE,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// approve application
+export const approve = ({ aid, rid, pid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  aid = Number(aid);
+  pid = Number(pid);
+  rid = Number(rid);
+
+  try {
+    const url =
+      "/project/" + pid + "/role/" + rid + "/application/" + aid + "/approve";
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res);
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: APPPROVE_APPLICATION,
       payload: res.data.message,
     });
   } catch (err) {

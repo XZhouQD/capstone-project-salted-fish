@@ -10,6 +10,7 @@ import {
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
   APPLY_ROLE,
+  APPPROVE_APPLICATION,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -72,6 +73,12 @@ export default function (state = initialState, action) {
       };
 
     case APPLY_ROLE:
+      return {
+        ...state,
+        payload,
+      };
+
+    case APPPROVE_APPLICATION:
       return {
         ...state,
         payload,
