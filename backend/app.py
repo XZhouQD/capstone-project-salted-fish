@@ -395,7 +395,7 @@ class InvitationsReceived(CorsResource):
         conn.close()
         return result, 200
 
-@api.route('/collaborator/myProjects')
+@api.route('/collaborator/my_projects')
 class CollaboratorJoinedProjects(CorsResource):
     @api.response(200, 'Success')
     @api.response(401, 'Auth Failed')
@@ -412,7 +412,7 @@ class CollaboratorJoinedProjects(CorsResource):
         conn.close()
         return result, 200
 
-@api.route('/collaborator/myApplications')
+@api.route('/collaborator/my_applications')
 class ApplicationsOfCollaborator(CorsResource):
     @api.response(200, 'Success')
     @api.response(401, 'Auth Failed')
