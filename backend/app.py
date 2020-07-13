@@ -30,6 +30,7 @@ from projects.project import Project
 from projects.role import Role
 from projects.application import Application
 from projects.invitation import Invitation
+from projects.discussion import Discussion
 
 # Load config
 f = open('projects/project.config', 'r', encoding='utf-8')
@@ -143,6 +144,11 @@ apply_role_model = api.model('Apply_Role', {
 invite_role_model = api.model('Invite_Role', {
     'collaborator_id': fields.Integer(required=True, description='Invitee ID'),
     'general_text': fields.String(required=True, description='Invite description')
+})
+
+post_discussion_model = api.model('Post_Discussion', {
+    'parent_id': fields.Integer(required=False, description='reply discussion'),
+    'discuss_content': fields.String(required=True, description='content of discussion')
 })
 
 # API
@@ -628,6 +634,51 @@ class ViewAllApplication(CorsResource):
             return {'message': 'Application not found'}, 404
         return result, 200
 
+    
+@api.route('/project/<int:pid>/discussion/<int:did>')
+@api.param('pid', 'The project id')
+@api.param('did', 'The discussion id')
+class ViewSingleDiscussion(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Discussion not found')
+    @api.doc(description=' View single discussion for a project')
+    def get(self ,pid,did):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as dreamer or collaborator'}, 401
+        conn = db.conn()
+        result = Discussion.get_by_did(conn,int(did))
+        conn.close()
+        if result is None:
+            return {'message': 'Discussion not found'}, 404
+        return result, 200
+
+
+@api.route('/project/<int:pid>/discussions')
+@api.param('pid', 'The project id')
+class ViewAllDiscussion(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Discussion not found')
+    @api.doc(description=' View single discussion for a project')
+    def get(self ,pid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator' :
+            return {'message': 'You are not logged in as dreamer or collaborator'}, 401
+        conn = db.conn()
+        result = Discussion.get_by_pid(conn,int(pid))
+        conn.close()
+        if result is None:
+            return {'message': 'Discussion not found'}, 404
+        return result, 200   
+    
+    
+    
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
@@ -771,6 +822,49 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
             return result, 200
         else:
             return {'message': 'No discussion records found about your followed project'}, 400
+
+        
+@api.route('/project/<int:pid>/discussion')
+@api.param('pid', 'The project id')
+class PostDiscussion(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(402, 'Project not found')
+    @api.doc(description='Post a discussion for a project')
+    @api.expect(post_discussion_model, validate=True)
+    @require_auth
+    def post(self, pid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        user_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as dreamer or collaborator'}, 401
+        discussion_info = request.json
+        discuss_content = discussion_info['discuss_content']
+        parent_id = discussion_info['parent_id']
+        conn = db.conn()
+        if userinfo['role'] == 'Dreamer':
+            if Project.check_owner(conn, int(pid), user_id):
+                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 2,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+            else:
+                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 1,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+        else:
+            new_discuss = Discussion(int(pid),parent_id,is_dreamer = 0,c_author = user_id,text = discuss_content).create_by_collaborator(conn)
+        if new_discuss == None:
+            conn.close()
+            return {'message': 'Project not found'}, 402
+        discussion_id = new_discuss.info()['id']
+        if new_discuss.info()['is_dreamer'] == 2:
+            role = 'owner of this project'
+        elif new_discuss.info()['is_dreamer'] == 1:
+            role = 'other dreamer'
+        else:
+            role = 'collaborator'
+        conn.close()
+        return {'message': 'post discussion success', 'project_id': int(pid), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
+        
+        
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
