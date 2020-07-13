@@ -91,6 +91,22 @@ class Project():
         return proj.info()
 
     @staticmethod
+    #get Project object with specified role_id;
+    def get_by_pid_rid(conn, proj_id, role_id):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_text_by_id(conn, role_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
+        return proj
+
+    @staticmethod
     def get_by_title(conn, project_title):
         query = "SELECT * FROM project WHERE project_title = " + project_title + ";"
         result = conn.execute(query)

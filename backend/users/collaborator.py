@@ -142,25 +142,25 @@ class Collaborator():
     #get projects which I collaborated with;
     def get_my_projects(conn, user_ID):
         projects_joined = []
-        query_1 = "SELECT distinct(projectID) FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        query_1 = "SELECT projectID, role_applied FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
         result_1 = conn.execute(query_1)
         for i in range(result_1.rowcount):
             row_1 = result_1.fetchone()
-            if row_1['projectID'] not in projects_joined:
-                projects_joined.append(row_1['projectID'])
-        query_2 = "SELECT distinct(projectID) FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+            if (row_1['projectID'], row_1['role_applied']) not in projects_joined:
+                projects_joined.append((row_1['projectID'], row_1['role_applied']))
+        query_2 = "SELECT projectID, role_invited FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
         result_2 = conn.execute(query_2)
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
-            if row_2['projectID'] not in projects_joined:
-                projects_joined.append(row_2['projectID'])        
+            if (row_2['projectID'], row_2['role_invited']) not in projects_joined:
+                projects_joined.append((row_2['projectID'], row_2['role_invited']))       
 
-        project_list = []
-        for k in range(len([projects_joined])):
-            proj = Project.get_by_proj_id(conn, projects_joined[k]).text_info()
-            project_list.append(proj)
-        if len(project_list) == 0: return None
-        return {'projects': project_list, 'amount': len(project_list)}
+        myproject_list = []
+        for k in range(len(projects_joined)):            
+            proj = Project.get_by_pid_rid(conn, projects_joined[k][0], projects_joined[k][1])
+            myproject_list.append(proj)
+        if len(myproject_list) == 0: return None
+        return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
         skills = self.skill_dict
