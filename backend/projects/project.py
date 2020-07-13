@@ -104,7 +104,7 @@ class Project():
         proj.roles = Role.get_text_by_id(conn, role_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
-        return proj
+        return proj.text_info()
 
     @staticmethod
     def get_by_title(conn, project_title):
