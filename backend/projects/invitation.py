@@ -101,7 +101,7 @@ class Invitation():
         row_3 = result_3.fetchone()
         #decline all other applications/invitation for the same project role if all members have been recruited; 
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
-            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
+            query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
             # notify applicants for result
             query_4_1 = "SELECT * from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 0;"
