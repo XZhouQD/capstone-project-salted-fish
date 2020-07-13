@@ -301,7 +301,7 @@ class DreamerInfo(CorsResource):
         conn = db.conn()
         result = Dreamer.get_by_id(conn, int(id))
         conn.close()
-        if result:return {'Dreamer Info': result}, 200
+        if result:return {'Dreamer_Info': result}, 200
         else:return {'message':'The queried dreamer can not be found!'}, 400
 
 @api.route('/dreamer/recommendation')

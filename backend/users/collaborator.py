@@ -148,7 +148,7 @@ class Collaborator():
             row_1 = result_1.fetchone()
             if (row_1['projectID'], row_1['role_applied']) not in projects_joined:
                 projects_joined.append((row_1['projectID'], row_1['role_applied']))
-        query_2 = "SELECT projectID, role_invited FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        query_2 = "SELECT projectID, role_invited FROM invitation WHERE invitee = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
         result_2 = conn.execute(query_2)
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
