@@ -79,7 +79,7 @@ class Invitation():
                 invitation_status = 'Approved'
             if row['status'] == 9:
                 invitation_status = 'Finished'
-            invi = {'InvitationID':row['ID'], 'projectID':row['projectID'], 'Role_invited':row['role_invited'], 'Invitor':row['invitor'], 'Invitor_name': Dreamer.get_by_id(conn, row['invitor'])['name'], 'Invitee':row['invitee'], 'Invitation_status':invitation_status, 'General_text':row['general_text'], 'Role_information': Role.get_text_by_id(conn, row['role_invited'])}
+            invi = {'InvitationID':row['ID'], 'projectID':row['projectID'], 'Role_invited':row['role_invited'], 'Invitor':row['invitor'], 'Invitor_name': Dreamer.get_by_id(conn, row['invitor'])['name'], 'Invitee':row['invitee'], 'Invitation_status':invitation_status, 'General_text':row['general_text'], 'Role_information': Role.get_text_by_id(conn, row['role_invited']), 'Project_title': Project.get_by_id(conn, row['projectID'])['title']}
             invitations.append(invi)
         return {'invitations': invitations, 'amount': result.rowcount}
 
