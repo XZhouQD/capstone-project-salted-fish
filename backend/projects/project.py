@@ -2,6 +2,8 @@
 from projects.role import Role
 
 class Project():
+    category_list = ['Null', 'Other', 'Web', 'Desktop', 'Mobile', 'Library', 'Mod', 'Research']
+
     def __init__(self, title, description, owner, category, status=-1, hidden=0, hidden_reason=''):
         self.title = title
         self.description = description
@@ -67,7 +69,7 @@ class Project():
         proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
-        proj.roles = Role.get_by_proj_id(conn, proj_id)
+        proj.roles = Role.get_text_by_id(conn, proj_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
         return proj
@@ -281,6 +283,9 @@ class Project():
 
     def info(self):
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
+
+    def text_info(self):
+        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category_list[self.category], 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
