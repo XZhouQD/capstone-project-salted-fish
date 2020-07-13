@@ -104,7 +104,7 @@ class Project():
         proj.roles = Role.get_text_by_id(conn, role_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
-        return proj
+        return proj.text_info()
 
     @staticmethod
     def get_by_title(conn, project_title):
@@ -297,6 +297,71 @@ class Project():
             if row['dreamerID'] == owner_id: return True
         return False
 
+    @staticmethod
+    def get_pending_projects(conn):
+        query = "SELECT * FROM project WHERE project_status = -1 order by create_time;"
+        print(query)
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
+    def modified_projects_after_hidden(conn):
+        query = "SELECT * FROM project WHERE is_hidden = 1 and is_modified_after_hidden = 1 order by ID;"
+        print(query)
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
+    def audit_a_project(conn, proj_ID):
+        query = "UPDATE project SET project_status = 1 where ID = " + str(proj_ID) + ";"
+        print(query)
+        conn.execute(query)
+        proj = Project.get_by_proj_id(conn, proj_ID)
+        if proj['status'] == 1:return True
+        else:return False
+
+    @staticmethod
+    def hide_a_project(conn, proj_ID, hidden_reason):
+        query = "UPDATE project SET is_hidden = 1, hidden_reason = \'" + str(hidden_reason) + "\' WHERE id = " + str(proj_ID) + ";"
+        print(query)
+        conn.execute(query)
+        proj = Project.get_by_proj_id(conn, proj_ID)
+        if proj['hidden'] == 1:return True
+        else:return False
+
+    @staticmethod
+    def unhide_a_project(conn, proj_ID):
+        query = "UPDATE project SET is_hidden = 0 WHERE id = " + str(proj_ID) + ";"
+        print(query)
+        conn.execute(query)
+        proj = Project.get_by_proj_id(conn, proj_ID)
+        if proj['hidden'] == 0:return True
+        else:return False
+
     def info(self):
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
@@ -311,9 +376,19 @@ class Project():
         return False
 
     def patch(self, conn):
-        query = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
-        print(query)
+        query = "select * project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
+        if result.rowcount > 0:
+            row = result.fetchone()
+            #update is_modified_after_patch = 1 at the same time if the project has been hidden before patch;
+            if row['is_hidden'] == 1:
+                query_1 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + ", is_modified_after_hidden = 1 WHERE id = " + str(self.id) + ";"
+                print(query_1)
+                conn.execute(query_1)
+            else:
+                query_2 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
+                print(query_2)
+                conn.execute(query_2)
         return self
 
     def create(self, conn):
