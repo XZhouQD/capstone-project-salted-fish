@@ -182,9 +182,8 @@ class Invitation():
         result = smtp.send_email_html(dre['email'], content, subject)
         return result
 
-
-    def info(self):
-        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status}
+    def info(self, conn):
+        return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'Role_information': Role.get_text_by_id(conn, self.role_invite), 'Project_title': Project.get_by_id(conn, self.project_id)['title']}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
