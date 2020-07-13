@@ -66,5 +66,17 @@ Next week plan:
 2. generate a formal version of retrospect report;
 3. start coding part for sprint3;
 
+week 7
+1. complete sprint3 SF-32 update a project general info function;
+2. complete sprint3 SF-33 follow/unfollow a project function;
+3. complete sprint3 SF-34 finish a project which completed with statistic functions in sprint2;
+4. complete sprint3 SF-37 view all discussion about my project;
+5. complete sprint3 SF-38 view all discussion about my followed projects;
+6. add new required function: collaborator collaborated projects query, collaborator applied applications query, dreamer delcine an applicant function; 
+
+Next week plan:
+1. complete coding for sprint3;
+2. start coding for sprint4;
+
 
   
