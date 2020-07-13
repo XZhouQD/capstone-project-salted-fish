@@ -142,7 +142,7 @@ class Dreamer():
     
 
     def info(self):
-        return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
+        return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': str(self.create_time), 'last_update': str(self.last_update), 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
 
 
     def commit(self, conn):
