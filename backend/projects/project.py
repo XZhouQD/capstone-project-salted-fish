@@ -2,6 +2,8 @@
 from projects.role import Role
 
 class Project():
+    category_list = ['Null', 'Other', 'Web', 'Desktop', 'Mobile', 'Library', 'Mod', 'Research']
+
     def __init__(self, title, description, owner, category, status=-1, hidden=0, hidden_reason=''):
         self.title = title
         self.description = description
@@ -281,6 +283,9 @@ class Project():
 
     def info(self):
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
+
+    def text_info(self):
+        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category_list[self.category], 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
