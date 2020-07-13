@@ -2,7 +2,7 @@
 import yaml
 
 class Role():
-    education_list = ['Other', 'Bachelor', 'Master', 'PhD']
+    education_list = ['Null', 'Other', 'Bachelor', 'Master', 'PhD']
     skills_list = ['Null'] + yaml.load(open('projects/project.config', 'r', encoding='utf-8').read(), Loader=yaml.FullLoader)['Role']['Skills']
 
     def __init__(self, project_id, title, amount, skill, experience, education, general_enquiry=''):
@@ -79,6 +79,7 @@ class Role():
         return {'id': self.id, 'title': self.title, 'amount': self.amount, 'skill': self.skill, 'experience': self.experience, 'education': self.education, 'general_enquiry': self.general_enquiry, 'project_id': self.project_id}
 
     def text_info(self):
+        print(self.skill, self.education)
         return {'id': self.id, 'title': self.title, 'amount': self.amount, 'skill': self.skills_list[self.skill], 'experience': self.experience, 'education': self.education_list[self.education], 'general_enquiry': self.general_enquiry, 'project_id': self.project_id}
 
     def duplicate_check(self, conn):
