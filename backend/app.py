@@ -298,10 +298,6 @@ class DreamerInfo(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.doc(Description='Get information of a dreamer')
     def get(self, id):
-        token = request.headers.get('AUTH_KEY')
-        userinfo = auth.decode(token)
-        if userinfo['role'] != 'Dreamer':
-            return {'message': 'You are not logged in as dreamer'}, 401
         conn = db.conn()
         result = Dreamer.get_by_id(conn, int(id))
         conn.close()
