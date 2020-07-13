@@ -291,6 +291,23 @@ class ProjectsRecommendation(CorsResource):
             return {'projects': [], 'message': 'No matching projects were found.'}, 200
         return result, 200
 
+@api.route('/dreamer/<int:id>')
+class DreamerInfo(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Dreamer can not be found')
+    @api.response(401, 'Auth Failed')
+    @api.doc(Description='Get information of a dreamer')
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        conn = db.conn()
+        result = Dreamer.get_by_id(conn, int(id))
+        conn.close()
+        if result:return {'Dreamer Info': result}, 200
+        else:return {'message':'The queried dreamer can not be found!'}, 400
+
 @api.route('/dreamer/recommendation')
 class CollaboratorsRecommendation(CorsResource):
     @api.response(200, 'Success')
