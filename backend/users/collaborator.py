@@ -157,8 +157,8 @@ class Collaborator():
 
         project_list = []
         for k in range(len([projects_joined])):
-            proj = Project.get_by_id(conn, projects_joined[k])
-            project_list.append(proj.text_info())
+            proj = Project.get_by_id(conn, projects_joined[k]).text_info()
+            project_list.append(proj)
         if len(project_list) == 0: return None
         return {'projects': project_list, 'amount': len(project_list)}
 
