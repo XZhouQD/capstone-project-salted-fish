@@ -168,6 +168,50 @@ class AdminAPI(CorsResource):
             return {'message': 'You are not logged in as admin'}, 401
         return {'email': admin_email}, 200
 
+
+@api.route('/admin/pending_projects')
+class GetAllPendingAProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Auth Failed')
+    @api.response(401, 'No pending projects found')
+    @api.doc(description="Get all pending projects")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        #admin_email = userinfo['email']
+        #admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.get_pending_projects(conn)
+        conn.close()
+        if result is None:
+            return {'message': 'No pending projects are found now!'}, 400
+        return result, 200
+
+@api.route('/admin/<int:id>')
+class AuditAProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.response(402, 'Failed to audit the project')
+    @api.doc(description="Audit a project")
+    @require_auth
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        #admin_email = userinfo['email']
+        #admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.audit_a_project(conn, int(id))
+        conn.close()
+        if result:return {'message': 'Audit the project successfully!'}, 200
+        else:return {'message': 'Fail to udit the project!'}, 402
+
 @api.route('/categories')
 class Categories(CorsResource):
     @api.response(200, 'Success')
