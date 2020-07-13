@@ -58,12 +58,12 @@ class Dreamer():
 
     @staticmethod
     def get_by_id(conn, id):
-        query = "select * from dreamer where ID = " + int(id) + ";"
+        query = "select * from dreamer where ID = " + str(int(id)) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
+        return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description']).info()
 
     def collaborators_recommdation(self, conn):
         owner = self.id
@@ -142,7 +142,7 @@ class Dreamer():
     
 
     def info(self):
-        return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update, 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
+        return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': str(self.create_time), 'last_update': str(self.last_update), 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
 
 
     def commit(self, conn):

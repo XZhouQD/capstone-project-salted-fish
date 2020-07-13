@@ -7,7 +7,15 @@ const Alert = ({ alerts }) =>
   alerts !== null &&
   alerts.length > 0 &&
   alerts.map((alert) => (
-    <div key={alert.id} className="center light-green accent-2 container">
+    <div
+      key={alert.id}
+      className="center light-green accent-2 container center"
+      style={{
+        position: "sticky",
+        top: "5px",
+        zIndex: 9999,
+      }}
+    >
       {alert.msg}
     </div>
   ));

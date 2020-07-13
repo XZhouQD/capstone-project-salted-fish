@@ -53,12 +53,16 @@ class Collaborator():
         return my_col_info
 
     @staticmethod
-    def get_object_by_id(conn, id):
+    def get_object_by_id(conn, id, applied_role=-1):
         query = "select * from collaborator where ID = " + str(id) + ";"
         result = conn.execute(query)
         row = result.fetchone()
         my_col = Collaborator(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'], education=row['education'])
         my_col.skill_dict = Collaborator.getSkills(conn, row['ID'])
+        if applied_role != -1:
+            query_2 = "SELECT * FROM application where role_applied = " + str(applied_role) + " AND applicant = " + str(id) + " AND status = -1;"
+            result = conn.execute(query_2)
+            return my_col, result.rowcount
         return my_col
 
     def info_2(self):
@@ -133,6 +137,30 @@ class Collaborator():
             new_pass = password_encrypted
         query = "UPDATE collaborator set password = \'" + new_pass + "\' where email = \'" + email + "\';"
         conn.execute(query)
+
+    @staticmethod
+    #get projects which I collaborated with;
+    def get_my_projects(conn, user_ID):
+        projects_joined = []
+        query_1 = "SELECT projectID, role_applied FROM application WHERE applicant = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        result_1 = conn.execute(query_1)
+        for i in range(result_1.rowcount):
+            row_1 = result_1.fetchone()
+            if (row_1['projectID'], row_1['role_applied']) not in projects_joined:
+                projects_joined.append((row_1['projectID'], row_1['role_applied']))
+        query_2 = "SELECT projectID, role_invited FROM invitation WHERE invitee = " + str(user_ID) + " AND (status = 1 or status = 9) ORDER BY projectID;"
+        result_2 = conn.execute(query_2)
+        for j in range(result_2.rowcount):
+            row_2 = result_2.fetchone()
+            if (row_2['projectID'], row_2['role_invited']) not in projects_joined:
+                projects_joined.append((row_2['projectID'], row_2['role_invited']))       
+
+        myproject_list = []
+        for k in range(len(projects_joined)):            
+            proj = Project.get_by_pid_rid(conn, projects_joined[k][0], projects_joined[k][1])
+            myproject_list.append(proj)
+        if len(myproject_list) == 0: return None
+        return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
         skills = self.skill_dict

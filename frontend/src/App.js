@@ -13,7 +13,11 @@ import ProjectList from "./components/projects/projectList";
 import DreamerRecommend from "./components/dashboard/dreamerRecommend";
 import projectDetails from "./components/projects/projectDetails";
 import DreamerCollasCard from "./components/dashboard/dreamerCollasCard";
-
+import ChangeRoleDetails from "./components/projects/changeRoleDetails";
+import CollaProjectList from "./components/dashboard/collaProjectList";
+import CollaDash from "./components/dashboard/collaDash";
+import CollaOwnRecommend from "./components/dashboard/collaOwnRecommend";
+import Card from "./components/dashboard/test";
 function App() {
   return (
     <Router>
@@ -22,15 +26,28 @@ function App() {
       <Alert />
       <Switch>
         <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/colladash" component={CollaDash} />
+        <Route exact path="/collaproject" component={CollaProjectList} />
         <Route exact path="/drecommend" component={DreamerRecommend} />
+          <Route exact path="/crecommend" component={CollaOwnRecommend} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/admindash" component={AdminDash} />
+        <Route
+          exact
+          path="/project/:pid/role/:rid"
+          component={ChangeRoleDetails}
+        />
         <Route exact path="/projects/:id" component={projectDetails} />
-        <Route exact path="/projects/2/3" component={DreamerCollasCard} />
+        <Route
+          exact
+          path="/project/:pid/role/:rid/collaborators/:cid"
+          component={DreamerCollasCard}
+        />
+        <Route exact path="/test" component={Card} />
       </Switch>
     </Router>
   );

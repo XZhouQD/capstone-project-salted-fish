@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 from users.collaborator import Collaborator
+from users.dreamer import Dreamer
+from projects.project import Project
+from projects.role import Role
 
 class Application():
     def __init__(self, project_id, role_apply, applicant,general_text = '',status = -1):
@@ -10,8 +13,18 @@ class Application():
         self.status = -1
         # no input warning
         self.id = -1
-    
-    
+
+    @staticmethod
+    def get_object_by_aid(conn, application_id):
+        query = "SELECT * FROM application where ID = " + str(application_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        appli = Application(row['projectID'], row['role_applied'], row['applicant'], row['general_text'], row['status'])
+        appli.id = row['ID']
+        return appli
+
     @staticmethod
     def get_by_aid(conn, application_id):
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
@@ -44,10 +57,32 @@ class Application():
         return all_application
 
     @staticmethod
-    def approve_an_application(conn, proj_ID, role_ID, application_id):
+    def get_by_applicant(conn, user_ID):
+        query = "SELECT * FROM application where applicant = " + str(user_ID) + " order by ID desc;"
+        result = conn.execute(query)
+        applications = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            if row['status'] == -1:
+                application_status = 'Pending'
+            if row['status'] == 0:
+                application_status = 'Declined'
+            if row['status'] == 1:
+                application_status = 'Approved'
+            if row['status'] == 9:
+                application_status = 'Finished'
+            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'Role_applied':row['role_applied'], 'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
+            applications.append(appli)
+        return {'applications': applications, 'amount': result.rowcount}
+
+    @staticmethod
+    def approve_an_application(conn, smtp, proj_ID, role_ID, application_id):
         # update the application status as 1 - application approved;
         query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
-        conn.execute(query)       
+        conn.execute(query)
+        # notify applicant for result
+        appli = Application.get_object_by_aid(conn, application_id)
+        appli.notify_result(conn, smtp)
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
@@ -62,11 +97,89 @@ class Application():
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
             query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
-            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
+            # notify applicants for result
+            query_4_1 = "SELECT * from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 0;"
+            result = conn.execute(query_4_1)
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                temp_app = Application(row['projectID'], row['role_applied'], row['applicant'], row['general_text'], row['status'])
+                temp_app.id = row['ID']
+                temp_app.notify_result(conn, smtp, accept=False)
+            query_5 = "UPDATE invitation set status = 0 where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status != 1;"
             conn.execute(query_5)
+            #notify invitees for auto cancel
+            query_5_1 = "SELECT * FROM invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " AND status = 0;"
+            result = conn.execute(query_5_1)
+            from projects.invitation import Invitation
+            for i in range(result.rowcount):
+                row = result.fetchone()
+                temp_inv = Invitation(row['projectID'], row['role_invited'], row['invitor'], row['invitee'], row['general_text'], row['status'])
+                temp_inv.id = row['ID']
+                temp_inv.notify_invitee_auto_decline(conn, smtp)
         #return approved application;
         return Application.get_by_aid(conn, application_id)
-        
+
+    @staticmethod
+    def decline_an_application(conn, smtp, application_id):
+        # update the application status as 0 - application declined;
+        query = "UPDATE application set status = 0 where ID = " + str(application_id) + ";"
+        conn.execute(query)
+        # notify applicant for result
+        appli = Application.get_object_by_aid(conn, application_id)
+        appli.notify_result(conn, smtp, accept=False)
+        #return the declined application;
+        return Application.get_by_aid(conn, application_id)
+
+    def notify_owner(self, conn, smtp):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_apply)
+        col = Collaborator.get_by_id(conn, self.applicant)
+        dre = Dreamer.get_by_id(conn, proj['owner'])
+        subject = '[DreamMatchmaker]You have a new project application'
+        content = f'''<p>Hello {dre['name']},</p>
+<p>   <b>{col['name']}</b> has applied to join your project <b>"{proj['title']}"</b> as <b>"{role['title']}"</b></p>
+<p>   The following message is from the applicant:</p>
+<p>      {self.general_text}<p>
+<p>   You can view and accept or decline the application on the website.</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(dre['email'], content, subject)
+        return result
+
+    def notify_applicant(self, conn, smtp):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_apply)
+        col = Collaborator.get_by_id(conn, self.applicant)
+        dre = Dreamer.get_by_id(conn, proj['owner'])
+        subject = '[DreamMatchmaker]You have created a new project application'
+        content = f'''<p>Hello {col['name']},</p>
+<p>   You have applied to join project <b>"{proj['title']}"</b> as <b>"{role['title']}"</b>.</p>
+<p>   The following message is leaved to project owner:</p>
+<p>      {self.general_text}<p>
+<p>   The project owner will view your application. The result will be notified through email.</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(col['email'], content, subject)
+        return result
+
+    def notify_result(self, conn, smtp, accept=True):
+        proj = Project.get_by_id(conn, self.project_id)
+        role = Role.get_by_id(conn, self.role_apply)
+        col = Collaborator.get_by_id(conn, self.applicant)
+        dre = Dreamer.get_by_id(conn, proj['owner'])
+        subject = '[DreamMatchmaker]You have an application status update'
+        if accept:
+            acceptance = 'accepted'
+        else:
+            acceptance = 'declined'
+        content = f'''<p>Hello {col['name']},</p>
+<p>   Your application to join project <b>"{proj['title']}"</b> as <b>"{role['title']}"</b></p>
+<p>   has been {acceptance}.</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(col['email'], content, subject)
+        return result
+
     def info(self):
         return {'id': self.id, 'project_id': self.project_id, 'role_apply': self.role_apply, 'applicant': self.applicant, 'general_text': self.general_text}
 
@@ -76,7 +189,7 @@ class Application():
         if result.rowcount > 0:
             return True
         return False
-    
+
     def check_project_role(self,conn):
         query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND ID = " + str(self.role_apply) + " ;"
         result = conn.execute(query)

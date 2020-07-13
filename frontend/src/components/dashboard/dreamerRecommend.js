@@ -3,15 +3,15 @@ import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import DreamerOwnRecommend from "./dreamerOwnRecommend";
 
 class DreamerRecommend extends React.Component {
   constructor() {
     super();
+    this.state = {
+      drecommend: [],
+    };
   }
-
-  state = {
-    drecommend: [],
-  };
 
   async componentDidMount() {
     M.AutoInit();
@@ -26,18 +26,12 @@ class DreamerRecommend extends React.Component {
     };
 
     const res = await axios.get("/dreamer/recommendation", config);
-    console.log(res.data);
-    var b = res.data.project_role_collaborator;
-
-    this.setState({ drecommend: res.data.project_role_collaborator });
+    var b = res.data.collaborators;
+    console.log(b);
+    this.setState({ drecommend: b });
   }
 
   render() {
-    const url =
-      "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 100) +
-      "/800x600";
-
     return (
       <div>
         <header>
@@ -110,51 +104,13 @@ class DreamerRecommend extends React.Component {
                       </div>
                     </nav>
 
-                    <div className="col s12 m12 l12">
-                      <div className="card horizontal small">
-                        <div className="card-stacked">
-                          <div
-                            className="card-content"
-                            style={{ overflowY: "scroll" }}
-                          >
-                            <p>11111</p>
-
-                            <div className="collection card-content">
-                              <a href="#!" className="collection-item">
-                                白菜
-                              </a>
-                              <a href="#!" className="collection-item active">
-                                青菜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                萝卜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                土豆
-                              </a>
-                            </div>
-                            <div className="collection card-content">
-                              <a href="#!" className="collection-item">
-                                白菜
-                              </a>
-                              <a href="#!" className="collection-item active">
-                                青菜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                萝卜
-                              </a>
-                              <a href="#!" className="collection-item">
-                                土豆
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="card-image right">
-                          <img src={url} />
-                        </div>
-                      </div>
-                    </div>
+                    {this.state.drecommend.length !== 0 ? (
+                      this.state.drecommend.map((each, index) => (
+                        <DreamerOwnRecommend each={each} key={index} />
+                      ))
+                    ) : (
+                      <p>no projects</p>
+                    )}
                   </div>
                 </div>
               </div>

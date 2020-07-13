@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { getProject, searchProject } from "../../actions/projects";
 import M from "materialize-css";
 import EachProject from "./eachProject";
+import { Link } from "react-router-dom";
 
 class ProjectList extends Component {
   constructor(props) {
@@ -132,12 +133,15 @@ class ProjectList extends Component {
                   </select>
                   <label className="left">ASCENDING/DESCENDING</label>
                 </div>
+                <div className="right">
+                  {this.props.role==="Collaborator"?(<Link to="/collaproject"><button className="btn-small blue-grey darken-1" style={{ marginRight: "10px"}}>match</button></Link>):(<p>nothing</p>)}
+                  <input
+                      type="submit"
+                      className="btn btn-small blue-grey darken-1"
+                      value="Search"
+                  />
+                </div>
 
-                <input
-                  type="submit"
-                  className="btn btn-small right"
-                  value="Search"
-                />
               </form>
             </div>
           </div>
@@ -152,6 +156,7 @@ class ProjectList extends Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  role: state.auth.role,
   ProjectLists: state.project.ProjectLists,
 });
 

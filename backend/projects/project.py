@@ -2,6 +2,8 @@
 from projects.role import Role
 
 class Project():
+    category_list = ['Null', 'Other', 'Web', 'Desktop', 'Mobile', 'Library', 'Mod', 'Research']
+
     def __init__(self, title, description, owner, category, status=-1, hidden=0, hidden_reason=''):
         self.title = title
         self.description = description
@@ -57,6 +59,22 @@ class Project():
         return proj.info()
 
     @staticmethod
+    #return a Project object with project generail info;
+    def get_by_proj_id(conn, proj_id):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_text_by_id(conn, proj_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
+        return proj
+
+    @staticmethod
     #search by project id and role skill for one type of role 
     def get_by_id_skill(conn, proj_id, skill):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
@@ -71,6 +89,22 @@ class Project():
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
         return proj.info()
+
+    @staticmethod
+    #get Project object with specified role_id;
+    def get_by_pid_rid(conn, proj_id, role_id):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_text_by_id(conn, role_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
+        return proj
 
     @staticmethod
     def get_by_title(conn, project_title):
@@ -173,6 +207,88 @@ class Project():
         return Project.get_by_id(conn, proj_ID)
             
     @staticmethod
+    def follow_a_project(conn, proj_ID, user_role, user_ID):
+        if user_role == 'Dreamer':
+            #check if the user has subscribed the project or not;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                #user has not subscribed this project, proceed to subscribe it;
+                query = "INSERT INTO subscription (projectID, is_dreamer, d_subscriber) VALUES (" + str(proj_ID) + ", " + str(1) + ", " + str(user_ID) + ");"
+                conn.execute(query)
+                #query one more time to return the subscription info;
+                query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+                result = conn.execute(query_2)
+            row = result.fetchone()
+            userid = row['d_subscriber']  
+        else:
+            #check if the user has subscribed the project or not;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                #user has not subscribed this project, proceed to subscribe it;
+                query = "INSERT INTO subscription (projectID, is_dreamer, c_subscriber) VALUES (" + str(proj_ID) + ", " + str(0) + ", " + str(user_ID) + ");"
+                conn.execute(query)
+                #query one more time to return the subscription info;
+                query_2 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+                result = conn.execute(query_2)
+            row = result.fetchone()
+            userid = row['c_subscriber']  
+        return {'projectID':row['projectID'], 'user_ID':userid}
+
+    @staticmethod
+    def unfollow_a_project(conn, proj_ID, user_role, user_ID):
+        if user_role == 'Dreamer':
+            query = "DELETE FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            conn.execute(query)
+            #query one more time to return the subscription info;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                return True
+        else:
+            query = "DELETE FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            conn.execute(query)
+            #query one more time to return the subscription info;
+            query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and c_subscriber = " + str(user_ID) + ";"
+            result = conn.execute(query_1)
+            if result.rowcount == 0:
+                return True        
+        return False
+
+    @staticmethod
+    def get_discussion_about_one_project(conn, proj_ID):
+        #get all discussion records by one given project_ID;
+        query = "SELECT * FROM discussion WHERE projectID = " + str(proj_ID) + " ORDER BY ID;"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        discussion_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion_list.append(discussion)
+        return discussion_list
+
+    @staticmethod
+    def get_discussion_about_followed_projects(conn, user_type, user_ID):
+        #get all discussion records of the projects which user followed;
+        if user_type == 'Dreamer':
+            query = "SELECT d.ID as ID, d.projectID as projectID, parent_discussion_ID, text, d.is_dreamer as is_dreamer, d_author, c_author, d.last_update as last_update FROM subscription s, discussion d WHERE s.projectID = d.projectID and s.is_dreamer = 1 and s.d_subscriber = " + str(user_ID) + " ORDER BY d.ID, d.projectID;"
+            result = conn.execute(query)
+        else:
+            query = "SELECT d.ID as ID, d.projectID as projectID, parent_discussion_ID, text, d.is_dreamer as is_dreamer, d_author, c_author, d.last_update as last_update FROM subscription s, discussion d WHERE s.projectID = d.projectID and s.c_subscriber = " + str(user_ID) + " ORDER BY d.ID, d.projectID;"
+            result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        discussion_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion_list.append(discussion)
+        return discussion_list
+
+    @staticmethod
     def check_owner(conn, proj_id, owner_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
@@ -184,12 +300,21 @@ class Project():
     def info(self):
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
+    def text_info(self):
+        return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category_list[self.category], 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
+
     def duplicate_check(self, conn):
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
         return False
+
+    def patch(self, conn):
+        query = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
+        print(query)
+        result = conn.execute(query)
+        return self
 
     def create(self, conn):
         if self.duplicate_check(conn):

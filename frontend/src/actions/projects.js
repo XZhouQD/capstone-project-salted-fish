@@ -8,6 +8,12 @@ import {
   SEARCH_PROJECT_LIST,
   POST_PROJECT_ROLE,
   POST_PROJECT_ROLE_FAIL,
+  CHANGE_PROJECT_ROLE,
+  CHANGE_PROJECT_ROLE_FAIL,
+  SEND_INVITATION,
+  APPLY_ROLE,
+  GET_COLLA_PROJECT_LIST,
+    SEARCH_COLLA_PROJECT_LIST,
 } from "./actionTypes";
 
 // createProject
@@ -67,7 +73,7 @@ export const getProject = () => async (dispatch) => {
   } catch (err) {
     // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;
-    console.log(errors);
+    console.log(err.response);
   }
 };
 
@@ -161,5 +167,202 @@ export const postProjectRole = ({
     dispatch({
       type: POST_PROJECT_ROLE_FAIL,
     });
+  }
+};
+
+// postProjectRole list
+export const changeProjectRole = ({
+  title,
+  amount,
+  skill,
+  experience,
+  education,
+  general_enquiry,
+  pid,
+  rid,
+}) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+
+  amount = Number(amount);
+  skill = Number(skill);
+  experience = Number(experience);
+  education = Number(education);
+  pid = Number(pid);
+  rid = Number(rid);
+
+  const body = JSON.stringify({
+    title,
+    amount,
+    skill,
+    experience,
+    education,
+    general_enquiry,
+  });
+  console.log(body);
+
+  try {
+    // need to change
+    const res = await axios.patch(
+      "/project/" + pid + "/role/" + rid,
+      body,
+      config
+    );
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: CHANGE_PROJECT_ROLE,
+      payload: res.data,
+    });
+    setTimeout(() => dispatch({ type: CHANGE_PROJECT_ROLE_FAIL }), 100);
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+
+    dispatch({
+      type: CHANGE_PROJECT_ROLE_FAIL,
+    });
+  }
+};
+
+// sendInvitation
+export const sendInvitation = ({ general_text, pid, rid, cid }) => async (
+  dispatch
+) => {
+  const a = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+
+  const collaborator_id = Number(cid);
+  const body = JSON.stringify({
+    collaborator_id,
+    general_text,
+  });
+  console.log(body);
+
+  try {
+    const url = "/project/" + pid + "/role/" + rid + "/invitation";
+    const res = await axios.post(url, body, config);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: SEND_INVITATION,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// apply role
+export const applyRole = ({ general_text, pid, rid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  pid = Number(pid);
+  rid = Number(rid);
+  const body = JSON.stringify({
+    general_text,
+  });
+
+  try {
+    const url = "/project/" + pid + "/role/" + rid + "/appllication";
+    console.log(url);
+    const res = await axios.post(url, body, config);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: APPLY_ROLE,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// getCollaProject list
+export const getCollaProject = () => async (dispatch) => {
+  try {
+
+    const a = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+    const res = await axios.get("/collaborator/projects", config);
+    console.log("COLLA!!!",res.data);
+
+    dispatch({
+      type: GET_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    console.log(errors);
+  }
+};
+
+// search
+export const searchCollaProject = ({
+                                description,
+                                category,
+                                order_by,
+                                sorting,
+                              }) => async (dispatch) => {
+  category = Number(category) - 1;
+  try {
+    const res = await axios.get(
+        "/collaborator/projects?description=" +
+        description +
+        "&category=" +
+        category +
+        "&order_by=" +
+        order_by +
+        "&sorting=" +
+        sorting
+    );
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: SEARCH_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
   }
 };
