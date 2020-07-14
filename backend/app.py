@@ -592,7 +592,7 @@ class DeclineAnInvitation(CorsResource):
             conn.close()
             return {'message': 'Failed to decline an invitation'}, 404
         invite = Invitation.get_object_by_id(conn, iid)
-        invite.notify_invitor(conn, smtp, accpet=False)
+        invite.notify_invitor(conn, smtp, accept=False)
         conn.close()
         return {'message': 'Invitation has been declined!','Invitation':result}, 200
 
