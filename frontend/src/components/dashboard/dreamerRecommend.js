@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import DreamerOwnRecommend from "./dreamerOwnRecommend";
+import { connect } from "react-redux";
 
 class DreamerRecommend extends React.Component {
   constructor() {
@@ -32,6 +33,9 @@ class DreamerRecommend extends React.Component {
   }
 
   render() {
+    if (!this.props.isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
     return (
       <div>
         <header>
@@ -58,12 +62,6 @@ class DreamerRecommend extends React.Component {
               <li className="bold">
                 <Link className="waves-effect waves-teal" to="./drecommend">
                   Recommend Collaborators
-                </Link>
-              </li>
-
-              <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
-                  Followed collaborators
                 </Link>
               </li>
 
@@ -122,4 +120,8 @@ class DreamerRecommend extends React.Component {
   }
 }
 
-export default DreamerRecommend;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, null)(DreamerRecommend);
