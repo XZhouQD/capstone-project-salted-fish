@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { connect } from "react-redux";
 import DreamerOwnProject from "./dreamerOwnProject";
 
 class DreamerDash extends React.Component {
@@ -33,6 +34,9 @@ class DreamerDash extends React.Component {
   }
 
   render() {
+    if (!this.props.isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
     const category_list = [
       "All other",
       "A web based application",
@@ -66,12 +70,6 @@ class DreamerDash extends React.Component {
               <li className="bold">
                 <Link className="waves-effect waves-teal" to="./drecommend">
                   Recommend Collaborators
-                </Link>
-              </li>
-
-              <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
-                  Followed collaborators
                 </Link>
               </li>
 
@@ -140,4 +138,8 @@ class DreamerDash extends React.Component {
   }
 }
 
-export default DreamerDash;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, null)(DreamerDash);

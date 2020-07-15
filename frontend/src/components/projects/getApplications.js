@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import M from "materialize-css";
-
 import axios from "axios";
 
 class GetApplication extends React.Component {
@@ -11,8 +9,7 @@ class GetApplication extends React.Component {
 
   async componentWillMount() {
     const a = localStorage.getItem("token");
-    console.log(this.props.url_1);
-    console.log(a);
+
     const res = await axios.get(this.props.url_1, {
       headers: {
         "AUTH-KEY": a,
@@ -20,14 +17,27 @@ class GetApplication extends React.Component {
     });
 
     this.setState({ a: res.data.applications });
+    console.log(this.state.a);
   }
   render() {
     return (
       <div>
         {this.state.a.map((each, index) => {
+          const url =
+            "/project/" +
+            this.props.pid +
+            "/role/" +
+            this.props.rid +
+            "/collaborators/" +
+            each.id +
+            "/applications";
           return (
-            <div key={index}>
-              {each.name} want to have this role and say {each.general_text}
+            <div key={index} style={{ fontFamily: "Ubuntu" }}>
+              <Link to={url} style={{ marginRight: "10px" }}>
+                {each.name}
+              </Link>
+              want to apply for this role and leaves his messgae：
+              {each.general_text}
             </div>
           );
         })}

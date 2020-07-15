@@ -35,3 +35,13 @@ I have implemented the dashboard layout and the diferent kind of events such as 
 whats more, I have implemented the recommendation pages and the profile pages using the data from backend.
 I have created the project details pages by using link method. 
 Add invitation function.
+
+
+
+week 6
+implemented the dashboard,recommendation pages,personal info pages,and invited/apply modals for collaborators and dreamers.
+implemented the page through using api provided by the backend.
+design the layout and css part.
+implemented the link between each pages.
+add protected route for dashboard.
+

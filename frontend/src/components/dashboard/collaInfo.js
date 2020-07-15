@@ -1,22 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import M from "materialize-css";
+import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Modal, Button } from "react-materialize";
-import { sendInvitation, approve } from "../../actions/projects";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 
-class DreamerCollasCard extends React.Component {
+class CollaInfo extends React.Component {
   constructor() {
     super();
-    this.state = {
-      info: {},
-      general_text: "",
-    };
   }
 
+  state = {
+    info: [],
+  };
+
   async componentDidMount() {
+    // Auto initialize all the materailize css!
     M.AutoInit();
     const a = localStorage.getItem("token");
 
@@ -27,43 +26,30 @@ class DreamerCollasCard extends React.Component {
         "AUTH-KEY": a,
       },
     };
-    console.log(this.props.match.params.cid);
-    const res = await axios.get(
-      "/collaborator/" + this.props.match.params.cid,
-      config
-    );
-    console.log(res.data);
+    const url = "/collaborator/" + this.props.id;
+    const res = await axios.get(url, config);
     this.setState({ info: res.data });
   }
 
-  handleonChange = (e) => {
-    // get target element name
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  handleonSubmit = (e) => {
-    e.preventDefault();
-
-    const { general_text } = this.state;
-    const pid = this.props.match.params.pid;
-    const rid = this.props.match.params.rid;
-    const cid = this.props.match.params.cid;
-    this.props.sendInvitation({ general_text, pid, rid, cid });
-  };
-
-  async approveApplication(e) {
-    const pid = this.props.match.params.pid;
-    const rid = this.props.match.params.rid;
-    const aid = this.props.match.params.cid;
-    await this.props.approve({ aid, rid, pid });
+  async update(e) {
+    console.log(1);
   }
 
   render() {
+    const category_list = [
+      "All other",
+      "A web based application",
+      "A desktop application",
+      "A mobile application",
+
+      "A library for other project to reference",
+
+      "A modification to existing platform",
+      "A research oriented project",
+    ];
+    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
-
-    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
-
     const skill_list = [
       "Web Development",
       "Java",
@@ -84,16 +70,11 @@ class DreamerCollasCard extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
-
     return (
       <div>
         <header>
           <div className="navbar-fixed" style={{ position: "fixed" }}>
-            <Link
-              data-target="nav-mobile"
-              className="sidenav-trigger"
-              style={{ zIndex: 1 }}
-            >
+            <Link data-target="nav-mobile" className="sidenav-trigger">
               <i className="material-icons">menu</i>
             </Link>
           </div>
@@ -104,18 +85,24 @@ class DreamerCollasCard extends React.Component {
               style={{ position: "fixed" }}
             >
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/dashboard">
+                <Link className="waves-effect waves-teal" to="./colladash">
                   My Projects
                 </Link>
               </li>
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/drecommend">
-                  Recommend Collaborators
+                <Link className="waves-effect waves-teal" to="./crecommend">
+                  Recommend Projects
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/drecommend">
+                <Link className="waves-effect waves-teal" to="./invited">
+                  Invited Projects
+                </Link>
+              </li>
+
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./cinfo">
                   My Info
                 </Link>
               </li>
@@ -135,9 +122,7 @@ class DreamerCollasCard extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">
-                          COLLARBORATOR INFOMATION
-                        </h4>
+                        <h4 className="left event-title">EVENTS</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -163,46 +148,10 @@ class DreamerCollasCard extends React.Component {
                       </p>
                       <button
                         className="msg-btn button1"
-                        onClick={(e) => this.approveApplication(e)}
+                        onClick={(e) => this.update(e)}
                       >
-                        Message
+                        update
                       </button>
-
-                      <Modal
-                        dialogClassName="custom-dialog"
-                        trigger={
-                          <Button
-                            waves="follow-btn button1"
-                            style={{ marginLeft: "10px" }}
-                          >
-                            Invite
-                          </Button>
-                        }
-                      >
-                        <form
-                          className="col s12"
-                          onSubmit={(e) => this.handleonSubmit(e)}
-                        >
-                          <div className="input-field ">
-                            <input
-                              placeholder="Say HI"
-                              type="text"
-                              name="general_text"
-                              onChange={(e) => this.handleonChange(e)}
-                              required
-                            />
-                            <label htmlFor="title">
-                              Send the invitation message!
-                            </label>
-                          </div>
-                          <input
-                            type="submit"
-                            className="btn-small left"
-                            value="send"
-                            style={{ marginTop: "38px" }}
-                          />
-                        </form>
-                      </Modal>
 
                       <div>
                         <div>
@@ -257,10 +206,10 @@ class DreamerCollasCard extends React.Component {
     );
   }
 }
+
 const mapStateToProps = (state) => ({
+  id: state.auth.id,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, { sendInvitation, approve })(
-  DreamerCollasCard
-);
+export default connect(mapStateToProps, null)(CollaInfo);

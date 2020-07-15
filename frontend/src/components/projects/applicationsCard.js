@@ -3,11 +3,10 @@ import M from "materialize-css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Modal, Button } from "react-materialize";
-import { sendInvitation, approve } from "../../actions/projects";
+import { sendInvitation, approve, decline } from "../../actions/projects";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 
-class DreamerCollasCard extends React.Component {
+class ApplicationCard extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -58,6 +57,13 @@ class DreamerCollasCard extends React.Component {
     await this.props.approve({ aid, rid, pid });
   }
 
+  async declineApplication(e) {
+    const pid = this.props.match.params.pid;
+    const rid = this.props.match.params.rid;
+    const aid = this.props.match.params.cid;
+    await this.props.decline({ aid, rid, pid });
+  }
+
   render() {
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
@@ -81,9 +87,6 @@ class DreamerCollasCard extends React.Component {
       "Deep Learning/Neural Network",
       "Distribution System",
     ];
-    if (!this.props.isAuthenticated) {
-      return <Redirect to="/login" />;
-    }
 
     return (
       <div>
@@ -111,6 +114,12 @@ class DreamerCollasCard extends React.Component {
               <li className="bold">
                 <Link className="waves-effect waves-teal" to="/drecommend">
                   Recommend Collaborators
+                </Link>
+              </li>
+
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="/drecommend">
+                  Followed collaborators
                 </Link>
               </li>
 
@@ -165,44 +174,16 @@ class DreamerCollasCard extends React.Component {
                         className="msg-btn button1"
                         onClick={(e) => this.approveApplication(e)}
                       >
-                        Message
+                        Approve
                       </button>
 
-                      <Modal
-                        dialogClassName="custom-dialog"
-                        trigger={
-                          <Button
-                            waves="follow-btn button1"
-                            style={{ marginLeft: "10px" }}
-                          >
-                            Invite
-                          </Button>
-                        }
+                      <Button
+                        waves="follow-btn button1"
+                        style={{ marginLeft: "10px" }}
+                        onClick={(e) => this.declineApplication(e)}
                       >
-                        <form
-                          className="col s12"
-                          onSubmit={(e) => this.handleonSubmit(e)}
-                        >
-                          <div className="input-field ">
-                            <input
-                              placeholder="Say HI"
-                              type="text"
-                              name="general_text"
-                              onChange={(e) => this.handleonChange(e)}
-                              required
-                            />
-                            <label htmlFor="title">
-                              Send the invitation message!
-                            </label>
-                          </div>
-                          <input
-                            type="submit"
-                            className="btn-small left"
-                            value="send"
-                            style={{ marginTop: "38px" }}
-                          />
-                        </form>
-                      </Modal>
+                        Decline
+                      </Button>
 
                       <div>
                         <div>
@@ -257,10 +238,7 @@ class DreamerCollasCard extends React.Component {
     );
   }
 }
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
 
-export default connect(mapStateToProps, { sendInvitation, approve })(
-  DreamerCollasCard
+export default connect(null, { sendInvitation, approve, decline })(
+  ApplicationCard
 );
