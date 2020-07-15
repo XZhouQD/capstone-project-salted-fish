@@ -3,124 +3,131 @@ import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import DreamerOwnProject from "./dreamerOwnProject";
+import { connect } from "react-redux";
 
 class CollaDash extends React.Component {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
-    state = {
-        myProjects: [],
+  state = {
+    myProjects: [],
+  };
+
+  async componentDidMount() {
+    // Auto initialize all the materailize css!
+    M.AutoInit();
+    const a = localStorage.getItem("token");
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
     };
 
-    async componentDidMount() {
-        // Auto initialize all the materailize css!
-        M.AutoInit();
-        const a = localStorage.getItem("token");
+    const res = await axios.get("/collaborator/recommendation", config);
+    console.log("colla project", res.data);
+    this.setState({ myProjects: res.data.projects });
+  }
 
-        const config = {
-            headers: {
-                "Content-Type": "application/json;charset=UTF-8",
-                "Access-Control-Allow-Origin": "*",
-                "AUTH-KEY": a,
-            },
-        };
+  render() {
+    const category_list = [
+      "All other",
+      "A web based application",
+      "A desktop application",
+      "A mobile application",
 
-        const res = await axios.get("/collaborator/recommendation", config);
-        console.log("colla project",res.data);
-        this.setState({ myProjects: res.data.projects });
+      "A library for other project to reference",
+
+      "A modification to existing platform",
+      "A research oriented project",
+    ];
+    if (!this.props.isAuthenticated) {
+      return <Redirect to="/login" />;
     }
+    return (
+      <div>
+        <header>
+          <div className="navbar-fixed" style={{ position: "fixed" }}>
+            <Link data-target="nav-mobile" className="sidenav-trigger">
+              <i className="material-icons">menu</i>
+            </Link>
+          </div>
+          <div>
+            <ul
+              id="nav-mobile"
+              className="sidenav sidenav-fixed"
+              style={{ position: "fixed" }}
+            >
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./colladash">
+                  My Projects
+                </Link>
+              </li>
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./crecommend">
+                  Recommend Projects
+                </Link>
+              </li>
 
-    render() {
-        const category_list = [
-            "All other",
-            "A web based application",
-            "A desktop application",
-            "A mobile application",
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./invited">
+                  Invited Projects
+                </Link>
+              </li>
 
-            "A library for other project to reference",
+              <li className="bold">
+                <Link className="waves-effect waves-teal" to="./cinfo">
+                  My Info
+                </Link>
+              </li>
 
-            "A modification to existing platform",
-            "A research oriented project",
-        ];
-        return (
-            <div>
-                <header>
-                    <div className="navbar-fixed" style={{ position: "fixed" }}>
-                        <Link data-target="nav-mobile" className="sidenav-trigger">
-                            <i className="material-icons">menu</i>
-                        </Link>
-                    </div>
-                    <div>
-                        <ul
-                            id="nav-mobile"
-                            className="sidenav sidenav-fixed"
-                            style={{ position: "fixed" }}
-                        >
-                            <li className="bold">
-                                <Link className="waves-effect waves-teal">
-                                    My Projects
-                                </Link>
-                            </li>
-                            <li className="bold">
-                                <Link className="waves-effect waves-teal" to="./crecommend">
-                                    Recommend Projects
-                                </Link>
-                            </li>
+              <div className="logo">
+                <h3>Logo</h3>
+              </div>
+            </ul>
+          </div>
+        </header>
 
-                            <li className="bold">
-                                <Link className="waves-effect waves-teal" to="./drecommend">
-                                    Followed Projects
-                                </Link>
-                            </li>
-
-                            <li className="bold">
-                                <Link className="waves-effect waves-teal" to="./drecommend">
-                                    My Info
-                                </Link>
-                            </li>
-
-                            <div className="logo">
-                                <h3>Logo</h3>
-                            </div>
-                        </ul>
-                    </div>
-                </header>
-
-                <main>
-                    <div className="container">
-                        <div className="row">
-                            <div className="col s12 l12 dashboard">
-                                <div className="card grey lighten-3">
-                                    <div className="card-content posts">
-                                        <nav className="pink darken-1">
-                                            <div className="nav-wrapper">
-                                                <h4 className="left event-title">EVENTS</h4>
-                                                <form className="search-field right">
-                                                    <div className="input-field">
-                                                        <input id="search" type="search" required />
-                                                        <label
-                                                            className="label-icon search-icon"
-                                                            for="search"
-                                                        >
-                                                            <i className="material-icons">search</i>
-                                                        </label>
-                                                        <i className="material-icons close-icon">close</i>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </nav>
-                                        <h5>This should be my applied projects</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </main>
+        <main>
+          <div className="container">
+            <div className="row">
+              <div className="col s12 l12 dashboard">
+                <div className="card grey lighten-3">
+                  <div className="card-content posts">
+                    <nav className="pink darken-1">
+                      <div className="nav-wrapper">
+                        <h4 className="left event-title">EVENTS</h4>
+                        <form className="search-field right">
+                          <div className="input-field">
+                            <input id="search" type="search" required />
+                            <label
+                              className="label-icon search-icon"
+                              for="search"
+                            >
+                              <i className="material-icons">search</i>
+                            </label>
+                            <i className="material-icons close-icon">close</i>
+                          </div>
+                        </form>
+                      </div>
+                    </nav>
+                    <h5>This should be my applied projects</h5>
+                  </div>
+                </div>
+              </div>
             </div>
-        );
-    }
+          </div>
+        </main>
+      </div>
+    );
+  }
 }
 
-export default CollaDash;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, null)(CollaDash);

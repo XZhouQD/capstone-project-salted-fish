@@ -134,14 +134,24 @@ class ProjectList extends Component {
                   <label className="left">ASCENDING/DESCENDING</label>
                 </div>
                 <div className="right">
-                  {this.props.role==="Collaborator"?(<Link to="/collaproject"><button className="btn-small blue-grey darken-1" style={{ marginRight: "10px"}}>match</button></Link>):(<p>nothing</p>)}
+                  {this.props.role === "Collaborator" ? (
+                    <Link to="/collaproject">
+                      <button
+                        className="btn-small blue-grey darken-1"
+                        style={{ marginRight: "10px" }}
+                      >
+                        match
+                      </button>
+                    </Link>
+                  ) : (
+                    ""
+                  )}
                   <input
-                      type="submit"
-                      className="btn btn-small blue-grey darken-1"
-                      value="Search"
+                    type="submit"
+                    className="btn btn-small blue-grey darken-1"
+                    value="Search"
                   />
                 </div>
-
               </form>
             </div>
           </div>

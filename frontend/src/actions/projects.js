@@ -12,8 +12,12 @@ import {
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
   APPLY_ROLE,
+  APPPROVE_APPLICATION,
+  DECLINE_APPLICATION,
   GET_COLLA_PROJECT_LIST,
-    SEARCH_COLLA_PROJECT_LIST,
+  SEARCH_COLLA_PROJECT_LIST,
+  ACCEPT_INVITATION,
+  DECLINE_INVITATION,
 } from "./actionTypes";
 
 // createProject
@@ -307,10 +311,41 @@ export const applyRole = ({ general_text, pid, rid }) => async (dispatch) => {
   }
 };
 
+// approve application
+export const approve = ({ aid, rid, pid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  aid = Number(aid);
+  pid = Number(pid);
+  rid = Number(rid);
+
+  try {
+    const url =
+      "/project/" + pid + "/role/" + rid + "/application/" + aid + "/approve";
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res);
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: APPPROVE_APPLICATION,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
 // getCollaProject list
 export const getCollaProject = () => async (dispatch) => {
   try {
-
     const a = localStorage.getItem("token");
     const config = {
       headers: {
@@ -320,7 +355,7 @@ export const getCollaProject = () => async (dispatch) => {
       },
     };
     const res = await axios.get("/collaborator/projects", config);
-    console.log("COLLA!!!",res.data);
+    console.log("COLLA!!!", res.data);
 
     dispatch({
       type: GET_COLLA_PROJECT_LIST,
@@ -329,21 +364,54 @@ export const getCollaProject = () => async (dispatch) => {
   } catch (err) {
     // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;
-    console.log(errors);
+    dispatch(setAlert(errors));
+  }
+};
+
+// approve application
+export const decline = ({ aid, rid, pid }) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  aid = Number(aid);
+  pid = Number(pid);
+  rid = Number(rid);
+
+  try {
+    const url =
+      "/project/" + pid + "/role/" + rid + "/application/" + aid + "/decline";
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res);
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: DECLINE_APPLICATION,
+      payload: res.data.message,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
   }
 };
 
 // search
 export const searchCollaProject = ({
-                                description,
-                                category,
-                                order_by,
-                                sorting,
-                              }) => async (dispatch) => {
+  description,
+  category,
+  order_by,
+  sorting,
+}) => async (dispatch) => {
   category = Number(category) - 1;
   try {
     const res = await axios.get(
-        "/collaborator/projects?description=" +
+      "/collaborator/projects?description=" +
         description +
         "&category=" +
         category +
@@ -357,6 +425,61 @@ export const searchCollaProject = ({
     dispatch(setAlert(res.data.message));
     dispatch({
       type: SEARCH_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// search
+export const acceptInvitation = (url) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  try {
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: ACCEPT_INVITATION,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// declineInvitation
+export const declineInvitation = (url) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  try {
+    const res = await axios.get(url, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: DECLINE_INVITATION,
       payload: res.data,
     });
   } catch (err) {

@@ -3,16 +3,15 @@ import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import CollaOwnProject from "./collaOwnProject";
 import { connect } from "react-redux";
 
-class CollaOwnRecommend extends React.Component {
+class DreamerCard extends React.Component {
   constructor() {
     super();
   }
 
   state = {
-    myProjects: [],
+    info: [],
   };
 
   async componentDidMount() {
@@ -27,27 +26,17 @@ class CollaOwnRecommend extends React.Component {
         "AUTH-KEY": a,
       },
     };
+    const url = "/dreamer/" + this.props.match.params.id;
+    const res = await axios.get(url, config);
 
-    const res = await axios.get("/collaborator/recommendation", config);
-    console.log("colla project", res.data);
-    this.setState({ myProjects: res.data.projects });
+    this.setState({ info: res.data.Dreamer_Info });
+    console.log(this.state.info);
   }
 
   render() {
-    const category_list = [
-      "All other",
-      "A web based application",
-      "A desktop application",
-      "A mobile application",
+    const url =
+      "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
 
-      "A library for other project to reference",
-
-      "A modification to existing platform",
-      "A research oriented project",
-    ];
-    if (!this.props.isAuthenticated) {
-      return <Redirect to="/login" />;
-    }
     return (
       <div>
         <header>
@@ -63,24 +52,24 @@ class CollaOwnRecommend extends React.Component {
               style={{ position: "fixed" }}
             >
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./colladash">
+                <Link className="waves-effect waves-teal" to="/colladash">
                   My Projects
                 </Link>
               </li>
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./crecommend">
+                <Link className="waves-effect waves-teal" to="/crecommend">
                   Recommend Projects
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./invited">
+                <Link className="waves-effect waves-teal" to="/invited">
                   Invited Projects
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./cinfo">
+                <Link className="waves-effect waves-teal" to="/cinfo">
                   My Info
                 </Link>
               </li>
@@ -100,7 +89,7 @@ class CollaOwnRecommend extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">Recommend</h4>
+                        <h4 className="left event-title">DREAMER INFO</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -115,23 +104,43 @@ class CollaOwnRecommend extends React.Component {
                         </form>
                       </div>
                     </nav>
-                    {this.state.myProjects.length > 0 ? (
-                      this.state.myProjects.map((each, index) => {
-                        return (
-                          <CollaOwnProject
-                            key={index}
-                            title={each.title}
-                            description={each.description}
-                            category={category_list[each.category]}
-                            id={each.id}
-                            create_time={each.create_time}
-                            last_update={each.last_update}
-                          />
-                        );
-                      })
-                    ) : (
-                      <p>Apply for your first project</p>
-                    )}
+                    <div className="container1">
+                      <div className="cover-photo">
+                        <img src={url} className="profile" />
+                      </div>
+                      <div className="profile-name">{this.state.info.name}</div>
+                      <p className="about">
+                        This is {this.state.info.name}'s profile as a dreamer
+                      </p>
+                      <button
+                        className="msg-btn button1"
+                        onClick={(e) => this.update(e)}
+                      >
+                        update
+                      </button>
+
+                      <div>
+                        <div>
+                          <i className="fab material-icons icon">call</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
+                            {this.state.info.phone_no}
+                          </span>
+                        </div>
+                        <div>
+                          <i className="fab material-icons icon">email</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
+                            {this.state.info.email}
+                          </span>
+                        </div>
+
+                        <div>
+                          <i className="fab material-icons icon">trending_up</i>{" "}
+                          <span style={{ position: "relative", bottom: "4px" }}>
+                            {this.state.info.user_level}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -144,7 +153,7 @@ class CollaOwnRecommend extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  id: state.auth.id,
 });
 
-export default connect(mapStateToProps, null)(CollaOwnRecommend);
+export default connect(mapStateToProps, null)(DreamerCard);

@@ -12,14 +12,16 @@ Nan Zhao        z5225777
 Qingbei Wu      z5222641
 '''
 
-import json, yaml
+import json, yaml, os
 from functools import wraps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
 from itsdangerous import JSONWebSignatureSerializer, BadSignature
+from werkzeug.datastructures import FileStorage
+
 from db import DB
 from auth_token import AuthToken
-from util import check_email, CorsResource
+from util import check_email, allowed_file, CorsResource
 from smtp import SMTP
 
 from users.admin import Admin
@@ -36,8 +38,16 @@ from projects.discussion import Discussion
 f = open('projects/project.config', 'r', encoding='utf-8')
 config = yaml.load(f.read(), Loader=yaml.FullLoader)
 
+# Other config
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'files')
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except:
+    pass
+
 # Flask App
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app, authorizations={
     'API-KEY': {
         'type': 'apiKey',
@@ -75,6 +85,10 @@ projects_parser.add_argument('sorting', choices=['ASC','DESC'], default='DESC')
 
 collaborator_parser = reqparse.RequestParser()
 collaborator_parser.add_argument('applied_role', type=int, default=-1) # -1 for no request on this
+
+# Put Parsers
+resume_parser = reqparse.RequestParser()
+resume_parser.add_argument('file', type=FileStorage, location='files')
 
 # Post Models
 login_model = api.model('Login', {
@@ -168,6 +182,50 @@ class AdminAPI(CorsResource):
             return {'message': 'You are not logged in as admin'}, 401
         return {'email': admin_email}, 200
 
+
+@api.route('/admin/pending_projects')
+class GetAllPendingAProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Auth Failed')
+    @api.response(401, 'No pending projects found')
+    @api.doc(description="Get all pending projects")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        #admin_email = userinfo['email']
+        #admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.get_pending_projects(conn)
+        conn.close()
+        if result is None:
+            return {'message': 'No pending projects are found now!'}, 400
+        return result, 200
+
+@api.route('/admin/<int:id>')
+class AuditAProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.response(402, 'Failed to audit the project')
+    @api.doc(description="Audit a project")
+    @require_auth
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        #admin_email = userinfo['email']
+        #admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.audit_a_project(conn, int(id))
+        conn.close()
+        if result:return {'message': 'Audit the project successfully!'}, 200
+        else:return {'message': 'Fail to udit the project!'}, 402
+
 @api.route('/categories')
 class Categories(CorsResource):
     @api.response(200, 'Success')
@@ -229,6 +287,54 @@ class CollaboratorsList(CorsResource):
         co_list = Collaborator.get_all(conn)
         conn.close()
         return {'Collaborator_list': co_list}, 200
+
+@api.route('/collaborator/resume')
+class UploadResume(CorsResource):
+    @api.response(201, 'Created')
+    @api.response(400, 'Validation Error')
+    @api.response(401, 'Auth Failed')
+    @api.doc(Description='Upload a pdf resume')
+    @api.expect(resume_parser)
+    @require_auth
+    def post(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        conn = db.conn()
+        user = Collaborator.get_by_id(conn, userinfo['id'])
+        conn.close()
+        args = resume_parser.parse_args()
+        uploaded_file = args['file']
+        if uploaded_file.filename == '':
+            return {'message': 'No file selected'}, 400
+        if uploaded_file and allowed_file(uploaded_file.filename):
+            filename = f"Resume_{user['id']}_{'_'.join(user['name'].split())}.pdf"
+            uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return {'message': 'File saved'}, 201
+        return {'message': 'File format error'}, 400
+
+@api.route('/collaborator/<int:id>/resume')
+class FindResume(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(404, 'Resume Not Found')
+    @api.doc(Description='Get the resume download URL')
+    def get(self, id):
+        conn = db.conn()
+        user = Collaborator.get_by_id(conn, int(id))
+        conn.close()
+        filename = f"Resume_{user['id']}_{'_'.join(user['name'].split())}.pdf"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(filepath):
+            return {'filename': filename}, 200
+        else:
+            return {'message': 'Resume not found'}, 404
+
+# Note. This is NOT a restful API!
+@app.route('/download/<path:filename>')
+def downloader(filename):
+    dirpath = app.config['UPLOAD_FOLDER']
+    return send_from_directory(dirpath, filename, as_attachment=True)
 
 @api.route('/collaborator/<int:id>')
 class CollaboratorInfo(CorsResource):
@@ -548,7 +654,7 @@ class DeclineAnInvitation(CorsResource):
             conn.close()
             return {'message': 'Failed to decline an invitation'}, 404
         invite = Invitation.get_object_by_id(conn, iid)
-        invite.notify_invitor(conn, smtp, accpet=False)
+        invite.notify_invitor(conn, smtp, accept=False)
         conn.close()
         return {'message': 'Invitation has been declined!','Invitation':result}, 200
 

@@ -74,7 +74,7 @@ class ProjectDetails extends Component {
             </Button>
           }
         >
-          <GetApplications url_1={url1} />
+          <GetApplications url_1={url1} rid={rid} pid={pid} />
         </Modal>
       </div>
     );
@@ -155,18 +155,7 @@ class ProjectDetails extends Component {
     );
   }
   render() {
-    // const { auth } = this.props;
-    // if (!auth.uid) return <Redirect to="/signin" />;
-    const url =
-      "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 20) +
-      "/1600*900";
-
-    // const url_1 = "/projects/" + this.props.match.params.id;
-    // if (this.props.applySuccess === "role apply success") {
-    //   return <Redirect to={url_1} />;
-    // }
-
+    const url = "https://source.unsplash.com/collection/45/1600*900";
     return (
       <div>
         <div className="container">
@@ -174,7 +163,7 @@ class ProjectDetails extends Component {
             <div className="col s12 m12 l12">
               <div className="card">
                 <div className="card-image">
-                  <img src={url} />
+                  <img src={url} width="650" />
                   <span className="card-title">{this.state.title}</span>
                   <a className="btn-floating halfway-fab waves-effect waves-light red">
                     <i className="material-icons">add</i>

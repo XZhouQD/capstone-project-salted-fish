@@ -1,9 +1,14 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 class DreamerOwnRecommend extends React.Component {
   render() {
+    if (!this.props.isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
+
     const skill_list = [
       "Web Development",
       "Java",
@@ -101,4 +106,8 @@ class DreamerOwnRecommend extends React.Component {
   }
 }
 
-export default DreamerOwnRecommend;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps, null)(DreamerOwnRecommend);

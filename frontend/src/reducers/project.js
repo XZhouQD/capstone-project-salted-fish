@@ -10,18 +10,24 @@ import {
   CHANGE_PROJECT_ROLE_FAIL,
   SEND_INVITATION,
   APPLY_ROLE,
-    GET_COLLA_PROJECT_LIST,
-    SEARCH_COLLA_PROJECT_LIST,
+  APPPROVE_APPLICATION,
+  DECLINE_APPLICATION,
+  GET_COLLA_PROJECT_LIST,
+  SEARCH_COLLA_PROJECT_LIST,
+  DECLINE_INVITATION,
+  ACCEPT_INVITATION,
 } from "../actions/actionTypes";
 
 const initialState = {
   project_id: null,
   ProjectLists: [],
+  acceptList: [],
+  declineList: [],
 };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
-  console.log(payload);
+
   switch (type) {
     // sucess load in
     case CREATE_PROJECT_SUCCESS:
@@ -38,7 +44,7 @@ export default function (state = initialState, action) {
       return { ...state };
 
     case GET_COLLA_PROJECT_LIST:
-      return {...state, CollaProjectLists: payload.projects}
+      return { ...state, CollaProjectLists: payload.projects };
 
     case GET_PROJECT_LIST:
       return { ...state, ProjectLists: payload.projects };
@@ -88,6 +94,30 @@ export default function (state = initialState, action) {
       return {
         ...state,
         payload,
+      };
+
+    case APPPROVE_APPLICATION:
+      return {
+        ...state,
+        payload,
+      };
+
+    case DECLINE_APPLICATION:
+      return {
+        ...state,
+        payload,
+      };
+
+    case ACCEPT_INVITATION:
+      return {
+        ...state,
+        acceptList: payload.Invitation.id,
+      };
+
+    case DECLINE_INVITATION:
+      return {
+        ...state,
+        declineList: payload.Invitation.id,
       };
 
     default:

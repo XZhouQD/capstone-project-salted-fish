@@ -1,14 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-class DreamerOwnProject extends React.Component {
+class CollaOwnProject extends React.Component {
   render() {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
-
     const url =
       "https://source.unsplash.com/collection/" +
       Math.floor(Math.random() * 500) +
@@ -31,12 +30,7 @@ class DreamerOwnProject extends React.Component {
             </p>
             <p>create project time: {this.props.create_time.split(" ")[0]}</p>
           </div>
-          <div className="right-align" style={{ marginTop: "20px" }}>
-            <Link to={addRoleUrl}>
-              <button className="waves-effect waves-light btn-small">
-                <i className="material-icons left">add</i>Add roles
-              </button>
-            </Link>
+          <div className="right-align" style={{ marginTop: "45px" }}>
             <p>
               <b>category:</b> {this.props.category}
             </p>
@@ -51,4 +45,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, null)(DreamerOwnProject);
+export default connect(mapStateToProps, null)(CollaOwnProject);
