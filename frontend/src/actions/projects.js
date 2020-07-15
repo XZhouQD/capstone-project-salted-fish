@@ -16,6 +16,8 @@ import {
   DECLINE_APPLICATION,
   GET_COLLA_PROJECT_LIST,
   SEARCH_COLLA_PROJECT_LIST,
+  ACCEPT_INVITATION,
+  DECLINE_INVITATION,
 } from "./actionTypes";
 
 // createProject
@@ -423,6 +425,61 @@ export const searchCollaProject = ({
     dispatch(setAlert(res.data.message));
     dispatch({
       type: SEARCH_COLLA_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// search
+export const acceptInvitation = (url) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  try {
+    console.log(url);
+    const res = await axios.get(url, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: ACCEPT_INVITATION,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// declineInvitation
+export const declineInvitation = (url) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  try {
+    const res = await axios.get(url, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: DECLINE_INVITATION,
       payload: res.data,
     });
   } catch (err) {

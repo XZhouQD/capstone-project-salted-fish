@@ -155,18 +155,7 @@ class ProjectDetails extends Component {
     );
   }
   render() {
-    // const { auth } = this.props;
-    // if (!auth.uid) return <Redirect to="/signin" />;
-    const url =
-      "https://source.unsplash.com/collection/" +
-      Math.floor(Math.random() * 20) +
-      "/1600*900";
-
-    // const url_1 = "/projects/" + this.props.match.params.id;
-    // if (this.props.applySuccess === "role apply success") {
-    //   return <Redirect to={url_1} />;
-    // }
-
+    const url = "https://source.unsplash.com/collection/45/1600*900";
     return (
       <div>
         <div className="container">

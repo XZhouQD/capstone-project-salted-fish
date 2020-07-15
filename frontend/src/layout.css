@@ -121,9 +121,7 @@ nav .input-field .search-icon,
 .event-today > .card-title {
   padding: 10px;
 }
-.modal-trigger {
-  display: block !important;
-}
+
 @media only screen and (min-width: 993px) {
   /* header {
     padding-left: 300px;
@@ -243,4 +241,8 @@ nav .input-field .search-icon,
   left: 50%;
   max-width: 500 !important;
   min-height: 300;
+}
+
+.modal-open {
+  overflow-y: scroll;
 }

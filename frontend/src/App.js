@@ -19,6 +19,9 @@ import CollaDash from "./components/dashboard/collaDash";
 import CollaOwnRecommend from "./components/dashboard/collaOwnRecommend";
 import Card from "./components/dashboard/test";
 import ApplicationsCard from "./components/projects/applicationsCard";
+import CollaInvited from "./components/dashboard/collaInvited";
+import CollaInfo from "./components/dashboard/collaInfo";
+import DreamerCard from "./components/dashboard/dreamerCard";
 
 function App() {
   return (
@@ -31,12 +34,15 @@ function App() {
         <Route exact path="/colladash" component={CollaDash} />
         <Route exact path="/collaproject" component={CollaProjectList} />
         <Route exact path="/drecommend" component={DreamerRecommend} />
-          <Route exact path="/crecommend" component={CollaOwnRecommend} />
+        <Route exact path="/crecommend" component={CollaOwnRecommend} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/create" component={CreateProject} />
         <Route exact path="/project/:id/role" component={AddRoleProject} />
         <Route exact path="/projects" component={ProjectList} />
+        <Route exact path="/invited" component={CollaInvited} />
+        <Route exact path="/cinfo" component={CollaInfo} />
+        <Route exact path="/dreamer/:id" component={DreamerCard} />
         <Route
           exact
           path="/project/:pid/role/:rid/collaborators/:cid/applications"

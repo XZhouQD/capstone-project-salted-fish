@@ -14,16 +14,20 @@ import {
   DECLINE_APPLICATION,
   GET_COLLA_PROJECT_LIST,
   SEARCH_COLLA_PROJECT_LIST,
+  DECLINE_INVITATION,
+  ACCEPT_INVITATION,
 } from "../actions/actionTypes";
 
 const initialState = {
   project_id: null,
   ProjectLists: [],
+  acceptList: [],
+  declineList: [],
 };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
-  console.log(payload);
+
   switch (type) {
     // sucess load in
     case CREATE_PROJECT_SUCCESS:
@@ -103,6 +107,19 @@ export default function (state = initialState, action) {
         ...state,
         payload,
       };
+
+    case ACCEPT_INVITATION:
+      return {
+        ...state,
+        acceptList: payload.Invitation.id,
+      };
+
+    case DECLINE_INVITATION:
+      return {
+        ...state,
+        declineList: payload.Invitation.id,
+      };
+
     default:
       return state;
   }
