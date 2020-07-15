@@ -782,7 +782,28 @@ class ViewAllDiscussion(CorsResource):
         if result is None:
             return {'message': 'Discussion not found'}, 404
         return result, 200   
+
     
+@api.route('/notification')
+class ViewNotification(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'notification not found')
+    @api.doc(description=' View notification for user')
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        user_id = userinfo['id']
+        user_role = userinfo['role']
+        if user_role != 'Dreamer' and user_role != 'Collaborator':
+            return {'message': 'You are not logged in as dreamer or collaborator'}, 401
+        conn = db.conn()
+        result = Discussion.get_notification_by_id(conn,int(user_id),user_role)
+        conn.close()
+        if result is None:
+            return {'message': 'notification not found'}, 404
+        return result, 200
     
     
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
