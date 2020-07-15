@@ -14,6 +14,31 @@ class Discussion():
         self.text = text
         # no input warning
         self.id = -1
+    
+    
+    @staticmethod
+    def get_notification_by_id(conn, user_id,user_role):
+        if user_role == 'Dreamer':
+            query = "SELECT * FROM dreamer_notification where dreamer_ID = " + str(user_id) + " and is_viewed = " + str(0) + ";"
+        if user_role == 'Collaborator':
+            query = "SELECT * FROM collaborator_notification where collaborator_ID = " + str(user_id) + " and is_viewed = " + str(0) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        notification_dict = {}
+        notification_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            id = row['ID']
+            notification = {'notification_id': row['ID'], 'notification_content': row['notification_text']}
+            notification_list.append(notification)
+            if user_role == 'Dreamer':
+                query = "UPDATE dreamer_notification set is_viewed = " + str(1) + " where ID = " + str(id) + ";"
+            if user_role == 'Collaborator':
+                query = "UPDATE collaborator_notification set is_viewed = " + str(1) + " where ID = " + str(id) + ";"
+            conn.execute(query)
+        notification_dict['notification'] = notification_list
+        return notification_dict
 
     @staticmethod
     def get_by_did(conn, discussion_id):
