@@ -2,7 +2,7 @@
 
 For our own testing and demo:
 
-1. Install python3, mysql/mariadb, pip3, configure by your preference
+1. Install python3.6+, pip3, configure by your preference
 
 2. Install pypi libraries by: pip3 install -r requirements.txt
 
@@ -10,7 +10,7 @@ For our own testing and demo:
 
 For first time using the project:
 
-1. Install python3, mysql/mariadb, pip3, configure by your preference
+1. Install python3.6+, mysql/mariadb, pip3, configure by your preference
 
 2. Install pypi libraries by: pip3 install -r requirements.txt
 
