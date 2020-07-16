@@ -18,6 +18,7 @@ import {
   SEARCH_COLLA_PROJECT_LIST,
   ACCEPT_INVITATION,
   DECLINE_INVITATION,
+    UPLOAD_RESUME,
 } from "./actionTypes";
 
 // createProject
@@ -489,3 +490,35 @@ export const declineInvitation = (url) => async (dispatch) => {
     dispatch(setAlert(errors));
   }
 };
+
+// declineInvitation
+export const uploadResume = (file) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  console.log("!!!!!!",file)
+  const data = new FormData()
+  data.append('file', file)
+  console.log("!!!!!!", data);
+  try {
+    const res = await axios.post("/collaborator/resume", data, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: UPLOAD_RESUME,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
