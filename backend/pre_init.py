@@ -89,7 +89,7 @@ password VARCHAR(64),
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`),
-UNIQUE KEY (`email`));'''
+UNIQUE KEY (`email`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # collaborator table
@@ -106,7 +106,7 @@ user_level INT(5), description TEXT,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (`ID`),
-UNIQUE KEY (`email`));'''
+UNIQUE KEY (`email`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # dreamer table
@@ -122,7 +122,7 @@ description TEXT,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (`ID`),
-UNIQUE KEY (`email`));'''
+UNIQUE KEY (`email`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # skill/exp table
@@ -131,7 +131,7 @@ query = '''CREATE TABLE skills (
 skill TINYINT DEFAULT -1,
 experience TINYINT DEFAULT 0,
 collaboratorID int(11) NOT NULL,
-FOREIGN KEY (`collaboratorID`) REFERENCES collaborator(`ID`));'''
+FOREIGN KEY (`collaboratorID`) REFERENCES collaborator(`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # Always create No.1 collaborator/dreamer/admin for system keeping to avoid foreign key error
@@ -154,7 +154,7 @@ hidden_reason VARCHAR(256) DEFAULT NULL,
 is_modified_after_hidden TINYINT DEFAULT 0,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # project_role table
@@ -164,13 +164,11 @@ ID INT(11) NOT NULL AUTO_INCREMENT,
 projectID int(11) NOT NULL, FOREIGN KEY (`projectID`) REFERENCES project(`ID`),
 title VARCHAR(50) DEFAULT NULL,
 amount INT(3) DEFAULT NULL,
-skill TINYINT DEFAULT -1,
-experience TINYINT DEFAULT 0,
 education TINYINT DEFAULT -1,
 general_enquiry VARCHAR(2048) DEFAULT NULL,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # role_skill table
@@ -179,7 +177,7 @@ query = '''CREATE TABLE role_skill (
 skill TINYINT DEFAULT -1,
 experience TINYINT DEFAULT 0,
 roleID int(11) NOT NULL,
-FOREIGN KEY (`roleID`) REFERENCES project_role(`ID`));'''
+FOREIGN KEY (`roleID`) REFERENCES project_role(`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # application table
@@ -193,7 +191,7 @@ status TINYINT DEFAULT -1,
 general_text TEXT DEFAULT NULL,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # invitation table
@@ -208,7 +206,7 @@ status TINYINT DEFAULT -1,
 general_text TEXT DEFAULT NULL,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # discussion table
@@ -223,7 +221,7 @@ d_author INT(11),FOREIGN KEY (`d_author`) REFERENCES dreamer(`ID`),
 c_author INT(11),FOREIGN KEY (`c_author`) REFERENCES collaborator(`ID`),
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # subscription table
@@ -233,7 +231,7 @@ projectID INT(11) NOT NULL,FOREIGN KEY (`projectID`) REFERENCES project(`ID`),
 is_dreamer TINYINT DEFAULT 0,
 d_subscriber INT(11),FOREIGN KEY (`d_subscriber`) REFERENCES dreamer(`ID`),
 c_subscriber INT(11),FOREIGN KEY (`c_subscriber`) REFERENCES collaborator(`ID`),
-create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);'''
+create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # dreamer_notification table
@@ -245,7 +243,7 @@ notification_text TEXT DEFAULT NULL,
 is_viewed TINYINT DEFAULT 0,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 # collaborator_notification table
@@ -257,7 +255,7 @@ notification_text TEXT DEFAULT NULL,
 is_viewed TINYINT DEFAULT 0,
 create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-PRIMARY KEY (`ID`));'''
+PRIMARY KEY (`ID`)) ROW_FORMAT=DYNAMIC;'''
 conn.execute(query)
 
 print("pre initialisation complete")
