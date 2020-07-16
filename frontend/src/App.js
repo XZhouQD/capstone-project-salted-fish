@@ -22,6 +22,7 @@ import ApplicationsCard from "./components/projects/applicationsCard";
 import CollaInvited from "./components/dashboard/collaInvited";
 import CollaInfo from "./components/dashboard/collaInfo";
 import DreamerCard from "./components/dashboard/dreamerCard";
+import CollaApply from "./components/dashboard/collaApply";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route exact path="/collaproject" component={CollaProjectList} />
         <Route exact path="/drecommend" component={DreamerRecommend} />
         <Route exact path="/crecommend" component={CollaOwnRecommend} />
+        <Route exact path="/apply" component={CollaApply} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/create" component={CreateProject} />

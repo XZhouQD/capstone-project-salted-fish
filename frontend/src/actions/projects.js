@@ -18,6 +18,7 @@ import {
   SEARCH_COLLA_PROJECT_LIST,
   ACCEPT_INVITATION,
   DECLINE_INVITATION,
+  FINISH_PROJECTS,
 } from "./actionTypes";
 
 // createProject
@@ -480,6 +481,34 @@ export const declineInvitation = (url) => async (dispatch) => {
     dispatch(setAlert(res.data.message));
     dispatch({
       type: DECLINE_INVITATION,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// declineInvitation
+export const finishProject = (id) => async (dispatch) => {
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  id = Number(id);
+  try {
+    const res = await axios.get("/project/" + id + "/finish", config);
+    console.log(res);
+
+    dispatch(setAlert(res.data.message));
+    dispatch({
+      type: FINISH_PROJECTS,
       payload: res.data,
     });
   } catch (err) {

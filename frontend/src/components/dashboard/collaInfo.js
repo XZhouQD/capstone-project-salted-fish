@@ -96,6 +96,12 @@ class CollaInfo extends React.Component {
               </li>
 
               <li className="bold">
+                <Link className="waves-effect waves-teal" to="./apply">
+                  Apply Projects
+                </Link>
+              </li>
+
+              <li className="bold">
                 <Link className="waves-effect waves-teal" to="./invited">
                   Invited Projects
                 </Link>
