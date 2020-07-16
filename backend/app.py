@@ -1044,6 +1044,7 @@ class PatchRole(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(402, 'Project is not in active status, no update is allowed!')
+    @api.response(403, 'Project is not found!')
     @api.doc(description='Update a role information')
     @api.expect(role_patch_model, validate=True)
     @require_auth
@@ -1083,8 +1084,10 @@ class PatchRole(CorsResource):
             pass
         result = cursor_role.patch(conn).info()
         conn.close()
+        if result == None:
+            return {'message': 'This project is not found!', 'info': result}, 403
         if result == 99:
-            return {'message': 'This project is not in active status, no update is allowed!!', 'info': result}, 402
+            return {'message': 'This project is not in active status, no update is allowed!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project')
