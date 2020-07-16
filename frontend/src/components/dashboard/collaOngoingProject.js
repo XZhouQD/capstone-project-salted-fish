@@ -1,22 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { finishProject } from "../../actions/projects";
+import { connect } from "react-redux";
 
-class DreamerOwnProject extends React.Component {
-  constructor() {
-    super();
-    this.handleFinish = this.handleFinish.bind(this);
-  }
-  handleFinish = (id) => {
-    this.props.finishProject(id);
-  };
+class CollaOngoingProject extends React.Component {
   render() {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
-
     const url =
       "https://source.unsplash.com/collection/" +
       Math.floor(Math.random() * 500) +
@@ -24,7 +15,6 @@ class DreamerOwnProject extends React.Component {
 
     const projectDetails = "/projects/" + this.props.id;
     const addRoleUrl = "/project/" + this.props.id + "/role";
-    const id = this.props.id;
     return (
       <div className="card medium event-card">
         <div className="card-image">
@@ -32,15 +22,8 @@ class DreamerOwnProject extends React.Component {
         </div>
         <div className="card-content">
           <div className="card-title">
-            <b>{this.props.title} </b>
-            <button
-              className="red btn-small right"
-              onClick={() => this.handleFinish(id)}
-            >
-              Finish
-            </button>
+            <b>{this.props.title}</b>
           </div>
-
           <div className="left" style={{ marginTop: "15px" }}>
             <p>
               <Link to={projectDetails}>View Details</Link>
@@ -48,12 +31,9 @@ class DreamerOwnProject extends React.Component {
             <p>create project time: {this.props.create_time.split(" ")[0]}</p>
           </div>
           <div className="right-align" style={{ marginTop: "20px" }}>
-            <Link to={addRoleUrl}>
-              <button className="waves-effect waves-light btn-small">
-                <i className="material-icons left">add</i>Add roles
-              </button>
-            </Link>
-
+            <p>
+              <b>Your role:</b> {this.props.title}
+            </p>
             <p>
               <b>category:</b> {this.props.category}
             </p>
@@ -66,7 +46,6 @@ class DreamerOwnProject extends React.Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  ProjectLists: state.project.CollaProjectLists,
 });
 
-export default connect(mapStateToProps, { finishProject })(DreamerOwnProject);
+export default connect(mapStateToProps, null)(CollaOngoingProject);

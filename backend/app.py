@@ -44,10 +44,16 @@ try:
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 except:
     pass
+IMAGE_FOLDER = os.path.join(os.getcwd(), 'images')
+try:
+    os.makedirs(IMAGE_FOLDER, exist_ok=True)
+except:
+    pass
 
 # Flask App
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 api = Api(app, authorizations={
     'API-KEY': {
         'type': 'apiKey',
@@ -459,7 +465,7 @@ class DreamerFinishProject(CorsResource):
         conn.close()
         if result['status'] != 9:
             return {'message': 'Failed to finish the project'}, 400
-        return result, 200
+        return {'message': 'Successfully finish the project!', 'Project_ID':result['ID']}, 200
 
 @api.route('/project/<int:id>/follow')
 @api.param('id', 'The project id')
@@ -884,6 +890,7 @@ class GetProject(CorsResource):
 
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
+    @api.response(401, 'Project is not in active status, no update is allowed!')
     @api.doc(description='Update the information of a project')
     @api.expect(project_patch_model, validate=True)
     @require_auth
@@ -897,6 +904,8 @@ class GetProject(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(pid))
+        if cursor_project['status'] != 1:
+            return {'message': 'This project is not in active status, no update is allowed!'}, 401            
         try:
             cursor_project.title = project_info['title']
         except:
@@ -1028,6 +1037,7 @@ class PatchRole(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
+    @api.response(402, 'Project is not in active status, no update is allowed!')
     @api.doc(description='Update a role information')
     @api.expect(role_patch_model, validate=True)
     @require_auth
@@ -1067,6 +1077,8 @@ class PatchRole(CorsResource):
             pass
         result = cursor_role.patch(conn).info()
         conn.close()
+        if result == 99:
+            return {'message': 'This project is not in active status, no update is allowed!!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project')
