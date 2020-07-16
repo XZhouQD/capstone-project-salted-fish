@@ -131,8 +131,8 @@ project_post_model = api.model('Project_Post', {
 role_post_model = api.model('Role_Post', {
     'title': fields.String(required=True, description='Role title'),
     'amount': fields.Integer(required=True, description='Amount required'),
-    'skill': fields.Integer(required=True, description='Skill id'),
-    'experience': fields.Integer(required=True, description='Experience required in years'),
+    'skill': fields.String(required=True, description='Skill ids list divide by comma "," e.g. 2,3,4'),
+    'experience': fields.String(required=True, description='Experience required in years divide by comma "," e.g. 1,2,3'),
     'education': fields.Integer(required=True, description='Education required'),
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
@@ -146,8 +146,8 @@ project_patch_model = api.model('Project_Patch', {
 role_patch_model = api.model('Role_Patch', {
     'title': fields.String(required=False, description='Role title'),
     'amount': fields.Integer(required=False, description='Amount required'),
-    'skill': fields.Integer(required=False, description='Skill id'),
-    'experience': fields.Integer(required=False, description='Experience required in years'),
+    'skill': fields.String(required=False, description='Skill ids list divide by comma "," e.g. 2,3,4'),
+    'experience': fields.String(required=False, description='Experience required in years divide by comma "," e.g. 1,2,3'),
     'education': fields.Integer(required=False, description='Education required'),
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
@@ -1005,8 +1005,6 @@ class PostDiscussion(CorsResource):
             role = 'collaborator'
         conn.close()
         return {'message': 'post discussion success', 'project_id': int(pid), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
-        
-        
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
@@ -1030,7 +1028,9 @@ class PostRole(CorsResource):
             general_enquiry = role_info['general_enquiry']
         except:
             general_enquiry = ''
-        new_role = Role(int(id), role_info['title'], role_info['amount'], role_info['skill'], role_info['experience'], role_info['education'], general_enquiry=general_enquiry).create(conn)
+        skills = [int(i.strip()) for i in role_info['skill'].split(',') if i != '']
+        experiences = [int(i.strip()) for i in role_info['experience'].split(',') if i != '']
+        new_role = Role(int(id), role_info['title'], role_info['amount'], skills, experiences, role_info['education'], general_enquiry=general_enquiry).create(conn)
         conn.close()
         if new_role == None:
             return {'message': 'role create duplicate'}, 400
@@ -1067,11 +1067,13 @@ class PatchRole(CorsResource):
         except:
             pass
         try:
-            cursor_role.skill = role_info['skill']
+            skills = [int(i.strip()) for i in role_info['skill'].split(',') if i != '']
+            cursor_role.skill = skills
         except:
             pass
         try:
-            cursor_role.experience = role_info['experience']
+            experiences = [int(i.strip()) for i in role_info['experience'].split(',') if i != '']
+            cursor_role.experience = experiences
         except:
             pass
         try:

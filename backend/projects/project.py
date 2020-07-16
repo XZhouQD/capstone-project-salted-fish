@@ -111,7 +111,7 @@ class Project():
     @staticmethod
     #Get a project by project_title;
     def get_by_title(conn, project_title):
-        query = "SELECT * FROM project WHERE project_title = " + project_title + ";"
+        query = "SELECT * FROM project WHERE project_title = " + project_title.replace("'", "\\\'") + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
@@ -398,11 +398,11 @@ class Project():
             row = result.fetchone()
             #update is_modified_after_patch = 1 at the same time if the project has been hidden before patch;
             if row['is_hidden'] == 1:
-                query_1 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + ", is_modified_after_hidden = 1 WHERE id = " + str(self.id) + ";"
+                query_1 = "UPDATE project SET project_title = \'" + self.title.replace("'", "\\\'") + "\', description = \'" + self.description.replace("'", "\\\'") + "\', category = " + str(self.category) + ", is_modified_after_hidden = 1 WHERE id = " + str(self.id) + ";"
                 print(query_1)
                 conn.execute(query_1)
             else:
-                query_2 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
+                query_2 = "UPDATE project SET project_title = \'" + self.title.replace("'", "\\\'") + "\', description = \'" + self.description.replace("'", "\\\'") + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
                 print(query_2)
                 conn.execute(query_2)
         return self
@@ -411,7 +411,7 @@ class Project():
     def create(self, conn):
         if self.duplicate_check(conn):
             return None
-        query = "INSERT INTO project (project_title, description, category, dreamerID) VALUES (\'" + self.title + "\', \'" + self.description + "\', " + str(self.category) + ", " + str(self.owner) + ");"
+        query = "INSERT INTO project (project_title, description, category, dreamerID) VALUES (\'" + self.title.replace("'", "\\\'") + "\', \'" + self.description.replace("'", "\\\'") + "\', " + str(self.category) + ", " + str(self.owner) + ");"
         conn.execute(query)
         query = "SELECT * FROM project WHERE dreamerID = " + str(self.owner) + " ORDER BY create_time DESC;"
         result = conn.execute(query)

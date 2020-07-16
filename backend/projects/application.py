@@ -51,6 +51,7 @@ class Application():
             application= Collaborator.get_by_id(conn,row['applicant'])
             application['general_text'] = row['general_text']
             application['apply_status'] = row['status']
+            application['application_id'] = row['ID']
             application_list.append(application)
         if len(application) == 0: return None
         all_application['applications'] = application_list
@@ -84,7 +85,7 @@ class Application():
         appli = Application.get_object_by_aid(conn, application_id)
         appli.notify_result(conn, smtp)
         #Check if the same applicant still applied for other roles of project;
-        query_0 = "select ID as aid from application where projectID = " + str(proj_ID) + " and  and status = -1 and applicant in (select applicant from applicant where ID = " + str(application_id) + ");"
+        query_0 = "select ID as aid from application where projectID = " + str(proj_ID) + " and status = -1 and applicant in (select applicant from application where ID = " + str(application_id) + ");"
         result_0 = conn.execute(query_0)
         for m in range(result_0.rowcount):
             #systme automatically decline all other applications for the same project from same applcant;
@@ -245,7 +246,7 @@ class Application():
             return {}
         if not self.check_project_status(conn):
             return {'This project is not activated':1}
-        query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text + "\');"
+        query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text.replace("'", "\\\'") + "\');"
         conn.execute(query)
         query = "SELECT * FROM application where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"
         result = conn.execute(query)
