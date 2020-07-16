@@ -71,7 +71,7 @@ class Application():
                 application_status = 'Approved'
             if row['status'] == 9:
                 application_status = 'Finished'
-            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'Role_applied':row['role_applied'], 'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
+            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'project_title': Project.get_by_id(conn, row['projectID'])['title'], 'Role_applied':row['role_applied'], 'Role_title':Role.get_by_id(conn, row['role_applied'])['title'],'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
             applications.append(appli)
         return {'applications': applications, 'amount': result.rowcount}
 
@@ -83,6 +83,17 @@ class Application():
         # notify applicant for result
         appli = Application.get_object_by_aid(conn, application_id)
         appli.notify_result(conn, smtp)
+        #Check if the same applicant still applied for other roles of project;
+        query_0 = "select ID as aid from application where projectID = " + str(proj_ID) + " and  and status = -1 and applicant in (select applicant from applicant where ID = " + str(application_id) + ");"
+        result_0 = conn.execute(query_0)
+        for m in range(result_0.rowcount):
+            #systme automatically decline all other applications for the same project from same applcant;
+            row_0 = result_0.fetchone()
+            query_0_1 = "UPDATE application set status = 0 where ID = " + str(row_0['aid']) + ";"
+            conn.execute(query_0_1)
+            # notify applicant for result
+            Application.get_object_by_aid(conn, application_id).notify_result(conn, smtp)
+
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)

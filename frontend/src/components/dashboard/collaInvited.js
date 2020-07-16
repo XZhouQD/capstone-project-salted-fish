@@ -82,6 +82,12 @@ class CollaInvited extends React.Component {
               </li>
 
               <li className="bold">
+                <Link className="waves-effect waves-teal" to="./apply">
+                  Apply Projects
+                </Link>
+              </li>
+
+              <li className="bold">
                 <Link className="waves-effect waves-teal" to="./invited">
                   Invited Projects
                 </Link>
@@ -108,7 +114,7 @@ class CollaInvited extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">EVENTS</h4>
+                        <h4 className="left event-title">INVITED PROJECTS</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -124,11 +130,12 @@ class CollaInvited extends React.Component {
                       </div>
                     </nav>
                     {}
-                    <div>
+                    <div className="right">
                       Total:{" "}
                       {this.state.myProjects && this.state.myProjects.length}{" "}
                       invitations
                     </div>
+                    <br></br>
                     {this.state.myProjects &&
                       this.state.myProjects.map((each, index) => {
                         const url = "/projects/" + each.projectID;

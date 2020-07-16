@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 
+import CollaOngoingProject from "./collaOngoingProject";
+
 class CollaDash extends React.Component {
   constructor() {
     super();
@@ -27,9 +29,9 @@ class CollaDash extends React.Component {
       },
     };
 
-    const res = await axios.get("/collaborator/recommendation", config);
+    const res = await axios.get("/collaborator/my_projects", config);
     console.log("colla project", res.data);
-    this.setState({ myProjects: res.data.projects });
+    this.setState({ myProjects: res.data.my_projects });
   }
 
   render() {
@@ -38,9 +40,7 @@ class CollaDash extends React.Component {
       "A web based application",
       "A desktop application",
       "A mobile application",
-
       "A library for other project to reference",
-
       "A modification to existing platform",
       "A research oriented project",
     ];
@@ -73,6 +73,12 @@ class CollaDash extends React.Component {
               </li>
 
               <li className="bold">
+                <Link className="waves-effect waves-teal" to="./apply">
+                  Apply Projects
+                </Link>
+              </li>
+
+              <li className="bold">
                 <Link className="waves-effect waves-teal" to="./invited">
                   Invited Projects
                 </Link>
@@ -99,7 +105,7 @@ class CollaDash extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">EVENTS</h4>
+                        <h4 className="left event-title">Ongoing projects</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -114,7 +120,24 @@ class CollaDash extends React.Component {
                         </form>
                       </div>
                     </nav>
-                    <h5>This should be my applied projects</h5>
+                    {this.state.myProjects.length > 0 ? (
+                      this.state.myProjects.map((each, index) => {
+                        return (
+                          <CollaOngoingProject
+                            key={index}
+                            title={each.title}
+                            description={each.description}
+                            category={each.category}
+                            id={each.id}
+                            title={each.roles.title}
+                            create_time={each.create_time}
+                            last_update={each.last_update}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p>Apply for your first project</p>
+                    )}
                   </div>
                 </div>
               </div>
