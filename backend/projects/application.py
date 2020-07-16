@@ -207,12 +207,44 @@ class Application():
         if result.rowcount > 0:
             return True
         return False
+    
+        def check_project_status(self,conn):
+        query = "SELECT * FROM project where ID = " + str(self.project_id) + " AND project_status = " + str(1) + ";"
+        result = conn.execute(query)
+        if result.rowcount > 0:
+            return True
+        return False
 
+
+    def check_amount(self,conn):
+        query_1 = "select count(*) as count_1 from application where projectID = " + str(
+            self.project_id) + " and role_applied = " + str(self.role_apply) + " and status = 1;"
+        result_1 = conn.execute(query_1)
+        row_1 = result_1.fetchone()
+        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(
+            self.project_id) + " and role_invited = " + str(self.role_apply) + " and status = 1;"
+        result_2 = conn.execute(query_2)
+        row_2 = result_2.fetchone()
+        query_3 = "select amount from project_role where projectID = " + str(self.project_id) + " and ID = " + str(
+            self.role_apply) + ";"
+        result_3 = conn.execute(query_3)
+        row_3 = result_3.fetchone()
+        # decline all other applications/invitations for the same project if all members have been recruited;
+        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
+            return True
+        else:
+            return False
+    
+    
     def create(self, conn):
         if not self.check_project_role(conn):
             return None
         if self.duplicate_check(conn):
             return None
+        if self.check_amount(conn):
+            return {}
+        if not self.check_project_status(conn):
+            return {'This project is not activated':1}
         query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text + "\');"
         conn.execute(query)
         query = "SELECT * FROM application where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"

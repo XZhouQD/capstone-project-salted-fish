@@ -690,6 +690,12 @@ class ApplyRole(CorsResource):
         if new_apply == None:
             conn.close()
             return {'message': 'apply role duplicate'}, 400
+        if new_apply == {}:
+            conn.close()
+            return {'message': 'All collaborators have been recruited'}, 400
+        if new_apply == {'This project is not activated': 1}:
+            conn.close()
+            return {'message': 'This project is not activated'}, 400
         new_apply.notify_owner(conn, smtp)
         new_apply.notify_applicant(conn, smtp)
         conn.close()
