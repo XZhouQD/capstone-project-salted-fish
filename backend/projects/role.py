@@ -5,7 +5,7 @@ class Role():
     education_list = ['Null', 'Other', 'Bachelor', 'Master', 'PhD']
     skills_list = ['Null'] + yaml.load(open('projects/project.config', 'r', encoding='utf-8').read(), Loader=yaml.FullLoader)['Role']['Skills']
 
-    def __init__(self, project_id, title, amount, skill=[], experience=[], education=0, general_enquiry=''):
+    def __init__(self, project_id, title, amount, skill=[], experience=0, education=0, general_enquiry=''):
         self.project_id = project_id
         self.title = title
         self.amount = amount
@@ -26,11 +26,11 @@ class Role():
         query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
         result_2 = conn.execute(query_2)
         skills = []
-        experiences = []
+        experiences = 0
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
             skills.append(row_2['skill'])
-            experiences.append(row_2['experience'])
+            experiences = row_2['experience']
         role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role
@@ -45,11 +45,11 @@ class Role():
         query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
         result_2 = conn.execute(query_2)
         skills = []
-        experiences = []
+        experiences = 0
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
             skills.append(row_2['skill'])
-            experiences.append(row_2['experience'])
+            experiences = row_2['experience']
         role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role.info()
@@ -64,11 +64,11 @@ class Role():
         query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
         result_2 = conn.execute(query_2)
         skills = []
-        experiences = []
+        experiences = 0
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
             skills.append(row_2['skill'])
-            experiences.append(row_2['experience'])
+            experiences = row_2['experience']
         role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role.text_info()
@@ -84,11 +84,11 @@ class Role():
         query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
         result_2 = conn.execute(query_2)
         skills = []
-        experiences = []
+        experiences = 0
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
             skills.append(row_2['skill'])
-            experiences.append(row_2['experience'])
+            experiences = row_2['experience']
         role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role.info()
@@ -105,11 +105,11 @@ class Role():
             query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
             result_2 = conn.execute(query_2)
             skills = []
-            experiences = []
+            experiences = 0
             for j in range(result_2.rowcount):
                 row_2 = result_2.fetchone()
                 skills.append(row_2['skill'])
-                experiences.append(row_2['experience'])
+                experiences = row_2['experience']
             role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
             role.id = row['ID']
             roles.append(role.info())
@@ -127,11 +127,11 @@ class Role():
             query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
             result_2 = conn.execute(query_2)
             skills = []
-            experiences = []
+            experiences = 0
             for j in range(result_2.rowcount):
                 row_2 = result_2.fetchone()
                 skills.append(row_2['skill'])
-                experiences.append(row_2['experience'])
+                experiences = row_2['experience']
             role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
             role.id = row['ID']
             roles.append(role.info())
@@ -166,7 +166,7 @@ class Role():
         row = result.fetchone()
         self.id = row['ID']
         for i in range(len(self.skill)):
-            query = "INSERT INTO role_skill (skill, experience, roleID) VALUES (" + str(self.skill[i]) + ", " + str(self.experience[i]) + ", " + str(self.id) + ");"
+            query = "INSERT INTO role_skill (skill, experience, roleID) VALUES (" + str(self.skill[i]) + ", " + str(self.experience) + ", " + str(self.id) + ");"
             conn.execute(query)
         return self
 
@@ -187,6 +187,6 @@ class Role():
         query = f"DELETE FROM role_skill where roleID = {self.id};"
         conn.execute(query)
         for i in range(len(self.skill)):
-            query = f"INSERT INTO role_skill (skill, experience, roleID) VALUES ({str(self.skill[i])}, {str(self.experience[i])}, {str(self.id)});"
+            query = f"INSERT INTO role_skill (skill, experience, roleID) VALUES ({str(self.skill[i])}, {str(self.experience)}, {str(self.id)});"
             conn.execute(query)
         return self

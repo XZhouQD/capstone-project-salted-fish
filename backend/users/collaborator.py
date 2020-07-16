@@ -167,7 +167,6 @@ class Collaborator():
         edu = self.education
         project_list = []
         for skill, exp in skills.items():
-            print(skill, exp, edu)
             if category == -1:
                 query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
             else:
@@ -191,7 +190,6 @@ class Collaborator():
         #strict matching
         strict_matching_count = 0
         for skill, exp in skills.items():
-            print(skill, exp, edu)
             query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
             result = conn.execute(query)
             for i in range(result.rowcount):
