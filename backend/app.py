@@ -1078,7 +1078,7 @@ class PatchRole(CorsResource):
         result = cursor_role.patch(conn).info()
         conn.close()
         if result == 99:
-            return {'message': 'This project is not in active statu, no update is allowed!!', 'info': result}, 402
+            return {'message': 'This project is not in active status, no update is allowed!!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project')
