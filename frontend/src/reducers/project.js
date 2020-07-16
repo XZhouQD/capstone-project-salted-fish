@@ -16,6 +16,7 @@ import {
   SEARCH_COLLA_PROJECT_LIST,
   DECLINE_INVITATION,
   ACCEPT_INVITATION,
+  FINISH_PROJECTS,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -118,6 +119,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         declineList: payload.Invitation.id,
+      };
+    case FINISH_PROJECTS:
+      return {
+        ...state,
+        finishFlag: 1,
       };
 
     default:

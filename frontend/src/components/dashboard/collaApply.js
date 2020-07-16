@@ -3,10 +3,9 @@ import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import CollaOwnProject from "./collaOwnProject";
 import { connect } from "react-redux";
 
-class CollaOwnRecommend extends React.Component {
+class CollaApply extends React.Component {
   constructor() {
     super();
   }
@@ -28,23 +27,12 @@ class CollaOwnRecommend extends React.Component {
       },
     };
 
-    const res = await axios.get("/collaborator/recommendation", config);
+    const res = await axios.get("/collaborator/my_applications", config);
     console.log("colla project", res.data);
-    this.setState({ myProjects: res.data.projects });
+    this.setState({ myProjects: res.data.applications });
   }
 
   render() {
-    const category_list = [
-      "All other",
-      "A web based application",
-      "A desktop application",
-      "A mobile application",
-
-      "A library for other project to reference",
-
-      "A modification to existing platform",
-      "A research oriented project",
-    ];
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
@@ -78,6 +66,7 @@ class CollaOwnRecommend extends React.Component {
                   Apply Projects
                 </Link>
               </li>
+
               <li className="bold">
                 <Link className="waves-effect waves-teal" to="./invited">
                   Invited Projects
@@ -105,7 +94,7 @@ class CollaOwnRecommend extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">RECOMMEND</h4>
+                        <h4 className="left event-title">Apply projects</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -120,23 +109,30 @@ class CollaOwnRecommend extends React.Component {
                         </form>
                       </div>
                     </nav>
-                    {this.state.myProjects.length > 0 ? (
+                    <div className="right">
+                      Total:{" "}
+                      {this.state.myProjects && this.state.myProjects.length}{" "}
+                      apply times
+                    </div>
+                    <br></br>
+                    {this.state.myProjects &&
                       this.state.myProjects.map((each, index) => {
+                        const url = "/projects/" + each.projectID;
+                        const url1 = "/dreamer/" + each.Invitor;
                         return (
-                          <CollaOwnProject
-                            key={index}
-                            title={each.title}
-                            description={each.description}
-                            category={category_list[each.category]}
-                            id={each.id}
-                            create_time={each.create_time}
-                            last_update={each.last_update}
-                          />
+                          <div key={index}>
+                            <br></br>
+                            <div>
+                              <Link to={url}>Project {each.project_title}</Link>
+                              : You have applied the role "{each.Role_title}"
+                              and leave the messages "{each.General_text}"
+                              <span className="right">
+                                status: {each.Application_status}
+                              </span>
+                            </div>
+                          </div>
                         );
-                      })
-                    ) : (
-                      <p>Apply for your first project</p>
-                    )}
+                      })}
                   </div>
                 </div>
               </div>
@@ -152,4 +148,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, null)(CollaOwnRecommend);
+export default connect(mapStateToProps, null)(CollaApply);
