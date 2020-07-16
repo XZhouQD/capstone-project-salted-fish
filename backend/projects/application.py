@@ -208,7 +208,7 @@ class Application():
             return True
         return False
     
-        def check_project_status(self,conn):
+    def check_project_status(self,conn):
         query = "SELECT * FROM project where ID = " + str(self.project_id) + " AND project_status = " + str(1) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
