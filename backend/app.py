@@ -44,10 +44,16 @@ try:
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 except:
     pass
+IMAGE_FOLDER = os.path.join(os.getcwd(), 'images')
+try:
+    os.makedirs(IMAGE_FOLDER, exist_ok=True)
+except:
+    pass
 
 # Flask App
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 api = Api(app, authorizations={
     'API-KEY': {
         'type': 'apiKey',

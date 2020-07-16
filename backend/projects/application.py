@@ -71,7 +71,7 @@ class Application():
                 application_status = 'Approved'
             if row['status'] == 9:
                 application_status = 'Finished'
-            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'Role_applied':row['role_applied'], 'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
+            appli = {'ApplicationID':row['ID'], 'projectID':row['projectID'], 'project_title': Project.get_by_id(conn, row['projectID'])['title'], 'Role_applied':row['role_applied'], 'Role_title':Role.get_by_id(conn, row['role_applied'])['title'],'Applicant':row['applicant'], 'Application_status':application_status, 'General_text':row['general_text']}
             applications.append(appli)
         return {'applications': applications, 'amount': result.rowcount}
 
