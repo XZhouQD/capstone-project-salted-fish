@@ -15,7 +15,7 @@ import {
   GET_COLLA_PROJECT_LIST,
   SEARCH_COLLA_PROJECT_LIST,
   DECLINE_INVITATION,
-  ACCEPT_INVITATION,
+  ACCEPT_INVITATION, UPLOAD_RESUME,
   FINISH_PROJECTS,
 } from "../actions/actionTypes";
 
@@ -124,6 +124,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         finishFlag: 1,
+      };
+
+    case UPLOAD_RESUME:
+      return {
+        ...state,
+        upload:payload
       };
 
     default:
