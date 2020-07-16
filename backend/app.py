@@ -450,6 +450,7 @@ class DreamerFinishProject(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Project not found')
     @api.doc(description='Finish a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -473,6 +474,7 @@ class FollowAProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Failed to follow the project')
     @api.doc(description='Follow a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -494,6 +496,7 @@ class UnfollowAProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Failed to unfollow the project')
     @api.doc(description='Unfollow a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -603,6 +606,7 @@ class AcceptAnInvitation(CorsResource):
     @api.response(403, 'Invitation has been declined')
     @api.response(404, 'Failed to accept an invitation')
     @api.doc(description='Accept an invitation')
+    @require_auth
     def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -638,6 +642,7 @@ class DeclineAnInvitation(CorsResource):
     @api.response(403, 'Invitation has been accepted')
     @api.response(404, 'Failed to decline an invitation')
     @api.doc(description='Decline an invitation')
+    @require_auth
     def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -711,6 +716,7 @@ class ViewSingleApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
+    @require_auth
     def get(self, pid,rid,aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -736,6 +742,7 @@ class ViewAllApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
+    @require_auth
     def get(self, pid,rid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -762,6 +769,7 @@ class ViewSingleDiscussion(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
     @api.doc(description=' View single discussion for a project')
+    @require_auth
     def get(self ,pid,did):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -783,6 +791,7 @@ class ViewAllDiscussion(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
     @api.doc(description=' View single discussion for a project')
+    @require_auth
     def get(self ,pid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -803,6 +812,7 @@ class ViewNotification(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'notification not found')
     @api.doc(description=' View notification for user')
+    @require_auth
     def get(self):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -816,8 +826,7 @@ class ViewNotification(CorsResource):
         if result is None:
             return {'message': 'notification not found'}, 404
         return result, 200
-    
-    
+
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
@@ -829,6 +838,7 @@ class ApproveAnApplication(CorsResource):
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to approve an application')
     @api.doc(description='Approve an application')
+    @require_auth
     def get(self, pid, rid, aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -860,6 +870,7 @@ class DeclineAnApplication(CorsResource):
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to decline an application')
     @api.doc(description='Decline an application')
+    @require_auth
     def get(self, pid, rid, aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
