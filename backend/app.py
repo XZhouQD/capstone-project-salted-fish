@@ -890,7 +890,7 @@ class GetProject(CorsResource):
 
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
-    @api.response(401, 'Project has finished, no more updates allowed!')
+    @api.response(401, 'Project is not in active status, no update is allowed!')
     @api.doc(description='Update the information of a project')
     @api.expect(project_patch_model, validate=True)
     @require_auth
@@ -904,8 +904,8 @@ class GetProject(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(pid))
-        if cursor_project['status'] == 9:
-            return {'message': 'You are not allowed to update project finished!'}, 401            
+        if cursor_project['status'] != 1:
+            return {'message': 'This project is not in active status, no update is allowed!'}, 401            
         try:
             cursor_project.title = project_info['title']
         except:
@@ -1037,7 +1037,7 @@ class PatchRole(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
-    @api.response(402, 'Project finished, no more updates allowed!')
+    @api.response(402, 'Project is not in active status, no update is allowed!')
     @api.doc(description='Update a role information')
     @api.expect(role_patch_model, validate=True)
     @require_auth
@@ -1077,8 +1077,8 @@ class PatchRole(CorsResource):
             pass
         result = cursor_role.patch(conn).info()
         conn.close()
-        if result == 9:
-            return {'message': 'This project is finished, no more changes are allowed!', 'info': result}, 200
+        if result == 99:
+            return {'message': 'This project is not in active status, no update is allowed!!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
 @api.route('/project')

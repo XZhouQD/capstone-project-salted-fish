@@ -118,8 +118,8 @@ class Role():
     def patch(self, conn):
         #Check project status, no more updates allowed if project is finished;
         proj = Project.get_by_id(conn, self.project_id)
-        if proj['status'] == 9:
-            return 9 
+        if proj['status'] != 1:
+            return 99 
         query = "UPDATE project_role SET title = \'" + self.title + "\', amount = " + str(self.amount) + ", skill = " + str(self.skill) + ", experience = " + str(self.experience) + ", education = " + str(self.education) + ", general_enquiry = \'" + self.general_enquiry + "\' WHERE ID = " + str(self.id) + ";"
         print(query)
         conn.execute(query)
