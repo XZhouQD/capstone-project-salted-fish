@@ -89,6 +89,18 @@ class Invitation():
         query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)
         Invitation.get_object_by_id(conn, invitation_id).notify_invitor(conn, smtp)
+        #Check if more than one invitations sented for other roles of the same project;
+        query_0 = "select ID as iid from invitation where projectID = " + str(proj_ID) + " and  and status = -1 and invitee in (select invitee from invitation where ID = " + str(invitation_id) + ");"
+        result_0 = conn.execute(query_0)
+        for m in range(result_0.rowcount):
+            #system automatically decline all other invitations for the same project once you accept one of them;
+            row_0 = result_0.fetchone()
+            query_0_1 = "UPDATE invitation set status = 0 where ID = " + str(row_0['iid']) + ";"
+            conn.execute(query_0_1)
+            # notify both invitee and invitor about the automatically declined invitation 
+            Invitation.get_object_by_id(conn, row_0['iid']).notify_invitee(conn, smtp)
+            Invitation.get_object_by_id(conn, row_0['iid']).notify_invitor(conn, smtp)
+
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
