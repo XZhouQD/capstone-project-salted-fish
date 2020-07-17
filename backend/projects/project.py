@@ -45,6 +45,12 @@ class Project():
         return {'projects': project_list, 'amount': result.rowcount}
 
     @staticmethod
+    #Check if project has been finished
+    def check_finish(conn, proj_id):
+        proj_info = Project.get_by_id(conn, proj_id)
+        return proj_info['status'] == 9
+
+    @staticmethod
     #Get project by project_id;
     def get_by_id(conn, proj_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
@@ -392,7 +398,7 @@ class Project():
         return False
     #Patch the project title, description or category info, and also update the is_modified_after_hidden as 1 if it has been marked as hidden;
     def patch(self, conn):
-        query = "select * project WHERE id = " + str(self.id) + ";"
+        query = "select * from project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             row = result.fetchone()
