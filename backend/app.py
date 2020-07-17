@@ -466,7 +466,7 @@ class DreamerFinishProject(CorsResource):
         conn.close()
         if result['status'] != 9:
             return {'message': 'Failed to finish the project'}, 400
-        return {'message': 'Successfully finish the project!', 'Project_ID':result['ID']}, 200
+        return {'message': 'Successfully finish the project!', 'Project_ID':result['id']}, 200
 
 @api.route('/project/<int:id>/follow')
 @api.param('id', 'The project id')
