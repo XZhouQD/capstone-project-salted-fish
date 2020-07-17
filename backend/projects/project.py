@@ -83,22 +83,6 @@ class Project():
         return proj
 
     @staticmethod
-    #Search for project by project_id and skill about one type of role; 
-    def get_by_id_skill(conn, proj_id, skill):
-        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
-        result = conn.execute(query)
-        if result.rowcount == 0:
-            return None
-        row = result.fetchone()
-        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
-        proj.id = row['ID']
-        proj.is_modified_after_hidden = row['is_modified_after_hidden']
-        proj.roles = Role.get_by_id_skill(conn, proj.id, skill)
-        proj.create_time = row['create_time']
-        proj.last_update = row['last_update']
-        return proj.info()
-
-    @staticmethod
     #Get a project by specified project_id and role_id;
     def get_by_pid_rid(conn, proj_id, role_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
@@ -115,9 +99,25 @@ class Project():
         return proj.text_info()
 
     @staticmethod
+    #Search for project by project_id and skill about one type of role; 
+    def get_by_pid_rid_skill(conn, proj_id, role_id, skill):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_text_by_id(conn, role_id)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
+        return proj.info()
+
+    @staticmethod
     #Get a project by project_title;
     def get_by_title(conn, project_title):
-        query = "SELECT * FROM project WHERE project_title = " + project_title + ";"
+        query = "SELECT * FROM project WHERE project_title = " + project_title.replace("'", "\\\'") + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
@@ -408,11 +408,11 @@ class Project():
             row = result.fetchone()
             #update is_modified_after_patch = 1 at the same time if the project has been hidden before patch;
             if row['is_hidden'] == 1:
-                query_1 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + ", is_modified_after_hidden = 1 WHERE id = " + str(self.id) + ";"
+                query_1 = "UPDATE project SET project_title = \'" + self.title.replace("'", "\\\'") + "\', description = \'" + self.description.replace("'", "\\\'") + "\', category = " + str(self.category) + ", is_modified_after_hidden = 1 WHERE id = " + str(self.id) + ";"
                 print(query_1)
                 conn.execute(query_1)
             else:
-                query_2 = "UPDATE project SET project_title = \'" + self.title + "\', description = \'" + self.description + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
+                query_2 = "UPDATE project SET project_title = \'" + self.title.replace("'", "\\\'") + "\', description = \'" + self.description.replace("'", "\\\'") + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
                 print(query_2)
                 conn.execute(query_2)
         return self
@@ -421,7 +421,7 @@ class Project():
     def create(self, conn):
         if self.duplicate_check(conn):
             return None
-        query = "INSERT INTO project (project_title, description, category, dreamerID) VALUES (\'" + self.title + "\', \'" + self.description + "\', " + str(self.category) + ", " + str(self.owner) + ");"
+        query = "INSERT INTO project (project_title, description, category, dreamerID) VALUES (\'" + self.title.replace("'", "\\\'") + "\', \'" + self.description.replace("'", "\\\'") + "\', " + str(self.category) + ", " + str(self.owner) + ");"
         conn.execute(query)
         query = "SELECT * FROM project WHERE dreamerID = " + str(self.owner) + " ORDER BY create_time DESC;"
         result = conn.execute(query)
