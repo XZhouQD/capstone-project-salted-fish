@@ -16,14 +16,18 @@ import {
   SEARCH_COLLA_PROJECT_LIST,
   DECLINE_INVITATION,
   ACCEPT_INVITATION,
+  UPLOAD_RESUME,
   FINISH_PROJECTS,
+  CHANGE_PROJECTS,
 } from "../actions/actionTypes";
 
 const initialState = {
   project_id: null,
   ProjectLists: [],
   acceptList: [],
+
   declineList: [],
+
 };
 
 export default function (state = initialState, action) {
@@ -109,6 +113,10 @@ export default function (state = initialState, action) {
         payload,
       };
 
+
+        
+
+
     case ACCEPT_INVITATION:
       return {
         ...state,
@@ -124,6 +132,17 @@ export default function (state = initialState, action) {
       return {
         ...state,
         finishFlag: 1,
+      };
+
+    case UPLOAD_RESUME:
+      return {
+        ...state,
+        upload: payload,
+      };
+    case CHANGE_PROJECTS:
+      return {
+        ...state,
+        changeProject: payload,
       };
 
     default:

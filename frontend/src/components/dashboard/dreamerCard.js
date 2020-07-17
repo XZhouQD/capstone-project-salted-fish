@@ -33,15 +33,22 @@ class DreamerCard extends React.Component {
     console.log(this.state.info);
   }
 
+  
+
   render() {
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
+    const dinfoUrl = "/dreamer/" + this.props.id
 
     return (
       <div>
         <header>
           <div className="navbar-fixed" style={{ position: "fixed" }}>
-            <Link data-target="nav-mobile" className="sidenav-trigger">
+            <Link
+              data-target="nav-mobile"
+              className="sidenav-trigger"
+              style={{ zIndex: 1 }}
+            >
               <i className="material-icons">menu</i>
             </Link>
           </div>
@@ -52,24 +59,18 @@ class DreamerCard extends React.Component {
               style={{ position: "fixed" }}
             >
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/colladash">
+                <Link className="waves-effect waves-teal" to="/dashboard">
                   My Projects
                 </Link>
               </li>
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/crecommend">
-                  Recommend Projects
+                <Link className="waves-effect waves-teal" to="/drecommend">
+                  Recommend Collaborators
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/invited">
-                  Invited Projects
-                </Link>
-              </li>
-
-              <li className="bold">
-                <Link className="waves-effect waves-teal" to="/cinfo">
+                <Link className="waves-effect waves-teal" to={dinfoUrl}>
                   My Info
                 </Link>
               </li>

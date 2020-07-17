@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import yaml
-from projects.project import Project
 
 class Role():
     education_list = ['Null', 'Other', 'Bachelor', 'Master', 'PhD']
@@ -63,6 +62,22 @@ class Role():
         return role.info()
 
     @staticmethod
+    def get_text_by_pid(conn, pid):
+        query = "SELECT * FROM project_role where projectID = " + str(pid) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        roles = []
+        if result.rowcount == 0:
+            return roles
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+            role.id = row['ID']
+            roles.append(role.text_info())
+        return roles
+
+    @staticmethod
     def get_by_proj_id(conn, proj_id):
         query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
         result = conn.execute(query)
@@ -117,8 +132,12 @@ class Role():
 
     def patch(self, conn):
         #Check project status, no more updates allowed if project is finished;
-        proj = Project.get_by_id(conn, self.project_id)
-        if proj['status'] != 1:
+        query = "SELECT * FROM project WHERE ID = " + str(self.project_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        if row['status'] != 1:
             return 99 
         query = "UPDATE project_role SET title = \'" + self.title + "\', amount = " + str(self.amount) + ", skill = " + str(self.skill) + ", experience = " + str(self.experience) + ", education = " + str(self.education) + ", general_enquiry = \'" + self.general_enquiry + "\' WHERE ID = " + str(self.id) + ";"
         print(query)

@@ -18,7 +18,12 @@ import {
   SEARCH_COLLA_PROJECT_LIST,
   ACCEPT_INVITATION,
   DECLINE_INVITATION,
+  UPLOAD_RESUME,
   FINISH_PROJECTS,
+
+  CHANGE_PROJECTS,
+
+
 } from "./actionTypes";
 
 // createProject
@@ -492,7 +497,7 @@ export const declineInvitation = (url) => async (dispatch) => {
 };
 
 // declineInvitation
-export const finishProject = (id) => async (dispatch) => {
+export const uploadResume = (file) => async (dispatch) => {
   const a = localStorage.getItem("token");
   const config = {
     headers: {
@@ -501,19 +506,92 @@ export const finishProject = (id) => async (dispatch) => {
       "AUTH-KEY": a,
     },
   };
-  id = Number(id);
+
+  const data = new FormData();
+  data.append("file", file);
+  console.log("!!!!!!", data);
   try {
-    const res = await axios.get("/project/" + id + "/finish", config);
-    console.log(res);
+    const res = await axios.post("/collaborator/resume", data, config);
+    console.log(res.data);
 
     dispatch(setAlert(res.data.message));
     dispatch({
-      type: FINISH_PROJECTS,
+      type: UPLOAD_RESUME,
       payload: res.data,
     });
   } catch (err) {
     // error -> dispatch setAlert to reducers
     console.log(err.response);
+    const errors = err.response.data.message;
+    dispatch(setAlert(errors));
+  }
+};
+
+// declineInvitation
+// export const finishProject = (id) => async (dispatch) => {
+//   const a = localStorage.getItem("token");
+//   const config = {
+//     headers: {
+//       "Content-Type": "application/json;charset=UTF-8",
+//       "Access-Control-Allow-Origin": "*",
+//       "AUTH-KEY": a,
+//     },
+//   };
+//   id = Number(id);
+//   try {
+//     const res = await axios.get("/project/" + id + "/finish", config);
+//     console.log(res);
+
+//     dispatch(setAlert(res.data.message));
+//     dispatch({
+//       type: FINISH_PROJECTS,
+//       payload: res.data,
+//     });
+//   } catch (err) {
+//     // error -> dispatch setAlert to reducers
+//     console.log(err.response);
+//     const errors = err.response.data.message;
+//     dispatch(setAlert(errors));
+//   }
+// };
+
+
+
+// change project
+export const changeProject = ({ title, category, description, id }) => async (
+  dispatch
+) => {
+  const a = localStorage.getItem("token");
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+  const project_title = title;
+  category = Number(category) - 1;
+  const body = JSON.stringify({
+    project_title,
+    description,
+    category,
+  });
+  const url = "/project/" + id;
+  try {
+    const res = await axios.patch(url, body, config);
+    console.log(res.data);
+
+    dispatch(setAlert(res.data.message));
+
+    dispatch({
+      type: CHANGE_PROJECTS,
+      payload: res.data.project_id,
+    });
+
+    setTimeout(() => dispatch({ type: UNDO_FLAG }), 100);
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;
     dispatch(setAlert(errors));
   }

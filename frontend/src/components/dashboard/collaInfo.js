@@ -4,15 +4,17 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
+import {uploadResume} from "../../actions/projects"
 
 class CollaInfo extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedFile: null,
+      info: []
+    }
+    this.onChangeHandler = this.onChangeHandler.bind(this)
   }
-
-  state = {
-    info: [],
-  };
 
   async componentDidMount() {
     // Auto initialize all the materailize css!
@@ -34,6 +36,16 @@ class CollaInfo extends React.Component {
   async update(e) {
     console.log(1);
   }
+
+  async onChangeHandler(event){
+    await this.setState({
+      selectedFile: event.target.files[0],
+
+    })
+    this.props.uploadResume(this.state.selectedFile);
+  }
+
+
 
   render() {
     const category_list = [
@@ -69,6 +81,9 @@ class CollaInfo extends React.Component {
     ];
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
+    }
+    if (this.props.authRole !== "Collaborator") {
+      return <Redirect to="/dashboard" />;
     }
     return (
       <div>
@@ -152,13 +167,18 @@ class CollaInfo extends React.Component {
                         This is {this.state.info.Name}'s profile as a
                         collaborator {this.state.info.Description}
                       </p>
-                      <button
-                        className="msg-btn button1"
-                        onClick={(e) => this.update(e)}
-                      >
-                        update
-                      </button>
+                          <button
+                            className="msg-btn button1"
 
+                            onClick={(e) => this.update(e)}
+                        >
+                          update
+                        </button>
+                      <button className="msg-btn button1 file-field input-field"
+                      style={{marginLeft:"15px"}}>
+                        <span>upload</span>
+                        <input type="file" name="file" onChange={(e)=>this.onChangeHandler(e)}/>
+                      </button>
                       <div>
                         <div>
                           <i className="fab material-icons icon">call</i>{" "}
@@ -215,7 +235,8 @@ class CollaInfo extends React.Component {
 
 const mapStateToProps = (state) => ({
   id: state.auth.id,
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, null)(CollaInfo);
+export default connect(mapStateToProps, {uploadResume})(CollaInfo);

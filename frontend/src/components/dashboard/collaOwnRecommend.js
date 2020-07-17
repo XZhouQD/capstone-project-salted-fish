@@ -48,6 +48,9 @@ class CollaOwnRecommend extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Collaborator") {
+      return <Redirect to="/dashboard" />;
+    }
     return (
       <div>
         <header>
@@ -149,6 +152,7 @@ class CollaOwnRecommend extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
 });
 

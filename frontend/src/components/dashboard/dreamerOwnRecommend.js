@@ -8,6 +8,9 @@ class DreamerOwnRecommend extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Dreamer") {
+      return <Redirect to="/colladash" />;
+    }
 
     const skill_list = [
       "Web Development",
@@ -107,6 +110,7 @@ class DreamerOwnRecommend extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
