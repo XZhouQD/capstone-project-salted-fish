@@ -68,6 +68,9 @@ class CollaProjectList extends Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Collaborator") {
+      return <Redirect to="/dashboard" />;
+    }
     return (
       <div>
         <div className="container">
@@ -161,6 +164,7 @@ class CollaProjectList extends Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  authRole: state.auth.role,
   ProjectLists: state.project.CollaProjectLists,
 });
 

@@ -56,6 +56,9 @@ class CollaInvited extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Collaborator") {
+      return <Redirect to="/dashboard" />;
+    }
     return (
       <div>
         <header>
@@ -218,6 +221,7 @@ class CollaInvited extends React.Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  authRole: state.auth.role,
 });
 
 export default connect(mapStateToProps, {

@@ -41,6 +41,19 @@ class Dreamer():
         return None
 
     @staticmethod
+    def get_followed_projects(conn, id):
+        query = f"SELECT * FROM subscription WHERE is_dreamer=1 AND d_subscriber={id};"
+        result = conn.execute(query)
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            pid = row['projectID']
+            proj_info = Project.get_by_id(conn, pid)
+            proj_info['follow'] = True
+            project_list.append(proj_info)
+        return project_list
+
+    @staticmethod
     def is_email_exist(conn, email):
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"

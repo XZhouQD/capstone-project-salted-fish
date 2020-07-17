@@ -45,6 +45,12 @@ class Project():
         return {'projects': project_list, 'amount': result.rowcount}
 
     @staticmethod
+    #Check if project has been finished
+    def check_finish(conn, proj_id):
+        proj_info = Project.get_by_id(conn, proj_id)
+        return proj_info['status'] == 9
+
+    @staticmethod
     #Get project by project_id;
     def get_by_id(conn, proj_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
@@ -71,7 +77,7 @@ class Project():
         proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
-        proj.roles = Role.get_text_by_id(conn, proj_id)
+        proj.roles = Role.get_text_by_pid(conn, proj_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
         return proj
@@ -140,9 +146,13 @@ class Project():
             proj.roles = Role.get_by_proj_id(conn, proj.id)
             proj.create_time = row['create_time']
             proj.last_update = row['last_update']
-            project_list.append(proj.info())
+            info = proj.info()
+            info['follow'] = False
+            project_list.append(info)
+        from users.dreamer import Dreamer
+        project_list.extend(Dreamer.get_followed_projects(conn, owner_id))
         return project_list
-    
+
     @staticmethod
     #Update user_level field for both dreamer and collaborator table;
     def update_user_level(conn, user_type, count, user_level, user_ID):
@@ -392,7 +402,7 @@ class Project():
         return False
     #Patch the project title, description or category info, and also update the is_modified_after_hidden as 1 if it has been marked as hidden;
     def patch(self, conn):
-        query = "select * project WHERE id = " + str(self.id) + ";"
+        query = "select * from project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             row = result.fetchone()

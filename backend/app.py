@@ -617,6 +617,9 @@ class AcceptAnInvitation(CorsResource):
         if invitation['invitee'] != userinfo['id']:
             conn.close()
             return {'message': 'You are not authorized to accept this invitation'}, 401
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 404
         if invitation['status'] == 0:
             conn.close()
             return {'message': 'This invitation has been declined'}, 403
@@ -653,6 +656,9 @@ class DeclineAnInvitation(CorsResource):
         if invitation['invitee'] != userinfo['id']:
             conn.close()
             return {'message': 'You are not authorized to decline this invitation'}, 401
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 404
         if invitation['status'] == 1:
             conn.close()
             return {'message': 'This invitation has been accepted'}, 403
@@ -691,6 +697,9 @@ class ApplyRole(CorsResource):
         except:
             general_text = ''
         conn = db.conn()
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 400
         new_apply = Application(int(pid), int(rid), collaborator_id,general_text=general_text).create(conn)
         if new_apply == None:
             conn.close()
@@ -783,8 +792,8 @@ class ViewSingleDiscussion(CorsResource):
         return result, 200
 
 
-@api.route('/project/<int:pid>/discussions')
-@api.param('pid', 'The project id')
+@api.route('/project/<int:id>/discussions')
+@api.param('id', 'The project id')
 class ViewAllDiscussion(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -798,7 +807,7 @@ class ViewAllDiscussion(CorsResource):
         if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator' :
             return {'message': 'You are not logged in as dreamer or collaborator'}, 401
         conn = db.conn()
-        result = Discussion.get_by_pid(conn,int(pid))
+        result = Discussion.get_by_pid(conn,int(id))
         conn.close()
         if result is None:
             return {'message': 'Discussion not found'}, 404
@@ -846,9 +855,12 @@ class ApproveAnApplication(CorsResource):
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
         conn = db.conn()
-        if not Project.check_owner(conn, pid, dreamer_id):
+        if not Project.check_owner(conn, int(pid), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 405
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -881,6 +893,9 @@ class DeclineAnApplication(CorsResource):
         if not Project.check_owner(conn, pid, dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 405
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -911,18 +926,19 @@ class GetProject(CorsResource):
     @api.doc(description='Update the information of a project')
     @api.expect(project_patch_model, validate=True)
     @require_auth
-    def patch(self, pid):
+    def patch(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
         conn = db.conn()
-        if not Project.check_owner(conn, int(pid), dreamer_id):
+        if not Project.check_owner(conn, int(id), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
-        project_info = request.json
-        cursor_project = Project.get_by_proj_id(conn, int(pid))
-        if cursor_project['status'] != 1:
+        proj = Project.get_by_id(conn, int(id))
+        if proj['status'] != 1:
             return {'message': 'This project is not in active status, no update is allowed!'}, 401            
+        project_info = request.json
+        cursor_project = Project.get_by_proj_id(conn, int(id))
         try:
             cursor_project.title = project_info['title']
         except:
@@ -945,9 +961,9 @@ class GetDiscussionAboutOneProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'No discussion records')
     @api.doc(description='Get discussion records about one project')
-    def get(self, pid):
+    def get(self, id):
         conn = db.conn()
-        result = Project.get_discussion_about_one_project(conn, int(pid))
+        result = Project.get_discussion_about_one_project(conn, int(id))
         conn.close()
         if result:
             return result, 200
@@ -961,7 +977,7 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
     @api.response(400, 'No discussion records')
     @api.doc(description='Get discussion records about one project')
     @require_auth
-    def get(self, pid):
+    def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         user_id = userinfo['id']
@@ -977,8 +993,8 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
             return {'message': 'No discussion records found about your followed project'}, 400
 
         
-@api.route('/project/<int:pid>/discussion')
-@api.param('pid', 'The project id')
+@api.route('/project/<int:id>/discussion')
+@api.param('id', 'The project id')
 class PostDiscussion(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -987,7 +1003,7 @@ class PostDiscussion(CorsResource):
     @api.doc(description='Post a discussion for a project')
     @api.expect(post_discussion_model, validate=True)
     @require_auth
-    def post(self, pid):
+    def post(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         user_id = userinfo['id']
@@ -998,12 +1014,12 @@ class PostDiscussion(CorsResource):
         parent_id = discussion_info['parent_id']
         conn = db.conn()
         if userinfo['role'] == 'Dreamer':
-            if Project.check_owner(conn, int(pid), user_id):
-                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 2,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+            if Project.check_owner(conn, int(id), user_id):
+                new_discuss = Discussion(int(id),parent_id,is_dreamer = 2,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
             else:
-                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 1,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+                new_discuss = Discussion(int(id),parent_id,is_dreamer = 1,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
         else:
-            new_discuss = Discussion(int(pid),parent_id,is_dreamer = 0,c_author = user_id,text = discuss_content).create_by_collaborator(conn)
+            new_discuss = Discussion(int(id),parent_id,is_dreamer = 0,c_author = user_id,text = discuss_content).create_by_collaborator(conn)
         if new_discuss == None:
             conn.close()
             return {'message': 'Project not found'}, 402
@@ -1015,7 +1031,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(pid), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
@@ -1066,6 +1082,9 @@ class PatchRole(CorsResource):
         if not Project.check_owner(conn, int(pid), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 401
         role_info = request.json
         cursor_role = Role.get_object_by_id(conn, int(rid))
         try:
@@ -1215,7 +1234,7 @@ class Login(CorsResource):
             return {'message': 'Login failed for incorrect credentials.'}, 401
         else:
             token = auth.token(user).decode()
-            return {'token': token, 'role': user['role'], 'id': user['id']}, 200
+            return {'token': token, 'role': user['role'], 'id': user['id'], 'name': user['name']}, 200
 
 @api.route('/changepassword')
 class ChangePassword(CorsResource):
