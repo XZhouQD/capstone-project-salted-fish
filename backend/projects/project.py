@@ -77,22 +77,6 @@ class Project():
         return proj
 
     @staticmethod
-    #Search for project by project_id and skill about one type of role; 
-    def get_by_id_skill(conn, proj_id, skill):
-        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
-        result = conn.execute(query)
-        if result.rowcount == 0:
-            return None
-        row = result.fetchone()
-        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
-        proj.id = row['ID']
-        proj.is_modified_after_hidden = row['is_modified_after_hidden']
-        proj.roles = Role.get_by_id_skill(conn, proj.id, skill)
-        proj.create_time = row['create_time']
-        proj.last_update = row['last_update']
-        return proj.info()
-
-    @staticmethod
     #Get a project by specified project_id and role_id;
     def get_by_pid_rid(conn, proj_id, role_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
@@ -107,6 +91,22 @@ class Project():
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
         return proj.text_info()
+
+    @staticmethod
+    #Search for project by project_id and skill about one type of role; 
+    def get_by_pid_rid_skill(conn, proj_id, role_id, skill):
+        query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
+        result = conn.execute(query)
+        if result.rowcount == 0:
+            return None
+        row = result.fetchone()
+        proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+        proj.id = row['ID']
+        proj.is_modified_after_hidden = row['is_modified_after_hidden']
+        proj.roles = Role.get_by_rid_skill(conn, role_id, skill)
+        proj.create_time = row['create_time']
+        proj.last_update = row['last_update']
+        return proj.info()
 
     @staticmethod
     #Get a project by project_title;

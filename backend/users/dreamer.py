@@ -76,7 +76,7 @@ class Dreamer():
         for i in range(result_1.rowcount):
             row_1 = result_1.fetchone()
             #fetch roles for each project;
-            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role WHERE projectID = " + str(row_1['proj_ID']) + " ORDER BY ID;"
+            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and projectID = " + str(row_1['proj_ID']) + " ORDER BY ID, skill;"
             result_2 = conn.execute(query_2)
             if result_2.rowcount == 0:
                 continue

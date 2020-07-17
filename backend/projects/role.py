@@ -74,24 +74,16 @@ class Role():
         return role.text_info()
 
     @staticmethod
-    # get by one type role of project (project id + skill)
-    def get_by_id_skill(conn, proj_id, skill):
-        query = "SELECT projectID, title, amount, education, general_enquiry, skill, experience FROM project_role, role_skill where ID = roleID and projectID = " + str(proj_id) + " and skill = " + str(skill) + ";"
+    # get by one role with one type of skill;
+    def get_by_rid_skill(conn, role_id, skill):
+        query = "SELECT * FROM project_role, role_skill where ID = " + str(role_id) + " and skill = " + str(skill) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        query_2 = f"SELECT * FROM role_skill where roleID = {row['ID']};"
-        result_2 = conn.execute(query_2)
-        skills = []
-        experiences = 0
-        for j in range(result_2.rowcount):
-            row_2 = result_2.fetchone()
-            skills.append(row_2['skill'])
-            experiences = row_2['experience']
-        role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
+        role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
-        return role.info()
+        return role.text_info()
 
     @staticmethod
     def get_by_proj_id(conn, proj_id):

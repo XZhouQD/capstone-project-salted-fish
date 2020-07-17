@@ -190,28 +190,24 @@ class Collaborator():
         #strict matching
         strict_matching_count = 0
         for skill, exp in skills.items():
-            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
+            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY ID, projectID, skill;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id_skill(conn, row['pID'], skill)
-                is_exist = False
-                for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
-                if not is_exist:
-                    project_list.append(proj)
-                    strict_matching_count += 1
+                proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
+                project_list.append(proj)
+                strict_matching_count += 1
         #relaxing matching
         relaxing_matching_count = 0
         for skill, exp in skills.items():
-            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY experience, education;"
+            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY ID, projectID, skill;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
                 proj = Project.get_by_id_skill(conn, row['pID'], skill)
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
+                    if project['id'] == proj['id'] and project['roles']['id'] == proj['roles']['id'] and project['roles']['skill'] == proj['roles']['skill']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     relaxing_matching_count += 1
