@@ -10,7 +10,6 @@ class ReactApp extends Component {
 
     this.state = {
       comments: [],
-      loading: false
     };
 
     this.addComment = this.addComment.bind(this);
@@ -26,16 +25,14 @@ class ReactApp extends Component {
         "Content-Type": "application/json;charset=UTF-8",
         "Access-Control-Allow-Origin": "*",
         "AUTH-KEY": a,
-      }}
-
-
-    const res = await axios.get("/project/16/discussions",config);
-    console.log(res)
+      },
+    };
+    const url = "/project/" + this.props.id + "/discussions";
+    const res = await axios.get(url, config);
+    console.log(res);
     this.setState({
-      comments: res.data,
-      loading: false
+      comments: res.data.discussion_info,
     });
-  
   }
 
   /**
@@ -43,32 +40,21 @@ class ReactApp extends Component {
    * @param {Object} comment
    */
   addComment(comment) {
-    console.log(comment)
+    console.log(comment);
     this.setState({
-      loading: false,
-      comments: [comment, ...this.state.comments]
+      comments: [comment, ...this.state.comments],
     });
   }
 
   render() {
-
     return (
-      <div className="App container light shadow">
-        <div className="row">
-          <div className="col-4  pt-3 border-right">
-            <h6>Say something about React</h6>
-            <CommentForm addComment={this.addComment} />
-          </div>
-          <div className="col-8  pt-3 bg-white">
-            <CommentList
-              loading={this.state.loading}
-              comments={this.state.comments}
-            />
-          </div>
-        </div>
+      <div className="light shadow">
+        <CommentForm addComment={this.addComment} id={this.props.id} />
+
+        <CommentList comments={this.state.comments} />
       </div>
     );
   }
 }
 
-export default ReactApp ;
+export default ReactApp;
