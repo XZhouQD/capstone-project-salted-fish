@@ -23,6 +23,7 @@ import CollaInvited from "./components/dashboard/collaInvited";
 import CollaInfo from "./components/dashboard/collaInfo";
 import DreamerCard from "./components/dashboard/dreamerCard";
 import CollaApply from "./components/dashboard/collaApply";
+import ChangeProject from "./components/projects/changeProject";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/invited" component={CollaInvited} />
         <Route exact path="/cinfo" component={CollaInfo} />
+        <Route exact path="/change/:id" component={ChangeProject} />
         <Route exact path="/dreamer/:id" component={DreamerCard} />
         <Route
           exact

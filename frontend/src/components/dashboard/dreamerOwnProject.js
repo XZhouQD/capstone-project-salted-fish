@@ -2,16 +2,36 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { finishProject } from "../../actions/projects";
+import axios from "axios";
+
+import { setAlert } from "../../actions/alert";
 
 class DreamerOwnProject extends React.Component {
   constructor() {
     super();
+
     this.handleFinish = this.handleFinish.bind(this);
   }
-  handleFinish = (id) => {
-    this.props.finishProject(id);
-  };
+
+  async handleFinish(id) {
+    const a = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+    id = Number(id);
+    try {
+      const res = await axios.get("/project/" + id + "/finish", config);
+      this.props.setAlert(res.data.message);
+    } catch (err) {
+      // error -> dispatch setAlert to reducers
+      this.props.setAlert(err.response.data.message);
+    }
+  }
+
   render() {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
@@ -25,6 +45,7 @@ class DreamerOwnProject extends React.Component {
     const projectDetails = "/projects/" + this.props.id;
     const addRoleUrl = "/project/" + this.props.id + "/role";
     const id = this.props.id;
+    const change = "/change/" + id;
     return (
       <div className="card medium event-card">
         <div className="card-image">
@@ -32,13 +53,29 @@ class DreamerOwnProject extends React.Component {
         </div>
         <div className="card-content">
           <div className="card-title">
-            <b>{this.props.title} </b>
-            <button
-              className="red btn-small right"
-              onClick={() => this.handleFinish(id)}
-            >
-              Finish
-            </button>
+            {this.props.status == 9 ? (
+              <b style={{ textDecoration: "line-through" }}>
+                {this.props.title}
+              </b>
+            ) : (
+              <b>{this.props.title}</b>
+            )}
+            <div className="right">
+              <Link to={change}>
+                <button
+                  className="red btn-small"
+                  style={{ marginRight: "5px" }}
+                >
+                  Change
+                </button>
+              </Link>
+              <button
+                className="red btn-small"
+                onClick={() => this.handleFinish(id)}
+              >
+                Finish
+              </button>
+            </div>
           </div>
 
           <div className="left" style={{ marginTop: "15px" }}>
@@ -69,4 +106,4 @@ const mapStateToProps = (state) => ({
   ProjectLists: state.project.CollaProjectLists,
 });
 
-export default connect(mapStateToProps, { finishProject })(DreamerOwnProject);
+export default connect(mapStateToProps, { setAlert })(DreamerOwnProject);
