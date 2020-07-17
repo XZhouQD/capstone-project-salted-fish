@@ -8,6 +8,9 @@ class CollaOwnProject extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Collaborator") {
+      return <Redirect to="/dashboard" />;
+    }
     const url =
       "https://source.unsplash.com/collection/" +
       Math.floor(Math.random() * 500) +
@@ -42,6 +45,7 @@ class CollaOwnProject extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
 });
 

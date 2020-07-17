@@ -20,6 +20,7 @@ import {
   DECLINE_INVITATION,
   UPLOAD_RESUME,
   FINISH_PROJECTS,
+
   CHANGE_PROJECTS,
 } from "./actionTypes";
 
@@ -551,6 +552,8 @@ export const finishProject = (id) => async (dispatch) => {
     dispatch(setAlert(errors));
   }
 };
+
+
 
 // change project
 export const changeProject = ({ title, category, description, id }) => async (

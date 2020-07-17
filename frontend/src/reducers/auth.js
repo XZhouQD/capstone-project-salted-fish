@@ -55,7 +55,7 @@ export default function (state = initialState, action) {
     case LOGOUT:
       localStorage.removeItem("token");
 
-      return { ...state, token: null, isAuthenticated: false ,role:""};
+      return { ...state, token: null, isAuthenticated: false ,role:"",resume : null,opo:"11"};
 
     default:
       return state;

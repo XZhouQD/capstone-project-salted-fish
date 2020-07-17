@@ -45,6 +45,7 @@ class CollaOngoingProject extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
