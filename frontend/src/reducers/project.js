@@ -15,8 +15,10 @@ import {
   GET_COLLA_PROJECT_LIST,
   SEARCH_COLLA_PROJECT_LIST,
   DECLINE_INVITATION,
-  ACCEPT_INVITATION, UPLOAD_RESUME,
+  ACCEPT_INVITATION,
+  UPLOAD_RESUME,
   FINISH_PROJECTS,
+  CHANGE_PROJECTS,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -129,7 +131,12 @@ export default function (state = initialState, action) {
     case UPLOAD_RESUME:
       return {
         ...state,
-        upload:payload
+        upload: payload,
+      };
+    case CHANGE_PROJECTS:
+      return {
+        ...state,
+        changeProject: payload,
       };
 
     default:
