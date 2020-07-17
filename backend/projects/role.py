@@ -81,7 +81,13 @@ class Role():
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+        skills = []
+        experiences = 0
+        for j in range(result.rowcount):
+            row = result.fetchone()
+            skills.append(row['skill'])
+            experiences = row['experience']
+        role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
         role.id = row['ID']
         return role.text_info()
 
