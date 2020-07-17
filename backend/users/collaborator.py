@@ -204,7 +204,7 @@ class Collaborator():
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id_skill(conn, row['pID'], skill)
+                proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
                 is_exist = False
                 for project in project_list:
                     if project['id'] == proj['id'] and project['roles']['id'] == proj['roles']['id'] and project['roles']['skill'] == proj['roles']['skill']: is_exist = True
