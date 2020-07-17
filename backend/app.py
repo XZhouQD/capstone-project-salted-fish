@@ -900,16 +900,16 @@ class GetProject(CorsResource):
     @api.doc(description='Update the information of a project')
     @api.expect(project_patch_model, validate=True)
     @require_auth
-    def patch(self, pid):
+    def patch(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
         conn = db.conn()
-        if not Project.check_owner(conn, int(pid), dreamer_id):
+        if not Project.check_owner(conn, int(id), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
-        cursor_project = Project.get_by_proj_id(conn, int(pid))
+        cursor_project = Project.get_by_proj_id(conn, int(id))
         if cursor_project['status'] != 1:
             return {'message': 'This project is not in active status, no update is allowed!'}, 401            
         try:
