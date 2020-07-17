@@ -39,7 +39,7 @@ class DreamerRecommend extends React.Component {
     if (this.props.authRole !== "Dreamer") {
       return <Redirect to="/colladash" />;
     }
-    //const projectUrl = "./projects/" + this.props.each.Project_ID;
+
     const dinfoUrl = "/dreamer/" + this.props.id
     return (
       <div>

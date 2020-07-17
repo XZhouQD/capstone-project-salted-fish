@@ -53,9 +53,10 @@ class DreamerDash extends React.Component {
     ];
     //const url1 = "/dinfo/"+this.props.id
     const dinfoUrl = "/dreamer/" + this.props.id
+
     return (
       <div>
-        <header>
+       <header>
           <div className="navbar-fixed" style={{ position: "fixed" }}>
             <Link
               data-target="nav-mobile"
