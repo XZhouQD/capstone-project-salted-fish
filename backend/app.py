@@ -925,7 +925,7 @@ class GetProject(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(id))
-        if Project.check_finish(conn, int(pid)):
+        if Project.check_finish(conn, int(id)):
             conn.close()
             return {'message': 'The project has been finished.'}, 401
         if cursor_project.status != 1:
@@ -952,9 +952,9 @@ class GetDiscussionAboutOneProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'No discussion records')
     @api.doc(description='Get discussion records about one project')
-    def get(self, pid):
+    def get(self, id):
         conn = db.conn()
-        result = Project.get_discussion_about_one_project(conn, int(pid))
+        result = Project.get_discussion_about_one_project(conn, int(id))
         conn.close()
         if result:
             return result, 200
@@ -968,7 +968,7 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
     @api.response(400, 'No discussion records')
     @api.doc(description='Get discussion records about one project')
     @require_auth
-    def get(self, pid):
+    def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         user_id = userinfo['id']
@@ -984,7 +984,7 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
             return {'message': 'No discussion records found about your followed project'}, 400
 
         
-@api.route('/project/<int:pid>/discussion')
+@api.route('/project/<int:id>/discussion')
 @api.param('pid', 'The project id')
 class PostDiscussion(CorsResource):
     @api.response(200, 'Success')
@@ -994,7 +994,7 @@ class PostDiscussion(CorsResource):
     @api.doc(description='Post a discussion for a project')
     @api.expect(post_discussion_model, validate=True)
     @require_auth
-    def post(self, pid):
+    def post(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         user_id = userinfo['id']
@@ -1005,12 +1005,12 @@ class PostDiscussion(CorsResource):
         parent_id = discussion_info['parent_id']
         conn = db.conn()
         if userinfo['role'] == 'Dreamer':
-            if Project.check_owner(conn, int(pid), user_id):
-                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 2,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+            if Project.check_owner(conn, int(id), user_id):
+                new_discuss = Discussion(int(id),parent_id,is_dreamer = 2,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
             else:
-                new_discuss = Discussion(int(pid),parent_id,is_dreamer = 1,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
+                new_discuss = Discussion(int(id),parent_id,is_dreamer = 1,d_author = user_id,text = discuss_content).create_by_dreamer(conn)
         else:
-            new_discuss = Discussion(int(pid),parent_id,is_dreamer = 0,c_author = user_id,text = discuss_content).create_by_collaborator(conn)
+            new_discuss = Discussion(int(id),parent_id,is_dreamer = 0,c_author = user_id,text = discuss_content).create_by_collaborator(conn)
         if new_discuss == None:
             conn.close()
             return {'message': 'Project not found'}, 402
@@ -1022,7 +1022,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(pid), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
         
         
 
