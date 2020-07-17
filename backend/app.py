@@ -131,8 +131,8 @@ project_post_model = api.model('Project_Post', {
 role_post_model = api.model('Role_Post', {
     'title': fields.String(required=True, description='Role title'),
     'amount': fields.Integer(required=True, description='Amount required'),
-    'skill': fields.Integer(required=True, description='Skill id'),
-    'experience': fields.Integer(required=True, description='Experience required in years'),
+    'skill': fields.String(required=True, description='Skill ids list divide by comma "," e.g. 2,3,4'),
+    'experience': fields.Integer(required=True, description='Experience required in years.'),
     'education': fields.Integer(required=True, description='Education required'),
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
@@ -146,8 +146,8 @@ project_patch_model = api.model('Project_Patch', {
 role_patch_model = api.model('Role_Patch', {
     'title': fields.String(required=False, description='Role title'),
     'amount': fields.Integer(required=False, description='Amount required'),
-    'skill': fields.Integer(required=False, description='Skill id'),
-    'experience': fields.Integer(required=False, description='Experience required in years'),
+    'skill': fields.String(required=False, description='Skill ids list divide by comma "," e.g. 2,3,4'),
+    'experience': fields.Integer(required=False, description='Experience required in years.'),
     'education': fields.Integer(required=False, description='Education required'),
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
@@ -450,6 +450,7 @@ class DreamerFinishProject(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Project not found')
     @api.doc(description='Finish a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -473,6 +474,7 @@ class FollowAProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Failed to follow the project')
     @api.doc(description='Follow a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -494,6 +496,7 @@ class UnfollowAProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Failed to unfollow the project')
     @api.doc(description='Unfollow a project')
+    @require_auth
     def get(self, id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -603,6 +606,7 @@ class AcceptAnInvitation(CorsResource):
     @api.response(403, 'Invitation has been declined')
     @api.response(404, 'Failed to accept an invitation')
     @api.doc(description='Accept an invitation')
+    @require_auth
     def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -641,6 +645,7 @@ class DeclineAnInvitation(CorsResource):
     @api.response(403, 'Invitation has been accepted')
     @api.response(404, 'Failed to decline an invitation')
     @api.doc(description='Decline an invitation')
+    @require_auth
     def get(self, pid, rid, iid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -720,6 +725,7 @@ class ViewSingleApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
+    @require_auth
     def get(self, pid,rid,aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -745,6 +751,7 @@ class ViewAllApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.doc(description=' View applications for each role')
+    @require_auth
     def get(self, pid,rid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -771,6 +778,7 @@ class ViewSingleDiscussion(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
     @api.doc(description=' View single discussion for a project')
+    @require_auth
     def get(self ,pid,did):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -792,6 +800,7 @@ class ViewAllDiscussion(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
     @api.doc(description=' View single discussion for a project')
+    @require_auth
     def get(self ,pid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -812,6 +821,7 @@ class ViewNotification(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'notification not found')
     @api.doc(description=' View notification for user')
+    @require_auth
     def get(self):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -825,8 +835,7 @@ class ViewNotification(CorsResource):
         if result is None:
             return {'message': 'notification not found'}, 404
         return result, 200
-    
-    
+
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/approve')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
@@ -838,6 +847,7 @@ class ApproveAnApplication(CorsResource):
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to approve an application')
     @api.doc(description='Approve an application')
+    @require_auth
     def get(self, pid, rid, aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -872,6 +882,7 @@ class DeclineAnApplication(CorsResource):
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to decline an application')
     @api.doc(description='Decline an application')
+    @require_auth
     def get(self, pid, rid, aid):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -1021,8 +1032,6 @@ class PostDiscussion(CorsResource):
             role = 'collaborator'
         conn.close()
         return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
-        
-        
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
@@ -1046,7 +1055,8 @@ class PostRole(CorsResource):
             general_enquiry = role_info['general_enquiry']
         except:
             general_enquiry = ''
-        new_role = Role(int(id), role_info['title'], role_info['amount'], role_info['skill'], role_info['experience'], role_info['education'], general_enquiry=general_enquiry).create(conn)
+        skills = [int(i.strip()) for i in role_info['skill'].split(',') if i != '']
+        new_role = Role(int(id), role_info['title'], role_info['amount'], skills, role_info['experience'], role_info['education'], general_enquiry=general_enquiry).create(conn)
         conn.close()
         if new_role == None:
             return {'message': 'role create duplicate'}, 400
@@ -1086,7 +1096,8 @@ class PatchRole(CorsResource):
         except:
             pass
         try:
-            cursor_role.skill = role_info['skill']
+            skills = [int(i.strip()) for i in role_info['skill'].split(',') if i != '']
+            cursor_role.skill = skills
         except:
             pass
         try:

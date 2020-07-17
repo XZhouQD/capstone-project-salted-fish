@@ -59,5 +59,5 @@ class Admin():
         return {'role': 'Admin', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': self.create_time, 'last_update': self.last_update}
 
     def commit(self, conn):
-        query = "INSERT INTO admin (name, email, password) VALUES (\'" + self.name + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name + "\', `password` = \'" + self.password_encrypted + "\';"
+        query = "INSERT INTO admin (name, email, password) VALUES (\'" + self.name.replace("'", "\\\'") + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name.replace("'", "\\\'") + "\', `password` = \'" + self.password_encrypted + "\';"
         conn.execute(query)
