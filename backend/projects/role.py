@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import yaml
-from projects.project import Project
+# from projects.project import Project
 
 class Role():
     education_list = ['Null', 'Other', 'Bachelor', 'Master', 'PhD']

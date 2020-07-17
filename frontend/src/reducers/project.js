@@ -17,13 +17,17 @@ import {
   DECLINE_INVITATION,
   ACCEPT_INVITATION, UPLOAD_RESUME,
   FINISH_PROJECTS,
+
+
 } from "../actions/actionTypes";
 
 const initialState = {
   project_id: null,
   ProjectLists: [],
   acceptList: [],
+
   declineList: [],
+
 };
 
 export default function (state = initialState, action) {
@@ -108,6 +112,10 @@ export default function (state = initialState, action) {
         ...state,
         payload,
       };
+
+
+        
+
 
     case ACCEPT_INVITATION:
       return {

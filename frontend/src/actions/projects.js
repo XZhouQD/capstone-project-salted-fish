@@ -20,6 +20,8 @@ import {
   DECLINE_INVITATION,
     UPLOAD_RESUME,
   FINISH_PROJECTS,
+  FETCH_RESUME_NAME,
+
 } from "./actionTypes";
 
 // createProject
@@ -550,3 +552,6 @@ export const finishProject = (id) => async (dispatch) => {
     dispatch(setAlert(errors));
   }
 };
+
+
+

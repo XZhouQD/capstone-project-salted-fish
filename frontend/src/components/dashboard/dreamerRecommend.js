@@ -36,6 +36,9 @@ class DreamerRecommend extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Dreamer") {
+      return <Redirect to="/colladash" />;
+    }
     return (
       <div>
         <header>
@@ -66,7 +69,7 @@ class DreamerRecommend extends React.Component {
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to="./dinfo">
                   My Info
                 </Link>
               </li>
@@ -113,7 +116,7 @@ class DreamerRecommend extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div>  
         </main>
       </div>
     );
@@ -121,7 +124,9 @@ class DreamerRecommend extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
+
 });
 
 export default connect(mapStateToProps, null)(DreamerRecommend);
