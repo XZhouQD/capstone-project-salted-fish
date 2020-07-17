@@ -80,7 +80,6 @@ class Role():
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
-        row = result.fetchone()
         skills = []
         experiences = 0
         for j in range(result.rowcount):
