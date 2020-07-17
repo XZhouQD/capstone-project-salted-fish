@@ -12,12 +12,10 @@ import GetApplications from "./getApplications";
 class ProjectDetails extends Component {
   constructor() {
     super();
-    this.handlebutton = this.handlebutton.bind(this);
   }
 
   state = {
     roles: [],
-    follow: true,
     description: "",
     category: 0,
     title: "",
@@ -36,10 +34,6 @@ class ProjectDetails extends Component {
       title: res.data.title,
       description: res.data.description,
     });
-  }
-
-  handlebutton() {
-    this.setState({ follow: !this.state.follow });
   }
 
   handleonChange = (e) => {
@@ -174,15 +168,13 @@ class ProjectDetails extends Component {
                   style={{ fontFamily: "Cherry Swash" }}
                 >
                   <p>{this.state.description}</p>
+
                   <button
                     className="blue-grey darken-1 waves-light btn-small right"
-                    onClick={() => {
-                      this.handlebutton();
-                    }}
                     style={{ position: "relative", top: "-10px" }}
                   >
                     <i className="material-icons icon left">favorite</i>
-                    {this.state.follow ? "follow" : "unfollow"}
+                    follow
                   </button>
                 </div>
               </div>
