@@ -146,7 +146,7 @@ class Collaborator():
         proj_list = []
         for i in range(result.rowcount):
             row = result.fetchone()
-            proj_info = Project.get_by_id(conn, row['projectID'])
+            proj_info = Project.get_by_proj_id(conn, row['projectID']).text_info()
             proj_info['follow'] = True
             proj_list.append(proj_info)
         return proj_list
