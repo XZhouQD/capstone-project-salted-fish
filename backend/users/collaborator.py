@@ -139,6 +139,19 @@ class Collaborator():
         conn.execute(query)
 
     @staticmethod
+    def get_my_followed_projects(conn, user_ID):
+        projects_followed = []
+        query = f"SELECT * FROM subscription WHERE is_dreamer=0 AND c_subscriber={user_ID}"
+        result = conn.execute(query)
+        proj_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj_info = Project.get_by_proj_id(conn, row['projectID']).text_info()
+            proj_info['follow'] = True
+            proj_list.append(proj_info)
+        return proj_list
+
+    @staticmethod
     #get projects which I collaborated with;
     def get_my_projects(conn, user_ID):
         projects_joined = []
@@ -153,12 +166,18 @@ class Collaborator():
         for j in range(result_2.rowcount):
             row_2 = result_2.fetchone()
             if (row_2['projectID'], row_2['role_invited']) not in projects_joined:
-                projects_joined.append((row_2['projectID'], row_2['role_invited']))       
-
+                projects_joined.append((row_2['projectID'], row_2['role_invited']))
+        follow_list = Collaborator.get_my_followed_projects(conn, user_ID)
+        joined_projects = [a[0] for a in projects_joined]
+        for proj in follow_list:
+            if proj['id'] in joined_projects:
+                follow_list.remove(proj)
         myproject_list = []
-        for k in range(len(projects_joined)):            
+        for k in range(len(projects_joined)):
             proj = Project.get_by_pid_rid(conn, projects_joined[k][0], projects_joined[k][1])
+            proj['follow'] = False
             myproject_list.append(proj)
+        myproject_list.extend(follow_list)
         if len(myproject_list) == 0: return None
         return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
