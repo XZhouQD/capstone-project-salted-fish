@@ -398,7 +398,7 @@ class Project():
         return False
     #Patch the project title, description or category info, and also update the is_modified_after_hidden as 1 if it has been marked as hidden;
     def patch(self, conn):
-        query = "select * project WHERE id = " + str(self.id) + ";"
+        query = "select * from project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             row = result.fetchone()

@@ -923,13 +923,11 @@ class GetProject(CorsResource):
         if not Project.check_owner(conn, int(id), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        proj = Project.get_by_id(conn, int(id))
+        if proj['status'] != 1:
+            return {'message': 'This project is not in active status, no update is allowed!'}, 401            
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(id))
-        if Project.check_finish(conn, int(id)):
-            conn.close()
-            return {'message': 'The project has been finished.'}, 401
-        if cursor_project.status != 1:
-            return {'message': 'This project is not in active status, no update is allowed!'}, 401
         try:
             cursor_project.title = project_info['title']
         except:
