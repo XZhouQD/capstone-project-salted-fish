@@ -187,9 +187,9 @@ class Collaborator():
         project_list = []
         for skill, exp in skills.items():
             if category == -1:
-                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role, role_skill WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
             else:
-                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role, role_skill WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
