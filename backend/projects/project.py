@@ -146,9 +146,13 @@ class Project():
             proj.roles = Role.get_by_proj_id(conn, proj.id)
             proj.create_time = row['create_time']
             proj.last_update = row['last_update']
-            project_list.append(proj.info())
+            info = proj.info()
+            info['follow'] = False
+            project_list.append(info)
+        from users.dreamer import Dreamer
+        project_list.extend(Dreamer.get_followed_projects(conn, owner_id))
         return project_list
-    
+
     @staticmethod
     #Update user_level field for both dreamer and collaborator table;
     def update_user_level(conn, user_type, count, user_level, user_ID):
