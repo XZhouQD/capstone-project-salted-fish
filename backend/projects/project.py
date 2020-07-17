@@ -45,6 +45,12 @@ class Project():
         return {'projects': project_list, 'amount': result.rowcount}
 
     @staticmethod
+    #Check if project has been finished
+    def check_finish(conn, proj_id):
+        proj_info = Project.get_by_id(conn, proj_id)
+        return proj_info['status'] == 9
+
+    @staticmethod
     #Get project by project_id;
     def get_by_id(conn, proj_id):
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"

@@ -613,6 +613,9 @@ class AcceptAnInvitation(CorsResource):
         if invitation['invitee'] != userinfo['id']:
             conn.close()
             return {'message': 'You are not authorized to accept this invitation'}, 401
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 404
         if invitation['status'] == 0:
             conn.close()
             return {'message': 'This invitation has been declined'}, 403
@@ -648,6 +651,9 @@ class DeclineAnInvitation(CorsResource):
         if invitation['invitee'] != userinfo['id']:
             conn.close()
             return {'message': 'You are not authorized to decline this invitation'}, 401
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 404
         if invitation['status'] == 1:
             conn.close()
             return {'message': 'This invitation has been accepted'}, 403
@@ -686,6 +692,9 @@ class ApplyRole(CorsResource):
         except:
             general_text = ''
         conn = db.conn()
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 400
         new_apply = Application(int(pid), int(rid), collaborator_id,general_text=general_text).create(conn)
         if new_apply == None:
             conn.close()
@@ -836,9 +845,12 @@ class ApproveAnApplication(CorsResource):
         if userinfo['role'] != 'Dreamer':
             return {'message': 'You are not logged in as dreamer'}, 401
         conn = db.conn()
-        if not Project.check_owner(conn, pid, dreamer_id):
+        if not Project.check_owner(conn, int(pid), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 405
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -870,6 +882,9 @@ class DeclineAnApplication(CorsResource):
         if not Project.check_owner(conn, pid, dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 405
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -910,8 +925,11 @@ class GetProject(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(id))
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 401
         if cursor_project['status'] != 1:
-            return {'message': 'This project is not in active status, no update is allowed!'}, 401            
+            return {'message': 'This project is not in active status, no update is allowed!'}, 401
         try:
             cursor_project.title = project_info['title']
         except:
@@ -1056,6 +1074,9 @@ class PatchRole(CorsResource):
         if not Project.check_owner(conn, int(pid), dreamer_id):
             conn.close()
             return {'message': 'You are not the owner of the project'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 401
         role_info = request.json
         cursor_role = Role.get_object_by_id(conn, int(rid))
         try:
