@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { applyRole } from "../../actions/projects";
 import GetApplications from "./getApplications";
-
+import {setAlert} from "../../actions/alert"
 class ProjectDetails extends Component {
   constructor() {
     super();
@@ -21,6 +21,7 @@ class ProjectDetails extends Component {
     title: "",
     owner: null,
     general_text: "",
+    follow: true,
   };
 
   async componentDidMount() {
@@ -35,6 +36,30 @@ class ProjectDetails extends Component {
       description: res.data.description,
     });
   }
+ async handleFollow(e){
+    const a = localStorage.getItem("token");
+    const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
+
+const id = this.props.match.params.id
+    // get target element name
+    const followUrl = "/project/"+id+"/follow"
+    const unfollowUrl = "/project/"+id+"/unfollow"
+    this.setState({ follow:!this.state.follow });
+    if (this.state.follow){
+      const res = await axios.get(followUrl, config);
+      console.log(res)
+      this.props.setAlert(res.data.message)
+    }else{
+      const res = await axios.get(unfollowUrl, config);
+      this.props.setAlert(res.data.message)
+    }
+  };
 
   handleonChange = (e) => {
     // get target element name
@@ -172,9 +197,10 @@ class ProjectDetails extends Component {
                   <button
                     className="blue-grey darken-1 waves-light btn-small right"
                     style={{ position: "relative", top: "-10px" }}
+                    onClick = {(e)=>this.handleFollow(e)}
                   >
                     <i className="material-icons icon left">favorite</i>
-                    follow
+                      {this.state.follow?"follow":"unfollow"}
                   </button>
                 </div>
               </div>
@@ -198,4 +224,4 @@ const mapStateToProps = (state) => ({
   applySuccess: state.project.payload,
 });
 
-export default connect(mapStateToProps, { applyRole })(ProjectDetails);
+export default connect(mapStateToProps, { applyRole,setAlert })(ProjectDetails);
