@@ -1223,7 +1223,7 @@ class Login(CorsResource):
             return {'message': 'Login failed for incorrect credentials.'}, 401
         else:
             token = auth.token(user).decode()
-            return {'token': token, 'role': user['role'], 'id': user['id']}, 200
+            return {'token': token, 'role': user['role'], 'id': user['id'], 'name': user['name']}, 200
 
 @api.route('/changepassword')
 class ChangePassword(CorsResource):
