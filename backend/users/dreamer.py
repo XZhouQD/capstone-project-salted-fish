@@ -117,7 +117,7 @@ class Dreamer():
             if row_1['project_status'] == -1: proj_status = 'Pending'
             if row_1['project_status'] ==  1: proj_status = 'Active'
             if row_1['project_status'] ==  9: proj_status = 'Finished'
-            project_role_recomm_collabors = {'Project_ID':row_1['proj_ID'], 'Project_title':row_1['project_title'], 'Description':row_1['description'], 'Category':category_list[row_1['category']], 'DreamerID':row_1['dreamerID'], 'Project_status':proj_status, 'Is_hidden':hidden_ind, 'Hidden_reason':row_1['hidden_reason'], 'Is_modified_after_hidden':], 'Role_recomm_collabors_list':role_recomm_collabors_list}
+            project_role_recomm_collabors = {'Project_ID':row_1['proj_ID'], 'Project_title':row_1['project_title'], 'Description':row_1['description'], 'Category':category_list[row_1['category']], 'DreamerID':row_1['dreamerID'], 'Project_status':proj_status, 'Is_hidden':row_1['is_hidden'], 'Hidden_reason':row_1['hidden_reason'], 'Is_modified_after_hidden':row_1['is_modified_after_hidden'], 'Role_recomm_collabors_list':role_recomm_collabors_list}
             project_role_recomm_collabors_list.append(project_role_recomm_collabors)
         if len(project_role_recomm_collabors_list) == 0: return None
         return project_role_recomm_collabors_list
