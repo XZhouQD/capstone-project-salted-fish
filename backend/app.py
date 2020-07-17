@@ -784,8 +784,8 @@ class ViewSingleDiscussion(CorsResource):
         return result, 200
 
 
-@api.route('/project/<int:pid>/discussions')
-@api.param('pid', 'The project id')
+@api.route('/project/<int:id>/discussions')
+@api.param('id', 'The project id')
 class ViewAllDiscussion(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
@@ -798,7 +798,7 @@ class ViewAllDiscussion(CorsResource):
         if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator' :
             return {'message': 'You are not logged in as dreamer or collaborator'}, 401
         conn = db.conn()
-        result = Discussion.get_by_pid(conn,int(pid))
+        result = Discussion.get_by_pid(conn,int(id))
         conn.close()
         if result is None:
             return {'message': 'Discussion not found'}, 404
@@ -985,7 +985,7 @@ class GetDiscussionAboutFollowedProjects(CorsResource):
 
         
 @api.route('/project/<int:id>/discussion')
-@api.param('pid', 'The project id')
+@api.param('id', 'The project id')
 class PostDiscussion(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
