@@ -84,7 +84,7 @@ class Application():
         appli = Application.get_object_by_aid(conn, application_id)
         appli.notify_result(conn, smtp)
         #Check if the same applicant still applied for other roles of project;
-        query_0 = "select ID as aid from application where projectID = " + str(proj_ID) + " and  and status = -1 and applicant in (select applicant from applicant where ID = " + str(application_id) + ");"
+        query_0 = "select ID as aid from application where projectID = " + str(proj_ID) + " and status = -1 and applicant in (select applicant from application where ID = " + str(application_id) + ");"
         result_0 = conn.execute(query_0)
         for m in range(result_0.rowcount):
             #systme automatically decline all other applications for the same project from same applcant;
