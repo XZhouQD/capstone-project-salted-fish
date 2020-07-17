@@ -792,7 +792,7 @@ class ViewAllDiscussion(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
     @api.doc(description=' View single discussion for a project')
-    def get(self ,pid):
+    def get(self ,id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         if userinfo['role'] != 'Dreamer' and userinfo['role'] != 'Collaborator' :
