@@ -37,6 +37,9 @@ class DreamerDash extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
+    if (this.props.authRole !== "Dreamer") {
+      return <Redirect to="/colladash" />;
+    }
     const category_list = [
       "All other",
       "A web based application",
@@ -48,11 +51,18 @@ class DreamerDash extends React.Component {
       "A modification to existing platform",
       "A research oriented project",
     ];
+    //const url1 = "/dinfo/"+this.props.id
+    const dinfoUrl = "/dreamer/" + this.props.id
+
     return (
       <div>
-        <header>
+       <header>
           <div className="navbar-fixed" style={{ position: "fixed" }}>
-            <Link data-target="nav-mobile" className="sidenav-trigger">
+            <Link
+              data-target="nav-mobile"
+              className="sidenav-trigger"
+              style={{ zIndex: 1 }}
+            >
               <i className="material-icons">menu</i>
             </Link>
           </div>
@@ -63,18 +73,18 @@ class DreamerDash extends React.Component {
               style={{ position: "fixed" }}
             >
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./dashboard">
+                <Link className="waves-effect waves-teal" to="/dashboard">
                   My Projects
                 </Link>
               </li>
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to="/drecommend">
                   Recommend Collaborators
                 </Link>
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="./drecommend">
+                <Link className="waves-effect waves-teal" to={dinfoUrl}>
                   My Info
                 </Link>
               </li>
@@ -140,7 +150,9 @@ class DreamerDash extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  authRole: state.auth.role,
   isAuthenticated: state.auth.isAuthenticated,
+  id: state.auth.id,
 });
 
 export default connect(mapStateToProps, null)(DreamerDash);
