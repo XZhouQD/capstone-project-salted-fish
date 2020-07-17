@@ -25,6 +25,7 @@ import DreamerCard from "./components/dashboard/dreamerCard";
 import CollaApply from "./components/dashboard/collaApply";
 import DreamerOwnCard from "./components/dashboard/dreamerOwnCard";
 import ChangeProject from "./components/projects/changeProject";
+import ReactApp from "./com/ReactApp"
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
         <Route exact path="/change/:id" component={ChangeProject} />
         <Route exact path="/dreamer/:id" component={DreamerCard} />
         <Route exact path="/dinfo" component={DreamerOwnCard} />
+        <Route exact path="/comment" component={ReactApp} />
         <Route
           exact
           path="/project/:pid/role/:rid/collaborators/:cid/applications"
