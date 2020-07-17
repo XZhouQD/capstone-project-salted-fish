@@ -103,7 +103,7 @@ class Project():
         proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
         proj.id = row['ID']
         proj.is_modified_after_hidden = row['is_modified_after_hidden']
-        proj.roles = Role.get_by_rid_skill(conn, role_id, skill)
+        proj.roles = Role.get_text_by_id(conn, role_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
         return proj.info()
