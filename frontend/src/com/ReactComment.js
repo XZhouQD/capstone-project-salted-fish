@@ -60,8 +60,8 @@ class ReactComment extends React.Component {
               onClick={(e) => {
                 this.setState({ reply: true });
               }}
-              className="btn-small right"
-            >
+              className="btn-small right "
+            ><i className="material-icons left" style={{marginRight:"1px"}}>reply</i>
               reply
             </button>
           </div>
