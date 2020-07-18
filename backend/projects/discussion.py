@@ -2,7 +2,6 @@
 from users.collaborator import Collaborator
 from users.dreamer import Dreamer
 from projects.project import Project
-from projects.role import Role
 
 class Discussion():
     def __init__(self, projectID, parent_discussion_ID, is_dreamer, d_author = '',c_author = '',text = ''):
@@ -109,18 +108,18 @@ class Discussion():
         result = conn.execute(query)
         row = result.fetchone()
         if row['is_dreamer'] == 2 or row['is_dreamer'] == 1:
-            query = "INSERT INTO dreamer_notification (dreamer_ID, notification_text, is_viewed) VALUES (" + str(row['d_author']) + ", \'" + self.text + "\', " + str(0) + ");"
+            query = "INSERT INTO dreamer_notification (dreamer_ID, notification_text, is_viewed) VALUES (" + str(row['d_author']) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(0) + ");"
             conn.execute(query)
         else:
-            query = "INSERT INTO collaborator_notification (collaborator_ID, notification_text, is_viewed) VALUES (" + str(row['c_author']) + ", \'" + self.text + "\', " + str(0) + ");"
+            query = "INSERT INTO collaborator_notification (collaborator_ID, notification_text, is_viewed) VALUES (" + str(row['c_author']) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(0) + ");"
             conn.execute(query)
 
 
     def create_by_dreamer(self, conn):
         if self.parent_discussion_ID == 0:
-            query = "INSERT INTO discussion (projectID, text, is_dreamer, d_author) VALUES (" + str(self.projectID) + ", \'" + self.text + "\', " + str(self.is_dreamer) + ", " + str(self.d_author) + ");"
+            query = "INSERT INTO discussion (projectID, text, is_dreamer, d_author) VALUES (" + str(self.projectID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.d_author) + ");"
         else:
-            query = "INSERT INTO discussion (projectID, parent_discussion_ID, text, is_dreamer, d_author) VALUES (" + str(self.projectID) + ", " + str(self.parent_discussion_ID) + ", \'" + self.text + "\', " + str(self.is_dreamer) + ", " + str(self.d_author) + ");"
+            query = "INSERT INTO discussion (projectID, parent_discussion_ID, text, is_dreamer, d_author) VALUES (" + str(self.projectID) + ", " + str(self.parent_discussion_ID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.d_author) + ");"
             if self.is_dreamer == 2:
                 self.owner_reply(conn)
         conn.execute(query)
@@ -133,9 +132,9 @@ class Discussion():
 
     def create_by_collaborator(self, conn):
         if self.parent_discussion_ID == 0:
-            query = "INSERT INTO discussion (projectID, text, is_dreamer, c_author) VALUES (" + str(self.projectID) + ", \'" + self.text + "\', " + str(self.is_dreamer) + ", " + str(self.c_author) + ");"
+            query = "INSERT INTO discussion (projectID, text, is_dreamer, c_author) VALUES (" + str(self.projectID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.c_author) + ");"
         else:
-            query = "INSERT INTO discussion (projectID, parent_discussion_ID, text, is_dreamer, c_author) VALUES (" + str(self.projectID) + ", " + str(self.parent_discussion_ID) + ", \'" + self.text + "\', " + str(self.is_dreamer) + ", " + str(self.c_author) + ");"
+            query = "INSERT INTO discussion (projectID, parent_discussion_ID, text, is_dreamer, c_author) VALUES (" + str(self.projectID) + ", " + str(self.parent_discussion_ID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.c_author) + ");"
         conn.execute(query)
         query = "SELECT * FROM discussion where projectID = " + str(self.projectID) + " ORDER BY create_time DESC;"
         result = conn.execute(query)

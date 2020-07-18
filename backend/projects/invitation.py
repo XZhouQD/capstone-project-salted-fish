@@ -216,7 +216,7 @@ class Invitation():
             return None
         if self.duplicate_check(conn):
             return None
-        query = "INSERT INTO invitation (projectID, role_invited, invitor, invitee, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_invite) + ", " + str(self.invitor) + ", " + str(self.invitee) +  ", \'" + self.general_text + "\');"
+        query = "INSERT INTO invitation (projectID, role_invited, invitor, invitee, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_invite) + ", " + str(self.invitor) + ", " + str(self.invitee) +  ", \'" + self.general_text.replace("'", "\\\'") + "\');"
         conn.execute(query)
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"
         result = conn.execute(query)
