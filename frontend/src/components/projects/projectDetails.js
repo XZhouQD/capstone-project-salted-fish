@@ -212,7 +212,7 @@ class ProjectDetails extends Component {
               ? this.renderRole()
               : "The project owner has not add any roles yet"}
           </div>
-          <div className="row">comment section</div>
+
           <ReactApp id={pid} />
         </div>
       </div>

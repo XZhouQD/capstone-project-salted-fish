@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "materialize-css": "^1.0.0-rc.2",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-materialize": "^3.9.2",

@@ -43,10 +43,11 @@ class CommentForm extends Component {
       this.setState({ error: "Please input your message" });
       return;
     }
-
+    try {
+      this.props.hideReply();
+    } catch (e) {}
     // loading status and clear error
     this.setState({ error: "" });
-
     // persist the comments on server
     let { comment } = this.state;
     console.log(comment);
@@ -58,19 +59,39 @@ class CommentForm extends Component {
         "AUTH-KEY": a,
       },
     };
-    const parent_id = 0;
+
     const discuss_content = comment.content;
-    const body = JSON.stringify({
-      parent_id: parent_id,
-      discuss_content: discuss_content,
-    });
-    console.log(body);
-    const url = "/project/" + this.props.id + "/discussion";
-    const res = await axios.post(url, body, config);
-    console.log(res.data);
-    const author_name = this.props.name;
-    comment = { ...comment, author_name };
-    this.props.addComment(comment);
+    try {
+      const parent_id = this.props.comment.discussion_id;
+      const body = JSON.stringify({
+        parent_id,
+        discuss_content: discuss_content,
+      });
+      console.log(body);
+      const url = "/project/" + this.props.id + "/discussion";
+      const res = await axios.post(url, body, config);
+      const discussion_id = res.data.discussion_id;
+      console.log(res);
+      const author_name = this.props.name;
+      comment = { ...comment, author_name, discussion_id, parent_id };
+      this.props.addComment(comment);
+    } catch (e) {
+      const parent_id = 0;
+      const body = JSON.stringify({
+        parent_id,
+        discuss_content: discuss_content,
+      });
+
+      const url = "/project/" + this.props.id + "/discussion";
+      const res = await axios.post(url, body, config);
+      console.log(res.data);
+      const discussion_id = res.data.discussion_id;
+      const author_name = this.props.name;
+      const is_owner = res.data.post_by;
+      comment = { ...comment, author_name, parent_id, discussion_id, is_owner };
+      this.props.addComment(comment);
+    }
+
     // this.setState({
     //   comment: { ...comment, content: discuss_content },
     // });

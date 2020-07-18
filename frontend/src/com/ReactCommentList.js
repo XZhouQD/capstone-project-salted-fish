@@ -6,7 +6,7 @@ export default function CommentList(props) {
     <div>
       <h5>
         Comment{props.comments.length > 0 ? "s" : ""}
-        <span>{props.comments.length}</span>
+        <span>({props.comments.length})</span>
       </h5>
 
       {props.comments.length === 0 ? (
@@ -15,7 +15,12 @@ export default function CommentList(props) {
 
       {props.comments.length > 0 &&
         props.comments.map((comment, index) => (
-          <ReactComment key={index} comment={comment} />
+          <ReactComment
+            key={index}
+            comment={comment}
+            addComment={props.addComment}
+            id={props.id}
+          />
         ))}
     </div>
   );

@@ -44,14 +44,19 @@ class ReactApp extends Component {
     this.setState({
       comments: [comment, ...this.state.comments],
     });
+    console.log(this.state.comments);
   }
 
   render() {
     return (
-      <div className="light shadow">
+      <div className="card-panel light shadow">
+        <h4 style={{ fontFamily: "Ubuntu" }}>comment section</h4>
         <CommentForm addComment={this.addComment} id={this.props.id} />
-
-        <CommentList comments={this.state.comments} />
+        <CommentList
+          comments={this.state.comments}
+          addComment={this.addComment}
+          id={this.props.id}
+        />
       </div>
     );
   }
