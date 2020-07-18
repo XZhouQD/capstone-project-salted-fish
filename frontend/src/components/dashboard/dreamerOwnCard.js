@@ -42,13 +42,13 @@ class DreamerCard extends React.Component {
     }
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
-      //const url1 = "/dinfo/"+this.props.id
-    
-      const dinfoUrl = "/dreamer/" + this.props.id
+    //const url1 = "/dinfo/"+this.props.id
+
+    const dinfoUrl = "/dreamer/" + this.props.id;
 
     return (
       <div>
-<header>
+        <header>
           <div className="navbar-fixed" style={{ position: "fixed" }}>
             <Link
               data-target="nav-mobile"
