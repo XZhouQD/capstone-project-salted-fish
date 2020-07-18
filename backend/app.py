@@ -1020,7 +1020,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200       
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post_by':role}, 200       
         
         
 
