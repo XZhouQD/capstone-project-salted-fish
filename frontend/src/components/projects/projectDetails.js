@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { Modal, Button } from "react-materialize";
-import CommentApp from "../comments/CommentApp";
+import ReactApp from "../../com/ReactApp";
 import M from "materialize-css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { applyRole } from "../../actions/projects";
 import GetApplications from "./getApplications";
-import {setAlert} from "../../actions/alert"
+import { setAlert } from "../../actions/alert";
 class ProjectDetails extends Component {
   constructor() {
     super();
@@ -36,30 +36,30 @@ class ProjectDetails extends Component {
       description: res.data.description,
     });
   }
- async handleFollow(e){
+  async handleFollow(e) {
     const a = localStorage.getItem("token");
     const config = {
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8",
-      "Access-Control-Allow-Origin": "*",
-      "AUTH-KEY": a,
-    },
-  };
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
 
-const id = this.props.match.params.id
+    const id = this.props.match.params.id;
     // get target element name
-    const followUrl = "/project/"+id+"/follow"
-    const unfollowUrl = "/project/"+id+"/unfollow"
-    this.setState({ follow:!this.state.follow });
-    if (this.state.follow){
+    const followUrl = "/project/" + id + "/follow";
+    const unfollowUrl = "/project/" + id + "/unfollow";
+    this.setState({ follow: !this.state.follow });
+    if (this.state.follow) {
       const res = await axios.get(followUrl, config);
-      console.log(res)
-      this.props.setAlert(res.data.message)
-    }else{
+      console.log(res);
+      this.props.setAlert(res.data.message);
+    } else {
       const res = await axios.get(unfollowUrl, config);
-      this.props.setAlert(res.data.message)
+      this.props.setAlert(res.data.message);
     }
-  };
+  }
 
   handleonChange = (e) => {
     // get target element name
@@ -175,6 +175,7 @@ const id = this.props.match.params.id
   }
   render() {
     const url = "https://source.unsplash.com/collection/45/1600*900";
+    const pid = this.props.match.params.id;
     return (
       <div>
         <div className="container">
@@ -197,10 +198,10 @@ const id = this.props.match.params.id
                   <button
                     className="blue-grey darken-1 waves-light btn-small right"
                     style={{ position: "relative", top: "-10px" }}
-                    onClick = {(e)=>this.handleFollow(e)}
+                    onClick={(e) => this.handleFollow(e)}
                   >
                     <i className="material-icons icon left">favorite</i>
-                      {this.state.follow?"follow":"unfollow"}
+                    {this.state.follow ? "follow" : "unfollow"}
                   </button>
                 </div>
               </div>
@@ -211,8 +212,8 @@ const id = this.props.match.params.id
               ? this.renderRole()
               : "The project owner has not add any roles yet"}
           </div>
-          <div className="row">comment section</div>
-          <CommentApp />
+
+          <ReactApp id={pid} />
         </div>
       </div>
     );
@@ -224,4 +225,6 @@ const mapStateToProps = (state) => ({
   applySuccess: state.project.payload,
 });
 
-export default connect(mapStateToProps, { applyRole,setAlert })(ProjectDetails);
+export default connect(mapStateToProps, { applyRole, setAlert })(
+  ProjectDetails
+);
