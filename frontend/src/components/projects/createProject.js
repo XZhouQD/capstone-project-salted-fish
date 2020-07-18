@@ -53,9 +53,10 @@ class CreateProject extends Component {
                   <input
                     placeholder="enter your project's title"
                     type="text"
-                    name="title"
+                    id="title"
                     onChange={(e) => this.handleonChange(e)}
                     required
+                    className="validate"
                   />
                   <label htmlFor="title">Project Title</label>
                 </div>
@@ -93,7 +94,7 @@ class CreateProject extends Component {
                     placeholder="describe your project details not more than 140 words"
                     className="materialize-textarea"
                     length="140"
-                    name="description"
+                    id="description"
                     onChange={(e) => this.handleonChange(e)}
                     required
                   ></textarea>
@@ -103,7 +104,7 @@ class CreateProject extends Component {
               <div className="row">
                 <input
                   type="submit"
-                  className="btn right"
+                  className="btn right blue-grey lighten-1"
                   value="Create"
                   style={{ marginRight: "20px" }}
                 />
