@@ -178,7 +178,6 @@ class Collaborator():
             proj['follow'] = False
             myproject_list.append(proj)
         myproject_list.extend(follow_list)
-        if len(myproject_list) == 0: return None
         return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
