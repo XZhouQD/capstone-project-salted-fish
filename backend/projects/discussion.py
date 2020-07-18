@@ -13,8 +13,7 @@ class Discussion():
         self.text = text
         # no input warning
         self.id = -1
-    
-    
+
     @staticmethod
     def get_notification_by_id(conn, user_id,user_role):
         if user_role == 'Dreamer':
@@ -46,7 +45,7 @@ class Discussion():
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        discussion_info = {'discussion_id':discussion_id,'parent_id':row['parent_discussion_ID'],'content':row['text']}
+        discussion_info = {'discussion_id':discussion_id,'parent_id':row['parent_discussion_ID'],'content':row['text'],'create_time':str(row['create_time'])}
         if row['is_dreamer'] == 2:
             author = Dreamer.get_by_id(conn,row['d_author'])
             discussion_info['is_owner'] = 'Yes'
@@ -77,7 +76,7 @@ class Discussion():
             return None
         for i in range(result.rowcount):
             row = result.fetchone()
-            discussion_info = {'discussion_id':row['ID'],'parent_id': row['parent_discussion_ID'], 'content': row['text']}
+            discussion_info = {'discussion_id':row['ID'],'parent_id': row['parent_discussion_ID'], 'content': row['text'], 'create_time':str(row['create_time'])}
             if row['is_dreamer'] == 2:
                 author = Dreamer.get_by_id(conn, row['d_author'])
                 discussion_info['is_owner'] = 'Yes'
@@ -102,7 +101,7 @@ class Discussion():
 
 
     def info(self):
-        return {'id': self.id, 'project_id': self.projectID, 'parent_discussion_id': self.parent_discussion_ID,'content': self.text, 'is_dreamer': self.is_dreamer}
+        return {'id': self.id, 'project_id': self.projectID, 'parent_discussion_id': self.parent_discussion_ID,'content': self.text, 'is_dreamer': self.is_dreamer, 'create_time': str(self.create_time)}
 
     def owner_reply(self, conn):
         query = "SELECT * FROM discussion where ID = " + str(self.parent_discussion_ID) + " ;"
@@ -128,6 +127,7 @@ class Discussion():
         result = conn.execute(query)
         row = result.fetchone()
         self.id = row['ID']
+        self.create_time = row['create_time']
         return self
 
     def create_by_collaborator(self, conn):
@@ -140,5 +140,5 @@ class Discussion():
         result = conn.execute(query)
         row = result.fetchone()
         self.id = row['ID']
-
+        self.create_time = row['create_time']
         return self
