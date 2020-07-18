@@ -31,6 +31,7 @@ const CollaNav = ({ isAuthenticated, logOut }) => {
         </li>
       </ul>
     </nav>
+
   );
 };
 
