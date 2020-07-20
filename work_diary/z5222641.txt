@@ -36,3 +36,9 @@ Dreamer view single application api finished
 Dreamer view all applications api finished 
 Join the retrospect meeting with team
 Next week: Finished sprint 2 and start sprint3
+
+week7
+Post discussion api finished
+View all discussions api finished 
+View single discussion api finished 
+Next week: Finished sprint 3 and start sprint4
