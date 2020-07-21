@@ -190,7 +190,7 @@ class Role():
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        if row['status'] != 1:
+        if row['project_status'] != 1:
             return 99 
         query = "UPDATE project_role SET title = \'" + self.title.replace("'", "\\\'") + "\', amount = " + str(self.amount) + ", education = " + str(self.education) + ", general_enquiry = \'" + self.general_enquiry.replace("'", "\\\'") + "\' WHERE ID = " + str(self.id) + ";"
         conn.execute(query)
