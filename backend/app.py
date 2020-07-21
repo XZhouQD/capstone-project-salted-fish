@@ -713,7 +713,7 @@ class ApplyRole(CorsResource):
         new_apply.notify_owner(conn, smtp)
         new_apply.notify_applicant(conn, smtp)
         conn.close()
-        return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
+        return {'message': 'role apply success', 'project_id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
 @api.param('pid', 'The project id')
@@ -777,6 +777,7 @@ class ViewSingleDiscussion(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
+    @api.response(405, 'Wrong project ID was given for the searching discussion!')
     @api.doc(description=' View single discussion for a project')
     @require_auth
     def get(self ,pid,did):
@@ -789,6 +790,8 @@ class ViewSingleDiscussion(CorsResource):
         conn.close()
         if result is None:
             return {'message': 'Discussion not found'}, 404
+        if result['projectID'] != pid:
+            return {'message': 'Wrong project ID was given for the searching discussion!'}, 405
         return result, 200
 
 
@@ -799,7 +802,8 @@ class ViewAllDiscussion(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
-    @api.doc(description=' View single discussion for a project')
+    @api.doc(description=' View all discussions for a project')
+    @require_auth
     def get(self ,id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
@@ -1030,7 +1034,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post_by':role}, 200
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')

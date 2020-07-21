@@ -90,7 +90,7 @@ class Invitation():
         conn.execute(query)
         Invitation.get_object_by_id(conn, invitation_id).notify_invitor(conn, smtp)
         #Check if more than one invitations sented for other roles of the same project;
-        query_0 = "select ID as iid from invitation where projectID = " + str(proj_ID) + " and  and status = -1 and invitee in (select invitee from invitation where ID = " + str(invitation_id) + ");"
+        query_0 = "select ID as iid from invitation where projectID = " + str(proj_ID) + " and status = -1 and invitee in (select invitee from invitation where ID = " + str(invitation_id) + ");"
         result_0 = conn.execute(query_0)
         for m in range(result_0.rowcount):
             #system automatically decline all other invitations for the same project once you accept one of them;
@@ -199,6 +199,10 @@ class Invitation():
 
     def duplicate_check(self, conn):
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
+        result = conn.execute(query)
+        if result.rowcount > 0:
+            return True
+        query = "SELECT * FROM application where projectID = " + str(self.project_id) + " AND role_applied = " + str(self.role_invite) + " AND applicant = " + str(self.invitee)  + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True

@@ -285,7 +285,7 @@ class Project():
         discussion_list = []
         for i in range(result.rowcount):
             row = result.fetchone()
-            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':str(row['last_update'])}
             discussion_list.append(discussion)
         return discussion_list
 
@@ -303,7 +303,7 @@ class Project():
         discussion_list = []
         for i in range(result.rowcount):
             row = result.fetchone()
-            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':row['last_update']}
+            discussion = {'discussionID':row['ID'], 'projectID':row['projectID'], 'parent_discussion_ID':row['parent_discussion_ID'], 'text':row['text'], 'is_dreamer':row['is_dreamer'], 'd_author':row['d_author'], 'c_author':row['c_author'], 'last_update_time':str(row['last_update'])}
             discussion_list.append(discussion)
         return discussion_list
 
