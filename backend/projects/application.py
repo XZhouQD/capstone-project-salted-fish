@@ -51,6 +51,7 @@ class Application():
             application= Collaborator.get_by_id(conn,row['applicant'])
             application['general_text'] = row['general_text']
             application['apply_status'] = row['status']
+            application['application_id'] = row['ID']
             application_list.append(application)
         if len(application) == 0: return None
         all_application['applications'] = application_list
@@ -245,7 +246,7 @@ class Application():
             return {}
         if not self.check_project_status(conn):
             return {'This project is not activated':1}
-        query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text + "\');"
+        query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text.replace("'", "\\\'") + "\');"
         conn.execute(query)
         query = "SELECT * FROM application where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"
         result = conn.execute(query)

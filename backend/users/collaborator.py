@@ -178,7 +178,6 @@ class Collaborator():
             proj['follow'] = False
             myproject_list.append(proj)
         myproject_list.extend(follow_list)
-        if len(myproject_list) == 0: return None
         return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
@@ -186,11 +185,10 @@ class Collaborator():
         edu = self.education
         project_list = []
         for skill, exp in skills.items():
-            print(skill, exp, edu)
             if category == -1:
-                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role, role_skill WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
             else:
-                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
+                query = "SELECT project.ID as pID, project_role.ID as rID, project_title, project.last_update as last_update FROM project, project_role, role_skill WHERE project.ID = projectID AND description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND skill = " + str(skill) + " AND experience <= " + str(exp) + " AND education <= " + str(edu) + " ORDER BY " + order_by + " " + order + ";"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
@@ -210,29 +208,24 @@ class Collaborator():
         #strict matching
         strict_matching_count = 0
         for skill, exp in skills.items():
-            print(skill, exp, edu)
-            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY experience;"
+            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience = " + str(exp) + " AND education = " + str(edu) + " ORDER BY ID, projectID, skill;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id_skill(conn, row['pID'], skill)
-                is_exist = False
-                for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
-                if not is_exist:
-                    project_list.append(proj)
-                    strict_matching_count += 1
+                proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
+                project_list.append(proj)
+                strict_matching_count += 1
         #relaxing matching
         relaxing_matching_count = 0
         for skill, exp in skills.items():
-            query = "SELECT projectID as pID FROM project_role WHERE skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY experience, education;"
+            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY ID, projectID, skill;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
-                proj = Project.get_by_id_skill(conn, row['pID'], skill)
+                proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id']: is_exist = True
+                    if project['id'] == proj['id'] and project['roles']['id'] == proj['roles']['id'] and project['roles']['skill'] == proj['roles']['skill']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     relaxing_matching_count += 1
@@ -250,7 +243,7 @@ class Collaborator():
             conn.execute(query)
 
     def commit(self, conn):
-        query = "INSERT INTO collaborator (name, email, password, phone_no, education, user_level, description) VALUES (\'" + self.name + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no + "\', " + str(self.education) + ", " + str(self.user_level) + ", \'" + self.description + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no + "\', `education` = " + str(self.education) + ", `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description + "\';"
+        query = "INSERT INTO collaborator (name, email, password, phone_no, education, user_level, description) VALUES (\'" + self.name.replace("'", "\\\'") + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no + "\', " + str(self.education) + ", " + str(self.user_level) + ", \'" + self.description.replace("'", "\\\'") + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name.replace("'", "\\\'") + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no + "\', `education` = " + str(self.education) + ", `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description.replace("'", "\\\'") + "\';"
         conn.execute(query)
         # register check - ID error
         if self.id == '':

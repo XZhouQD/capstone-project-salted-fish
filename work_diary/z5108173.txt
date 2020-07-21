@@ -56,3 +56,8 @@ Conducted retro A online meeting on Zoom, wrote part of retro A report.
 Next Week Paln: 7-1. Start work on admin functions; 7-2. Try API view times statistics; 7-3. Prepare all tasks in Sprint 3/4; 7-4. Prepare demo server; 7-5. Start to draft final report.
 
 Week 7
+
+All subtasks in sprint 3 ready on github/jira. [7-3]
+Demo server ready, open to public connect. [7-4]
+Move to new db format for multi-skill selection in roles.
+draft final report doc ready. [7-5]

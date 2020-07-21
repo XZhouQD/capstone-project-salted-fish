@@ -56,6 +56,7 @@ class CreateProject extends Component {
                     name="title"
                     onChange={(e) => this.handleonChange(e)}
                     required
+                    className="validate"
                   />
                   <label htmlFor="title">Project Title</label>
                 </div>
@@ -103,7 +104,7 @@ class CreateProject extends Component {
               <div className="row">
                 <input
                   type="submit"
-                  className="btn right"
+                  className="btn right blue-grey lighten-1"
                   value="Create"
                   style={{ marginRight: "20px" }}
                 />

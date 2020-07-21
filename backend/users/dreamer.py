@@ -2,6 +2,7 @@
 
 from users.util import sha256
 from projects.project import Project
+from users.collaborator import Collaborator
 
 class Dreamer():
     def __init__(self, name, email, password_plain='', password_encrypted='', id='', create_time='', last_update='', phone_no='', user_level=0, description=''):
@@ -89,7 +90,7 @@ class Dreamer():
         for i in range(result_1.rowcount):
             row_1 = result_1.fetchone()
             #fetch roles for each project;
-            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role WHERE projectID = " + str(row_1['proj_ID']) + " ORDER BY ID;"
+            query_2 = "SELECT ID as role_ID, title, amount, skill, experience, education, general_enquiry FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and projectID = " + str(row_1['proj_ID']) + " ORDER BY ID, skill;"
             result_2 = conn.execute(query_2)
             if result_2.rowcount == 0:
                 continue
@@ -159,5 +160,5 @@ class Dreamer():
 
 
     def commit(self, conn):
-        query = "INSERT INTO dreamer (name, email, password, phone_no, user_level, description) VALUES (\'" + self.name + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no + "\', " + str(self.user_level) + ", \'" + self.description + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no + "\', `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description + "\';"
+        query = "INSERT INTO dreamer (name, email, password, phone_no, user_level, description) VALUES (\'" + self.name.replace("'", "\\\'") + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no.replace("'", "\\\'") + "\', " + str(self.user_level) + ", \'" + self.description.replace("'", "\\\'") + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name.replace("'", "\\\'") + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no.replace("'", "\\\'") + "\', `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description.replace("'", "\\\'") + "\';"
         conn.execute(query)
