@@ -213,8 +213,12 @@ class Collaborator():
             for i in range(result.rowcount):
                 row = result.fetchone()
                 proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
-                project_list.append(proj)
-                strict_matching_count += 1
+                is_exist = False
+                for project in project_list:
+                    if project['id'] == proj['id']: is_exist = True
+                if not is_exist:
+                    project_list.append(proj)
+                    strict_matching_count += 1
         #relaxing matching
         relaxing_matching_count = 0
         for skill, exp in skills.items():
@@ -225,7 +229,7 @@ class Collaborator():
                 proj = Project.get_by_pid_rid_skill(conn, row['proj_id'], row['role_id'], row['skill'])
                 is_exist = False
                 for project in project_list:
-                    if project['id'] == proj['id'] and project['roles']['id'] == proj['roles']['id'] and project['roles']['skill'] == proj['roles']['skill']: is_exist = True
+                    if project['id'] == proj['id']: is_exist = True
                 if not is_exist:
                     project_list.append(proj)
                     relaxing_matching_count += 1
