@@ -777,6 +777,7 @@ class ViewSingleDiscussion(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
+    @api.response(405, 'Wrong project ID was given for the searching discussion!')
     @api.doc(description=' View single discussion for a project')
     @require_auth
     def get(self ,pid,did):
@@ -789,6 +790,8 @@ class ViewSingleDiscussion(CorsResource):
         conn.close()
         if result is None:
             return {'message': 'Discussion not found'}, 404
+        if result['projectID'] != pid:
+            return {'message': 'Wrong project ID was given for the searching discussion!'}, 405
         return result, 200
 
 
