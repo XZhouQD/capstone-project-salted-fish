@@ -202,6 +202,10 @@ class Invitation():
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
+        query = "SELECT * FROM application where projectID = " + str(self.project_id) + " AND role_applied = " + str(self.role_invite) + " AND applicant = " + str(self.invitee)  + ";"
+        result = conn.execute(query)
+        if result.rowcount > 0:
+            return True
         return False
 
     def check_project_role(self,conn):
