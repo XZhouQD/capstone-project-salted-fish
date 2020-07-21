@@ -713,7 +713,7 @@ class ApplyRole(CorsResource):
         new_apply.notify_owner(conn, smtp)
         new_apply.notify_applicant(conn, smtp)
         conn.close()
-        return {'message': 'role apply success', 'project id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
+        return {'message': 'role apply success', 'project_id': int(pid),'project_role_id': int(rid), 'apply_id': new_apply.info()['id']}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>')
 @api.param('pid', 'The project id')
@@ -1031,7 +1031,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post by':role}, 200
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post_by':role}, 200
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
