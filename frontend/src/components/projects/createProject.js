@@ -53,7 +53,7 @@ class CreateProject extends Component {
                   <input
                     placeholder="enter your project's title"
                     type="text"
-                    id="title"
+                    name="title"
                     onChange={(e) => this.handleonChange(e)}
                     required
                     className="validate"
@@ -94,7 +94,7 @@ class CreateProject extends Component {
                     placeholder="describe your project details not more than 140 words"
                     className="materialize-textarea"
                     length="140"
-                    id="description"
+                    name="description"
                     onChange={(e) => this.handleonChange(e)}
                     required
                   ></textarea>
