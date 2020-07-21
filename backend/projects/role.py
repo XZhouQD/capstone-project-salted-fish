@@ -195,7 +195,7 @@ class Role():
         query = "UPDATE project_role SET title = \'" + self.title.replace("'", "\\\'") + "\', amount = " + str(self.amount) + ", education = " + str(self.education) + ", general_enquiry = \'" + self.general_enquiry.replace("'", "\\\'") + "\' WHERE ID = " + str(self.id) + ";"
         conn.execute(query)
         # update skills/experience requirement
-        if len(self.skill) == 0 or len(self.experience) == 0: # cannot delete requirements and put nothing there - skip if no provided
+        if len(self.skill) == 0: # cannot delete requirements and put nothing there - skip if no provided
             return self
         query = f"DELETE FROM role_skill where roleID = {self.id};"
         conn.execute(query)
