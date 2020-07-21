@@ -45,7 +45,7 @@ class Discussion():
         if result.rowcount == 0:
             return None
         row = result.fetchone()
-        discussion_info = {'discussion_id':discussion_id,'parent_id':row['parent_discussion_ID'],'content':row['text'],'create_time':str(row['create_time'])}
+        discussion_info = {'discussion_id':discussion_id,'projectID':row['projectID'],'parent_id':row['parent_discussion_ID'],'content':row['text'],'create_time':str(row['create_time'])}
         if row['is_dreamer'] == 2:
             author = Dreamer.get_by_id(conn,row['d_author'])
             discussion_info['is_owner'] = 'Yes'
