@@ -802,7 +802,8 @@ class ViewAllDiscussion(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Discussion not found')
-    @api.doc(description=' View single discussion for a project')
+    @api.doc(description=' View all discussions for a project')
+    @require_auth
     def get(self ,id):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
