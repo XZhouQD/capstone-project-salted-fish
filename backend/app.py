@@ -1031,7 +1031,7 @@ class PostDiscussion(CorsResource):
         else:
             role = 'collaborator'
         conn.close()
-        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post_by':role}, 200
+        return {'message': 'post discussion success', 'project_id': int(id), 'parent_discussion_id': parent_id, 'discussion_id': discussion_id,'post_by':role,'post_time':new_discuss.info()['create_time']}, 200
 
 @api.route('/project/<int:id>/role')
 @api.param('id', 'The project id')
