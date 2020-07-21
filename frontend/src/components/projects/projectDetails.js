@@ -9,6 +9,7 @@ import axios from "axios";
 import { applyRole } from "../../actions/projects";
 import GetApplications from "./getApplications";
 import { setAlert } from "../../actions/alert";
+
 class ProjectDetails extends Component {
   constructor() {
     super();
@@ -131,6 +132,19 @@ class ProjectDetails extends Component {
     );
   }
 
+  renderSkill(list, skill_list) {
+    var content = "";
+    for (var i = 0; i < list.length; i++) {
+      console.log(i);
+      content += skill_list[list[i] - 1];
+      if (i == list.length - 1) {
+        continue;
+      }
+      content += ", ";
+    }
+    return <span>{content}</span>;
+  }
+
   renderRole() {
     const skill_list = [
       "Web Development",
@@ -158,8 +172,9 @@ class ProjectDetails extends Component {
           return (
             <p key={key} style={{ fontFamily: "Ubuntu" }}>
               <span style={{ fontFamily: "Cherry Swash" }}>ROLE</span>: Project{" "}
-              {a.title} needs {a.amount} people who have {skill_list[a.skill]}{" "}
-              skill, and experience at least {a.experience} years with{" "}
+              {a.title} needs {a.amount} people who have{" "}
+              {this.renderSkill(a.skill, skill_list)} skill, and experience at
+              least {a.experience} years with{" "}
               {education_list[a.education] === "Other"
                 ? "any"
                 : education_list[a.education]}{" "}

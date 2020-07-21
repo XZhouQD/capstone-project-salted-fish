@@ -33,12 +33,10 @@ class DreamerCard extends React.Component {
     console.log(this.state.info);
   }
 
-  
-
   render() {
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
-    const dinfoUrl = "/dreamer/" + this.props.id
+    const dinfoUrl = "/dreamer/" + this.props.id;
 
     return (
       <div>
@@ -110,43 +108,55 @@ class DreamerCard extends React.Component {
                         <img src={url} className="profile" />
                       </div>
 
-                        <div className="profile-name center-align" style={{marginLeft: "30px",position: "relative", bottom: "6px"}}>{this.state.info.name}</div>
-                        <p className="about" style={{ position: "relative", bottom: "6px" }}>
-                          This is {this.state.info.name}'s profile as a dreamer
-                        </p>
-                        {/*<button*/}
-                        {/*  className="msg-btn button1"*/}
-                        {/*  onClick={(e) => this.update(e)}*/}
-                        {/*>*/}
-                        {/*  update*/}
-                        {/*</button>*/}
+                      <div
+                        className="profile-name center-align"
+                        style={{
+                          marginLeft: "30px",
+                          position: "relative",
+                          bottom: "6px",
+                        }}
+                      >
+                        {this.state.info.name}
+                      </div>
+                      <p
+                        className="about"
+                        style={{ position: "relative", bottom: "6px" }}
+                      >
+                        This is {this.state.info.name}'s profile as a dreamer
+                      </p>
+                      <button
+                        className="msg-btn button1"
+                        style={{ visibility: "hidden" }}
+                        onClick={(e) => this.update(e)}
+                      >
+                        a
+                      </button>
 
+                      <div>
                         <div>
-                          <div>
-                            <i className="fab material-icons icon">call</i>{" "}
-                            <span style={{ position: "relative", bottom: "6px" }}>
+                          <i className="fab material-icons icon">call</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
                             {this.state.info.phone_no}
                           </span>
-                          </div>
-                          <div>
-                            <i className="fab material-icons icon">email</i>{" "}
-                            <span style={{ position: "relative", bottom: "6px" }}>
+                        </div>
+                        <div>
+                          <i className="fab material-icons icon">email</i>{" "}
+                          <span style={{ position: "relative", bottom: "6px" }}>
                             {this.state.info.email}
                           </span>
-                          </div>
+                        </div>
 
-                          <div>
-                            <i className="fab material-icons icon">trending_up</i>{" "}
-                            <span style={{ position: "relative", bottom: "4px" }}>
+                        <div>
+                          <i className="fab material-icons icon">trending_up</i>{" "}
+                          <span style={{ position: "relative", bottom: "4px" }}>
                             {this.state.info.user_level}
                           </span>
-                          </div>
-                      </div>
-
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
         </main>

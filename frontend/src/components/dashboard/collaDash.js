@@ -123,7 +123,8 @@ class CollaDash extends React.Component {
                         </form>
                       </div>
                     </nav>
-                    {this.state.myProjects.length > 0 ? (
+                    {this.state.myProjects.length > 0 &&
+                    this.state.myProjects !== null ? (
                       this.state.myProjects.map((each, index) => {
                         return (
                           <CollaOngoingProject
