@@ -99,6 +99,8 @@ class Role():
         roles = []
         if result.rowcount == 0:
             return roles
+        skills = []
+        experiences = 0
         for i in range(result.rowcount):
             row = result.fetchone()
             skills.append(row['skill'])
