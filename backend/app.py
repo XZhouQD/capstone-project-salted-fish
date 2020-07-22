@@ -944,6 +944,7 @@ class GetProject(CorsResource):
         cursor_project = Project.get_by_proj_id(conn, int(id))
         try:
             cursor_project.title = project_info['title']
+            print('project_info[title] =', project_info['title'])
         except:
             pass
         try:
