@@ -943,7 +943,7 @@ class GetProject(CorsResource):
         project_info = request.json
         cursor_project = Project.get_by_proj_id(conn, int(id))
         try:
-            cursor_project.title = project_info['title']
+            cursor_project.title = project_info['project_title']
         except:
             pass
         try:
