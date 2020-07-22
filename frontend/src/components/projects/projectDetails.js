@@ -102,46 +102,49 @@ class ProjectDetails extends Component {
 
   renderUser(rid) {
     return (
-      <Modal
-        trigger={
-          <Button className="blue-grey darken-1 waves-light btn-small right">
-            <i className="material-icons icon left">done_all</i>
-            apply
-          </Button>
-        }
-      >
-        <form className="col s12" onSubmit={(e) => this.handleonSubmit(e, rid)}>
-          <div className="input-field ">
+      <div>
+        <Modal
+          trigger={
+            <Button className="blue-grey darken-1 waves-light btn-small">
+              <i className="material-icons icon left">done_all</i>
+              apply
+            </Button>
+          }
+        >
+          <form
+            className="col s12"
+            onSubmit={(e) => this.handleonSubmit(e, rid)}
+          >
+            <div className="input-field ">
+              <input
+                placeholder="Say HI"
+                type="text"
+                name="general_text"
+                onChange={(e) => this.handleonChange(e)}
+                required
+              />
+              <label htmlFor="title">Send the apply message!</label>
+            </div>
             <input
-              placeholder="Say HI"
-              type="text"
-              name="general_text"
-              onChange={(e) => this.handleonChange(e)}
-              required
+              type="submit"
+              className="btn-small left"
+              value="send"
+              style={{ marginTop: "38px" }}
             />
-            <label htmlFor="title">Send the apply message!</label>
-          </div>
-          <input
-            type="submit"
-            className="btn-small left"
-            value="send"
-            style={{ marginTop: "38px" }}
-          />
-        </form>
-      </Modal>
+          </form>
+        </Modal>
+      </div>
     );
   }
 
   renderSkill(list, skill_list) {
-    var content = "";
+    var content = [];
     for (var i = 0; i < list.length; i++) {
       console.log(i);
-      content += skill_list[list[i] - 1];
-      if (i == list.length - 1) {
-        continue;
-      }
-      content += ", ";
+      content.push(skill_list[list[i] - 1]);
     }
+    content = content.join(",");
+    console.log(content);
     return <span>{content}</span>;
   }
 
