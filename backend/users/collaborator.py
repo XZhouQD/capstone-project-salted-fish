@@ -260,8 +260,12 @@ class Collaborator():
     
     
     def patch(self, conn):
-        query = "UPDATE collaborator SET phone_no = " + self.phone_no + ",education = " + str(self.education) + " WHERE ID = " + str(self.id) + ";"
+        query = "UPDATE collaborator SET phone_no = \'" + self.phone_no + "\',education = \'" + str(self.education) + "\' WHERE ID = " + str(self.id) + ";"
         conn.execute(query)
+        if self.education == 1: self.education_text='Other'
+        elif self.education == 2: self.education_text='Bachelor'
+        elif self.education == 3: self.education_text='Master'
+        elif self.education == 4: self.education_text='PhD'
         # update skills/experience requirement
         if len(self.skill_dict) == 0:  # cannot delete requirements and put nothing there - skip if no provided
             return self
