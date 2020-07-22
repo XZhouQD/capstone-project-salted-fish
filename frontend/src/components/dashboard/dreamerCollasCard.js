@@ -262,7 +262,7 @@ class DreamerCollasCard extends React.Component {
                               <button type="submit">
                                 {this.state.resume.filename
                                   ? this.state.resume.filename
-                                  : "no projects"}
+                                  : "no resumes"}
                               </button>
                             </form>
                           </span>
