@@ -260,10 +260,6 @@ class Collaborator():
     
     
     def patch(self, conn):
-        # Check project status, no more updates allowed if project is finished;
-        query = "SELECT * FROM collaborator WHERE ID = " + str(self.id) + ";"
-        result = conn.execute(query)
-        row = result.fetchone()
         query = "UPDATE collaborator SET phone_no = " + self.phone_no + ",education = " + str(self.education) + " WHERE ID = " + str(self.id) + ";"
         conn.execute(query)
         # update skills/experience requirement
