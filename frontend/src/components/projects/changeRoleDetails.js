@@ -2,21 +2,26 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { changeProjectRole } from "../../actions/projects";
+import M from "materialize-css";
 
 class ChangeRoleDetails extends React.Component {
   constructor(props) {
     super(props);
+    this.handleSkillChange = this.handleSkillChange.bind(this);
   }
 
   state = {
     title: "",
     amount: 0,
-    skill: 0,
+    skill: "",
     experience: 0,
     education: 0,
     general_enquiry: "",
   };
 
+  componentDidMount() {
+    M.AutoInit();
+  }
   handleonChange = (e) => {
     // get target element name
     this.setState({ [e.target.name]: e.target.value });
@@ -48,6 +53,21 @@ class ChangeRoleDetails extends React.Component {
       rid,
     });
   };
+
+  handleSkillChange(event) {
+    var options = event.target.options;
+    var value = [];
+    for (var i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+
+    // console.log(values[0].skill);
+    value = value.join(",");
+    console.log(value);
+    this.setState({ skill: value });
+  }
 
   render() {
     const url = "/projects/" + this.props.match.params.pid;
@@ -118,17 +138,12 @@ class ChangeRoleDetails extends React.Component {
                     </select>
                   </div>
 
-                  <div className="col l4">
-                    <label className="left">Role's Skills</label>
+                  <div className="input-field col l4">
                     <select
-                      className="browser-default"
-                      onChange={(e) => this.handleonChange(e)}
-                      placeholder="enter the role's skills of your project"
-                      name="skill"
+                      multiple
+                      onChange={(e) => this.handleSkillChange(e)}
+                      placeholder="role's skills of your project"
                     >
-                      <option value="" disabled>
-                        Choose your option
-                      </option>
                       {[
                         "Web Development",
                         "Java",
@@ -147,12 +162,13 @@ class ChangeRoleDetails extends React.Component {
                         "Distribution System",
                       ].map((ele, index) => {
                         return (
-                          <option value={index} key={index}>
+                          <option value={index + 1} key={index}>
                             {ele}
                           </option>
                         );
                       })}
                     </select>
+                    <label className="left">Role's Skills</label>
                   </div>
 
                   <div className="col l4">

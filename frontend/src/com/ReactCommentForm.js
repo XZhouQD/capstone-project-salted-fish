@@ -87,8 +87,16 @@ class CommentForm extends Component {
       console.log(res.data);
       const discussion_id = res.data.discussion_id;
       const author_name = this.props.name;
+      const create_time = res.data.post_time;
       const is_owner = res.data.post_by;
-      comment = { ...comment, author_name, parent_id, discussion_id, is_owner };
+      comment = {
+        ...comment,
+        author_name,
+        parent_id,
+        discussion_id,
+        is_owner,
+        create_time,
+      };
       this.props.addComment(comment);
     }
 

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { postProjectRole } from "../../actions/projects";
+import M from "materialize-css";
 
 const AddRoleProject = (props) => {
   const [flag, setFlag] = useState(0);
@@ -10,11 +11,15 @@ const AddRoleProject = (props) => {
     setFlag(Flag);
   }
 
+  useEffect(() => {
+    M.AutoInit();
+  });
+
   const [fields, setFields] = useState([
     {
       title: "",
       amount: 0,
-      skill: 0,
+      skill: "",
       experience: 0,
       education: 0,
       general_enquiry: "",
@@ -51,9 +56,23 @@ const AddRoleProject = (props) => {
     setFields(values);
   }
 
-  function handleSkillChange(i, event) {
+  function handleSkillChange(event, j) {
     const values = [...fields];
-    values[i].skill = event.target.value;
+    console.log(event.target.options);
+    var options = event.target.options;
+    console.log(j);
+    var value = [];
+    for (var i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+
+    // console.log(values[0].skill);
+    value = value.join(",");
+
+    values[j].skill = value;
+    console.log(values);
     setFields(values);
   }
 
@@ -84,7 +103,7 @@ const AddRoleProject = (props) => {
     values.push({
       title: "",
       amount: 0,
-      skill: 0,
+      skill: "",
       experience: 0,
       education: 0,
       general_enquiry: "",
@@ -107,7 +126,7 @@ const AddRoleProject = (props) => {
               {fields.map((field, idx) => {
                 return (
                   <div>
-                    <div key={`${field}-${idx}`}>
+                    <div key={idx}>
                       <div className="row">
                         <div className="col l4">
                           <label className="left">Role's Title</label>
@@ -160,16 +179,12 @@ const AddRoleProject = (props) => {
                           </select>
                         </div>
 
-                        <div className="col l4">
-                          <label className="left">Role's Skills</label>
+                        <div className="input-field col l4">
                           <select
-                            className="browser-default"
-                            onChange={(e) => handleSkillChange(idx, e)}
-                            placeholder="enter the role's skills of your project"
+                            multiple
+                            onChange={(e) => handleSkillChange(e, idx)}
+                            placeholder="role's skills of your project"
                           >
-                            <option value="" disabled>
-                              Choose your option
-                            </option>
                             {[
                               "Web Development",
                               "Java",
@@ -188,12 +203,13 @@ const AddRoleProject = (props) => {
                               "Distribution System",
                             ].map((ele, index) => {
                               return (
-                                <option value={index} key={index}>
+                                <option value={index + 1} key={index}>
                                   {ele}
                                 </option>
                               );
                             })}
                           </select>
+                          <label className="left">Role's Skills</label>
                         </div>
 
                         <div className="col l4">

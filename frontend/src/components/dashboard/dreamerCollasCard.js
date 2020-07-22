@@ -13,7 +13,7 @@ class DreamerCollasCard extends React.Component {
     this.state = {
       info: {},
       general_text: "",
-      resume:""
+      resume: "",
     };
   }
 
@@ -28,19 +28,19 @@ class DreamerCollasCard extends React.Component {
         "AUTH-KEY": a,
       },
     };
-   
+    console.log(this.props.match.params.cid);
     const res = await axios.get(
       "/collaborator/" + this.props.match.params.cid,
       config
     );
+    console.log(res.data);
     this.setState({ info: res.data });
     const resumeName = await axios.get(
-      "/collaborator/" + this.props.match.params.cid+"/resume",
+      "/collaborator/" + this.props.match.params.cid + "/resume",
       config
     );
     this.setState({ resume: resumeName.data });
-    console.log(this.state.resume)
-   
+    console.log(this.state.resume);
   }
 
   handleonChange = (e) => {
@@ -91,8 +91,8 @@ class DreamerCollasCard extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
-    const dinfoUrl = "/dreamer/" + this.props.id
-    const downloadUrl = "http://localhost:5000/download/" + this.state.resume.filename
+    const downloadUrl =
+      "http://localhost:5000/download/" + this.state.resume.filename;
     return (
       <div>
         <header>
@@ -123,7 +123,7 @@ class DreamerCollasCard extends React.Component {
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to={dinfoUrl}>
+                <Link className="waves-effect waves-teal" to="/dinfo">
                   My Info
                 </Link>
               </li>
@@ -245,21 +245,26 @@ class DreamerCollasCard extends React.Component {
                             {this.state.info.Skills &&
                               Object.keys(this.state.info.Skills).map((key) => {
                                 return (
-                                  <span>
+                                  <div>
                                     {skill_list[key]}:{" "}
-                                    {this.state.info.Skills[key]} years{" "}
-                                  </span>
+                                    {this.state.info.Skills[key]} years
+                                  </div>
                                 );
                               })}
                           </span>
                         </div>
                         <div>
-                          <i className="fab material-icons icon">insert_drive_file</i>{" "}
+                          <i className="fab material-icons icon">
+                            insert_drive_file
+                          </i>{" "}
                           <span style={{ position: "relative", bottom: "4px" }}>
                             <form method="get" action={downloadUrl}>
-                            <button type="submit">{this.state.resume.filename?this.state.resume.filename:"undefine"}</button>
-                                    
-                              </form>
+                              <button type="submit">
+                                {this.state.resume.filename
+                                  ? this.state.resume.filename
+                                  : "no resumes"}
+                              </button>
+                            </form>
                           </span>
                         </div>
                       </div>
@@ -275,10 +280,9 @@ class DreamerCollasCard extends React.Component {
   }
 }
 const mapStateToProps = (state) => ({
-  id: state.auth.id,
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, { sendInvitation, approve})(
+export default connect(mapStateToProps, { sendInvitation, approve })(
   DreamerCollasCard
 );
