@@ -13,6 +13,7 @@ class DreamerCollasCard extends React.Component {
     this.state = {
       info: {},
       general_text: "",
+      resume: "",
     };
   }
 
@@ -34,6 +35,12 @@ class DreamerCollasCard extends React.Component {
     );
     console.log(res.data);
     this.setState({ info: res.data });
+    const resumeName = await axios.get(
+      "/collaborator/" + this.props.match.params.cid + "/resume",
+      config
+    );
+    this.setState({ resume: resumeName.data });
+    console.log(this.state.resume);
   }
 
   handleonChange = (e) => {
@@ -84,7 +91,8 @@ class DreamerCollasCard extends React.Component {
     if (!this.props.isAuthenticated) {
       return <Redirect to="/login" />;
     }
-
+    const downloadUrl =
+      "http://localhost:5000/download/" + this.state.resume.filename;
     return (
       <div>
         <header>
@@ -243,6 +251,20 @@ class DreamerCollasCard extends React.Component {
                                   </div>
                                 );
                               })}
+                          </span>
+                        </div>
+                        <div>
+                          <i className="fab material-icons icon">
+                            insert_drive_file
+                          </i>{" "}
+                          <span style={{ position: "relative", bottom: "4px" }}>
+                            <form method="get" action={downloadUrl}>
+                              <button type="submit">
+                                {this.state.resume.filename
+                                  ? this.state.resume.filename
+                                  : "no projects"}
+                              </button>
+                            </form>
                           </span>
                         </div>
                       </div>
