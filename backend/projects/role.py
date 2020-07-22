@@ -92,16 +92,20 @@ class Role():
 
     @staticmethod
     def get_text_by_pid(conn, pid):
-        query = "SELECT * FROM project_role where projectID = " + str(pid) + ";"
+        query = "SELECT * FROM project_role，role_skill where project_role.ID = role_skill.roleID and projectID = " + str(pid) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
         roles = []
         if result.rowcount == 0:
             return roles
+        skills = []
+        experiences = 0
         for i in range(result.rowcount):
             row = result.fetchone()
-            role = Role(row['projectID'], row['title'], row['amount'], row['skill'], row['experience'], row['education'], general_enquiry=row['general_enquiry'])
+            skills.append(row['skill'])
+            experiences = row['experience']
+            role = Role(row['projectID'], row['title'], row['amount'], skills, experiences, row['education'], general_enquiry=row['general_enquiry'])
             role.id = row['ID']
             roles.append(role.text_info())
         return roles

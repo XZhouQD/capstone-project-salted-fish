@@ -108,7 +108,7 @@ class CollaOwnRecommend extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">RECOMMEND</h4>
+                        <h4 className="left event-title">RECOM</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
