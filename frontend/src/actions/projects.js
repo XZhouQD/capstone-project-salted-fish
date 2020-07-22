@@ -21,6 +21,7 @@ import {
   UPLOAD_RESUME,
   FINISH_PROJECTS,
   CHANGE_PROJECTS,
+  UNDO_CHANGE,
 } from "./actionTypes";
 
 // createProject
@@ -198,7 +199,6 @@ export const changeProjectRole = ({
   };
 
   amount = Number(amount);
-
   experience = Number(experience);
   education = Number(education);
   pid = Number(pid);
@@ -580,10 +580,10 @@ export const changeProject = ({ title, category, description, id }) => async (
 
     dispatch({
       type: CHANGE_PROJECTS,
-      payload: res.data.project_id,
+      payload: res.data.message,
     });
 
-    setTimeout(() => dispatch({ type: UNDO_FLAG }), 100);
+    setTimeout(() => dispatch({ type: UNDO_CHANGE }), 100);
   } catch (err) {
     // error -> dispatch setAlert to reducers
     const errors = err.response.data.message;
