@@ -10,7 +10,6 @@ class CreateProject extends Component {
     super(props);
     this.handleonChange = this.handleonChange.bind(this);
     this.handleonSubmit = this.handleonSubmit.bind(this);
-    this.handleSkillChange = this.handleSkillChange.bind(this);
   }
 
   state = {

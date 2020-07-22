@@ -183,7 +183,7 @@ const AddRoleProject = (props) => {
                           <select
                             multiple
                             onChange={(e) => handleSkillChange(e, idx)}
-                            // placeholder="enter the role's skills of your project"
+                            placeholder="role's skills of your project"
                           >
                             {[
                               "Web Development",
