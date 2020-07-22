@@ -24,7 +24,8 @@ class ReactComment extends React.Component {
       "https://api.adorable.io/avatars/48/" +
       this.props.comment.author_name +
       "@adorable.io.png";
-    console.log(this.props);
+
+    console.log(this.props.comment.create_time);
 
     return (
       <ul className="collection">
@@ -50,7 +51,7 @@ class ReactComment extends React.Component {
             <span className="right">owner</span>
           )}
           <span style={{ marginLeft: "5px" }}>
-            {moment(this.props.comment.create_time).startOf("hour").fromNow()}
+            {moment(this.props.comment.create_time).fromNow()}
           </span>
           <div>
             <div>{this.props.comment.content}</div>
@@ -61,7 +62,10 @@ class ReactComment extends React.Component {
                 this.setState({ reply: true });
               }}
               className="btn-small right "
-            ><i className="material-icons left" style={{marginRight:"1px"}}>reply</i>
+            >
+              <i className="material-icons left" style={{ marginRight: "1px" }}>
+                reply
+              </i>
               reply
             </button>
           </div>
