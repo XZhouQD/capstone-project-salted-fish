@@ -122,7 +122,7 @@ class ApplicationCard extends React.Component {
                   Followed collaborators
                 </Link>
               </li>
-
+              {/*There is a bug here!!!👇*/}
               <li className="bold">
                 <Link className="waves-effect waves-teal" to="/drecommend">
                   My Info
