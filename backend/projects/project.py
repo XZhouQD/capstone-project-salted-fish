@@ -402,10 +402,8 @@ class Project():
         return False
     #Patch the project title, description or category info, and also update the is_modified_after_hidden as 1 if it has been marked as hidden;
     def patch(self, conn):
-        print('self.title =', self.title, 'self.description', self.description, 'category',str(self.category))
         query = "select * from project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
-        print('self.title =', self.title, 'self.description', self.description, 'category',str(self.category))
         if result.rowcount > 0:
             row = result.fetchone()
             #update is_modified_after_patch = 1 at the same time if the project has been hidden before patch;
@@ -414,7 +412,6 @@ class Project():
                 print(query_1)
                 conn.execute(query_1)
             else:
-                print('self.title =', self.title, 'self.description', self.description, 'category',str(self.category))
                 query_2 = "UPDATE project SET project_title = \'" + self.title.replace("'", "\\\'") + "\', description = \'" + self.description.replace("'", "\\\'") + "\', category = " + str(self.category) + " WHERE id = " + str(self.id) + ";"
                 print(query_2)
                 conn.execute(query_2)
