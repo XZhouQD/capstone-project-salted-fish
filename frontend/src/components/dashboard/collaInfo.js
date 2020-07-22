@@ -4,16 +4,16 @@ import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
-import {uploadResume} from "../../actions/projects"
+import { uploadResume } from "../../actions/projects";
 
 class CollaInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedFile: null,
-      info: []
-    }
-    this.onChangeHandler = this.onChangeHandler.bind(this)
+      info: [],
+    };
+    this.onChangeHandler = this.onChangeHandler.bind(this);
   }
 
   async componentDidMount() {
@@ -37,15 +37,12 @@ class CollaInfo extends React.Component {
     console.log(1);
   }
 
-  async onChangeHandler(event){
+  async onChangeHandler(event) {
     await this.setState({
       selectedFile: event.target.files[0],
-
-    })
+    });
     this.props.uploadResume(this.state.selectedFile);
   }
-
-
 
   render() {
     const category_list = [
@@ -167,17 +164,22 @@ class CollaInfo extends React.Component {
                         This is {this.state.info.Name}'s profile as a
                         collaborator {this.state.info.Description}
                       </p>
-                          <button
-                            className="msg-btn button1"
-
-                            onClick={(e) => this.update(e)}
-                        >
-                          update
-                        </button>
-                      <button className="msg-btn button1 file-field input-field"
-                      style={{marginLeft:"15px"}}>
+                      <button
+                        className="msg-btn button1"
+                        onClick={(e) => this.update(e)}
+                      >
+                        update
+                      </button>
+                      <button
+                        className="msg-btn button1 file-field input-field"
+                        style={{ marginLeft: "15px" }}
+                      >
                         <span>upload</span>
-                        <input type="file" name="file" onChange={(e)=>this.onChangeHandler(e)}/>
+                        <input
+                          type="file"
+                          name="file"
+                          onChange={(e) => this.onChangeHandler(e)}
+                        />
                       </button>
                       <div>
                         <div>
@@ -212,10 +214,10 @@ class CollaInfo extends React.Component {
                             {this.state.info.Skills &&
                               Object.keys(this.state.info.Skills).map((key) => {
                                 return (
-                                  <span>
+                                  <div>
                                     {skill_list[key]}:{" "}
                                     {this.state.info.Skills[key]} years{" "}
-                                  </span>
+                                  </div>
                                 );
                               })}
                           </span>
@@ -239,4 +241,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, {uploadResume})(CollaInfo);
+export default connect(mapStateToProps, { uploadResume })(CollaInfo);

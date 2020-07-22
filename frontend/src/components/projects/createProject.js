@@ -10,6 +10,7 @@ class CreateProject extends Component {
     super(props);
     this.handleonChange = this.handleonChange.bind(this);
     this.handleonSubmit = this.handleonSubmit.bind(this);
+    this.handleSkillChange = this.handleSkillChange.bind(this);
   }
 
   state = {
@@ -39,9 +40,9 @@ class CreateProject extends Component {
   render() {
     const { isAuthenticated, flag } = this.props;
     if (!isAuthenticated) return <Redirect to="/login" />;
-    console.log(flag);
+    // console.log(flag);
     if (flag === "create success") return <Redirect to="/projects" />;
-    console.log(this.props.isAuthenticated);
+    // console.log(this.props.isAuthenticated);
 
     return (
       <div className="container" style={{ marginTop: "50px" }}>
@@ -56,7 +57,6 @@ class CreateProject extends Component {
                     name="title"
                     onChange={(e) => this.handleonChange(e)}
                     required
-                    className="validate"
                   />
                   <label htmlFor="title">Project Title</label>
                 </div>

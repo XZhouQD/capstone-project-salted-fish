@@ -20,10 +20,7 @@ import {
   DECLINE_INVITATION,
   UPLOAD_RESUME,
   FINISH_PROJECTS,
-
   CHANGE_PROJECTS,
-
-
 } from "./actionTypes";
 
 // createProject
@@ -142,7 +139,6 @@ export const postProjectRole = ({
   };
 
   amount = Number(amount);
-  skill = Number(skill);
   experience = Number(experience);
   education = Number(education);
   id = Number(id);
@@ -202,7 +198,7 @@ export const changeProjectRole = ({
   };
 
   amount = Number(amount);
-  skill = Number(skill);
+
   experience = Number(experience);
   education = Number(education);
   pid = Number(pid);
@@ -554,8 +550,6 @@ export const uploadResume = (file) => async (dispatch) => {
 //     dispatch(setAlert(errors));
 //   }
 // };
-
-
 
 // change project
 export const changeProject = ({ title, category, description, id }) => async (
