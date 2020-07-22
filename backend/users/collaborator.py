@@ -257,3 +257,17 @@ class Collaborator():
             self.id = row['ID']
         # register skills
         self.commit_skills(conn)
+    
+    
+    def patch(self, conn):
+        query = "UPDATE collaborator SET phone_no = " + self.phone_no + ",education = " + str(self.education) + " WHERE ID = " + str(self.id) + ";"
+        conn.execute(query)
+        # update skills/experience requirement
+        if len(self.skill_dict) == 0:  # cannot delete requirements and put nothing there - skip if no provided
+            return self
+        query = f"DELETE FROM skills where collaboratorID = {self.id};"
+        conn.execute(query)
+        for i,j in self.skill_dict.items():
+            query = f"INSERT INTO skills (skill, experience, collaboratorID) VALUES ({str(i)}, {str(j)}, {str(self.id)});"
+            conn.execute(query)
+        return self

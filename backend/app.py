@@ -152,6 +152,15 @@ role_patch_model = api.model('Role_Patch', {
     'general_enquiry': fields.String(required=False, description='other enquiry')
 })
 
+collaborator_patch_model = api.model('Collaborator_Patch', {
+    'phone_no': fields.String(required=False, description='Phone number (optional)'),
+    'education': fields.Integer(required=False, description='Education required'),
+    'skill': fields.String(required=False, description='Skill ids list divide by comma "," e.g. 2,3,4'),
+    'experience': fields.Integer(required=False, description='Experience required in years.')
+})
+
+
+
 change_password_model = api.model('Change_Password', {
     'original_password': fields.String(required=True, description='Your original password', min_length=8),
     'new_password': fields.String(required=True, description='Your new password', min_length=8)
@@ -1123,6 +1132,43 @@ class PatchRole(CorsResource):
             return {'message': 'This project is not in active status, no update is allowed!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
+    
+@api.route('/collaborator/patch')
+class PatchRole(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Update a collaborator information')
+    @api.expect(collaborator_patch_model, validate=True)
+    @require_auth
+    def patch(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        conn = db.conn()
+        if userinfo['role'] != 'Collaborator':
+            conn.close()
+            return {'message': 'You are not logged in as collaborator'}, 400
+        collaborator_info = request.json
+        cursor_collaborator = Collaborator.get_object_by_id(conn, int(collaborator_id))
+        try:
+            cursor_collaborator.phone_no = collaborator_info['phone_no']
+        except:
+            pass
+        try:
+            cursor_collaborator.education = collaborator_info['education']
+        except:
+            pass
+        try:
+            skill_dict = {int(i.strip()): collaborator_info['experience'] for i in collaborator_info['skill'].split(',') if i != ''}
+            cursor_collaborator.skill_dict = skill_dict
+        except:
+            pass
+        result = cursor_collaborator.patch(conn).info_2()
+        conn.close()
+        return {'message': 'Patch success', 'info': result}, 200
+    
+    
 @api.route('/project')
 class PostProject(CorsResource):
     @api.response(200, 'Success')
