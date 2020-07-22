@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
 import { registerColla } from "../../actions/auth";
@@ -6,18 +6,15 @@ import { Redirect } from "react-router-dom";
 import M from "materialize-css";
 
 const CollaRegis = ({ setAlert, registerColla, flag }) => {
-  function componentDidMount() {
-    // Auto initialize all the materailize css!
+  useEffect(() => {
     M.AutoInit();
-  }
-  componentDidMount();
+  });
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     repeat_password: "",
-    phone_no: "",
     education: "",
   });
 
@@ -91,7 +88,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
     }
   };
 
-  console.log(flag);
+  // console.log(flag);
   if (flag === "register success") {
     return <Redirect to="/login" />;
   }
@@ -188,7 +185,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
             <div>
               <div key={`${field}-${idx}`}>
                 <div style={{ marginBottom: "10px" }}>
-                  <label HtmlFor="computer_skill"className="left">
+                  <label HtmlFor="computer_skill" className="left">
                     Please choose your computer skill
                   </label>
                   <select

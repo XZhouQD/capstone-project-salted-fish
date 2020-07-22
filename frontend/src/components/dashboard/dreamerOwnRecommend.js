@@ -58,7 +58,7 @@ class DreamerOwnRecommend extends React.Component {
                         <p style={{ fontFamily: "Cherry Swash" }}>
                           experience: at least {res.Experience} years,
                           Education:
-                          {education_list[res.Education]},
+                          {education_list[res.Education - 1]},
                         </p>
 
                         {res.Collaborator_list.length > 0 ? (

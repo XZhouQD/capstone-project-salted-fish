@@ -40,7 +40,7 @@ class ChangeProject extends Component {
     const { isAuthenticated, flag } = this.props;
     if (!isAuthenticated) return <Redirect to="/login" />;
 
-    if (flag === "create success") return <Redirect to="/dashboard" />;
+    if (flag === "Patch success") return <Redirect to="/dashboard" />;
 
     return (
       <div className="container" style={{ marginTop: "50px" }}>

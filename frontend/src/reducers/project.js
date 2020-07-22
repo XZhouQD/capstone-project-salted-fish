@@ -19,15 +19,15 @@ import {
   UPLOAD_RESUME,
   FINISH_PROJECTS,
   CHANGE_PROJECTS,
+  UNDO_CHANGE,
 } from "../actions/actionTypes";
 
 const initialState = {
   project_id: null,
   ProjectLists: [],
   acceptList: [],
-
+  changeProject: "",
   declineList: [],
-
 };
 
 export default function (state = initialState, action) {
@@ -113,10 +113,6 @@ export default function (state = initialState, action) {
         payload,
       };
 
-
-        
-
-
     case ACCEPT_INVITATION:
       return {
         ...state,
@@ -142,7 +138,13 @@ export default function (state = initialState, action) {
     case CHANGE_PROJECTS:
       return {
         ...state,
-        changeProject: payload,
+        flag: payload,
+      };
+
+    case UNDO_CHANGE:
+      return {
+        ...state,
+        flag: "",
       };
 
     default:

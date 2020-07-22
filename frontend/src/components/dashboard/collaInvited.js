@@ -156,8 +156,8 @@ class CollaInvited extends React.Component {
                               below: <br></br>
                               {each.Role_information.title} needs{" "}
                               {each.Role_information.amount} people who have{" "}
-                              {each.Role_information.skill} skill, and
-                              experience at least{" "}
+                              {each.Role_information.skill.join(",")} skill(s),
+                              and experience at least{" "}
                               {each.Role_information.experience} years with{" "}
                               {each.Role_information.education === "Other"
                                 ? "any"
