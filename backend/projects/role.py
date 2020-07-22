@@ -92,7 +92,7 @@ class Role():
 
     @staticmethod
     def get_text_by_pid(conn, pid):
-        query = "SELECT * FROM project_role，role_skill where project_role.ID = role_skill.roleID and projectID = " + str(pid) + ";"
+        query = "SELECT * FROM dream.project_role，dream.role_skill where dream.project_role.ID = dream.role_skill.roleID and projectID = " + str(pid) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
             return None
