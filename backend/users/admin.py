@@ -56,10 +56,12 @@ class Admin():
         Return:
         Boolean True/False if password match or not
         """
+        # ignore case
         email = email.lower()
         query = "select * from admin where email = \'" + email + "\';"
         result = conn.execute(query)
         row = result.fetchone()
+        # use encrypted password to compare
         if password_encrypted == '':
             enc_pass = sha256(password_plain)
         else:
@@ -77,11 +79,14 @@ class Admin():
         password_plain -- plain text password
         password_encrypted -- sha256 encrypted password
         """
+        # ignore case
         email = email.lower()
+        # use encrypted password
         if password_encrypted == '':
             new_pass = sha256(password_plain)
         else:
             new_pass = password_encrypted
+        # write in database
         query = "UPDATE admin set password = \'" + new_pass + "\' where email = \'" + email + "\';"
         conn.execute(query)
 
