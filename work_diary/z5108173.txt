@@ -67,4 +67,9 @@ Next Week Plan: 8-1. Create Sprint 4 subtasks; 8-2. Add python doc to backend.
 Week 8
 
 All subtasks in sprint 4 ready on github/jira. [8-1]
-Start to add python doc. [8-2]
+Finished adding python doc. [8-2]
+Implemented Admin management API.
+Fix SMTP timeout error - will reconnect in retry.
+Hold Retro B meeting on zoom.
+
+Next Week Plan: 9-1. Review backend code and re-format; 9-2. Test all functions prepare for final demo; 9-3. First complete version of project report.

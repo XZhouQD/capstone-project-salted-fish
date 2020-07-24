@@ -9,6 +9,8 @@ __pycache__/
 
 # Gedit temporary save
 *.py~
+*.txt~
+*.config~
 
 # C extensions
 *.so
