@@ -4,6 +4,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Idea environment
+.idea/
+
+# Gedit temporary save
+*.py~
+
 # C extensions
 *.so
 

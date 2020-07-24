@@ -5,6 +5,7 @@ from projects.project import Project
 from projects.role import Role
 
 class Invitation():
+    """role invitation class"""
     def __init__(self, project_id, role_invite, invitor, invitee, general_text = '', status = -1):
         self.project_id = project_id
         self.role_invite = role_invite
@@ -17,6 +18,13 @@ class Invitation():
 
     @staticmethod
     def get_object_by_id(conn, id):
+        """get invitation object by id
+        Param:
+        conn -- database connection
+        id -- digit id
+        Return:
+        invitation object or None
+        """
         query = "SELECT * FROM invitation where ID = " + str(id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -28,6 +36,13 @@ class Invitation():
 
     @staticmethod
     def get_by_iid(conn, invitation_id):
+        """get invitation info by id
+        Param:
+        conn -- database connection
+        id -- digit id
+        Return:
+        invitation info or None
+        """
         query = "SELECT * FROM invitation where ID = " + str(invitation_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -41,6 +56,15 @@ class Invitation():
 
     @staticmethod
     def get_by_pid_rid_iid(conn, project_id,role_id, invitation_ID):
+        """get invitation info by id
+        Param:
+        conn -- database connection
+        project_id -- project digit id
+        role_id -- role digit id
+        invitation_ID -- invitation digit id
+        Return:
+        invitation info or None
+        """
         query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_invited = " + str(role_id) + " AND ID = " + str(invitation_ID) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -51,6 +75,14 @@ class Invitation():
 
     @staticmethod
     def get_by_pid_rid(conn, project_id,role_id):
+        """get invitatees info by project/role
+        Param:
+        conn -- database connection
+        project_id -- project digit id
+        role_id -- role digit id
+        Return:
+        list of invitatees info or None
+        """
         query = "SELECT * FROM invitation where projectID = " + str(project_id) + " AND role_invited = " + str(role_id) + ";"
         result = conn.execute(query)
         invitees = []

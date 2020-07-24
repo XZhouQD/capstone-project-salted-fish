@@ -3,6 +3,7 @@ import yaml
 from sqlalchemy import create_engine
 
 class DB:
+    """The database engine connection class, providing database connection"""
     def __init__(self):
         f = open('db.config', 'r', encoding='utf-8')
         config = yaml.load(f.read(), Loader=yaml.FullLoader)
@@ -11,6 +12,10 @@ class DB:
         f.close()
 
     def conn(self):
+        """Generate a database connection (from connection pool)
+        To avoid pool overflow, you should close the connection manually.
+        close it by conn.close()
+        """
         conn = self.engine.connect()
         return conn
 

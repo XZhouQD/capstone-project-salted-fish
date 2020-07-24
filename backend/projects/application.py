@@ -5,6 +5,7 @@ from projects.project import Project
 from projects.role import Role
 
 class Application():
+    """role application class"""
     def __init__(self, project_id, role_apply, applicant,general_text = '',status = -1):
         self.project_id = project_id
         self.role_apply = role_apply
@@ -16,9 +17,17 @@ class Application():
 
     @staticmethod
     def get_object_by_aid(conn, application_id):
+        """get application object by id
+        Param:
+        conn -- database connection
+        application_id -- digit id
+        Return:
+        application object or None
+        """
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
+            # not exist
             return None
         row = result.fetchone()
         appli = Application(row['projectID'], row['role_applied'], row['applicant'], row['general_text'], row['status'])
@@ -27,43 +36,76 @@ class Application():
 
     @staticmethod
     def get_by_aid(conn, application_id):
+        """get application info by id
+        Param:
+        conn -- database connection
+        application_id -- digit id
+        Return:
+        applicator info with some application info or None
+        """
         query = "SELECT * FROM application where ID = " + str(application_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
+            # not exist
             return None
         row = result.fetchone()
+        # use applicator info as base instead of application info
         application= Collaborator.get_by_id(conn,row['applicant'])
         if len(application) == 0: return None
+        # add application info
         application['general_text'] = row['general_text']
         application['apply_status'] = row['status']
+        application['application_id'] = row['ID']
         return application
 
     @staticmethod
     def get_by_pid_rid(conn, project_id,role_id):
+        """Get applications in specific project and role
+        Param:
+        conn -- database connection
+        project_id -- project digit id
+        role_id -- role digit id
+        Return:
+        list of applicatior info
+        """
+        # query application table by specific project/role
         query = "SELECT * FROM application where projectID = " + str(project_id) + " AND role_applied = " + str(role_id) + ";"
         result = conn.execute(query)
         all_application = {}
         application_list = []
         if result.rowcount == 0:
+            # no exist
             return None
         for i in range(result.rowcount):
             row = result.fetchone()
+            # fetch applicator info
             application= Collaborator.get_by_id(conn,row['applicant'])
+            # append application info
             application['general_text'] = row['general_text']
             application['apply_status'] = row['status']
             application['application_id'] = row['ID']
             application_list.append(application)
-        if len(application) == 0: return None
+        if len(application_list) == 0: return None
+        # into dict for better return format
         all_application['applications'] = application_list
         return all_application
 
     @staticmethod
     def get_by_applicant(conn, user_ID):
+        """Get all applications by a collaborator
+        Param:
+        conn -- database connection
+        user_ID -- collaborator digit id
+        Return:
+        list of all application info for the collaborator
+        """
+        # query by applicant
         query = "SELECT * FROM application where applicant = " + str(user_ID) + " order by ID desc;"
         result = conn.execute(query)
         applications = []
         for i in range(result.rowcount):
             row = result.fetchone()
+            # fetch information
             if row['status'] == -1:
                 application_status = 'Pending'
             if row['status'] == 0:
@@ -78,6 +120,16 @@ class Application():
 
     @staticmethod
     def approve_an_application(conn, smtp, proj_ID, role_ID, application_id):
+        """Approve application by project/role/application id
+        Param:
+        conn -- database connection
+        smtp -- smtp server object
+        proj_ID -- project digit id
+        role_ID -- role digit id
+        application_id -- application digit id
+        Return:
+        Approved application info
+        """
         # update the application status as 1 - application approved;
         query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
         conn.execute(query)
@@ -133,6 +185,14 @@ class Application():
 
     @staticmethod
     def decline_an_application(conn, smtp, application_id):
+        """Decline a application by application id
+        Param:
+        conn - database connection
+        smtp - smtp server object
+        application_id -- application digit id
+        Return:
+        declined application info
+        """
         # update the application status as 0 - application declined;
         query = "UPDATE application set status = 0 where ID = " + str(application_id) + ";"
         conn.execute(query)
@@ -143,6 +203,13 @@ class Application():
         return Application.get_by_aid(conn, application_id)
 
     def notify_owner(self, conn, smtp):
+        """Notify application to project owner through email
+        Param:
+        conn -- database connection
+        smtp -- smtp server
+        Return:
+        smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_apply)
         col = Collaborator.get_by_id(conn, self.applicant)
@@ -159,6 +226,13 @@ class Application():
         return result
 
     def notify_applicant(self, conn, smtp):
+        """Notify application to applicant through email
+        Param:
+        conn -- database connection
+        smtp -- smtp server
+        Return:
+        smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_apply)
         col = Collaborator.get_by_id(conn, self.applicant)
@@ -175,6 +249,14 @@ class Application():
         return result
 
     def notify_result(self, conn, smtp, accept=True):
+        """Notify application result to applicant through email
+        Param:
+        conn -- database connection
+        smtp -- smtp server
+        accept -- application approved or not
+        Return:
+        smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_apply)
         col = Collaborator.get_by_id(conn, self.applicant)
@@ -193,13 +275,22 @@ class Application():
         return result
 
     def info(self):
+        """Return application info"""
         return {'id': self.id, 'project_id': self.project_id, 'role_apply': self.role_apply, 'applicant': self.applicant, 'general_text': self.general_text}
 
     def duplicate_check(self, conn):
+        """Check if the application is duplicate on a role
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if application is duplicate
+        """
+        # check application table
         query = "SELECT * FROM application where projectID = " + str(self.project_id) + " AND role_applied = " + str(self.role_apply) + " AND applicant = " + str(self.applicant)  + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
+        # check invitation table
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_apply) + " AND invitee = " + str(self.applicant) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -207,6 +298,12 @@ class Application():
         return False
 
     def check_project_role(self,conn):
+        """Check if the role is valid(exist)
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if role exist
+        """
         query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND ID = " + str(self.role_apply) + " ;"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -214,6 +311,12 @@ class Application():
         return False
     
     def check_project_status(self,conn):
+        """Check if the project is active
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if project is active
+        """
         query = "SELECT * FROM project where ID = " + str(self.project_id) + " AND project_status = " + str(1) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -222,6 +325,12 @@ class Application():
 
 
     def check_amount(self,conn):
+        """Check if the role has been fullfilled
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if role is fullfilled
+        """
         query_1 = "select count(*) as count_1 from application where projectID = " + str(
             self.project_id) + " and role_applied = " + str(self.role_apply) + " and status = 1;"
         result_1 = conn.execute(query_1)
@@ -242,6 +351,13 @@ class Application():
     
     
     def create(self, conn):
+        """Create a new Application into database
+        Param:
+        conn -- database connection
+        Return:
+        created application object
+        """
+        # check all validation
         if not self.check_project_role(conn):
             return None
         if self.duplicate_check(conn):
@@ -250,6 +366,7 @@ class Application():
             return {}
         if not self.check_project_status(conn):
             return {'This project is not activated':1}
+        # insert into database
         query = "INSERT INTO application (projectID, role_applied, applicant, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_apply) + ", " + str(self.applicant) + ", \'" + self.general_text.replace("'", "\\\'") + "\');"
         conn.execute(query)
         query = "SELECT * FROM application where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"
