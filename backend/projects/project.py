@@ -510,10 +510,7 @@ class Project():
 
     @staticmethod
     #Admin can hide a project if there is improper content about the new project;
-<<<<<<< HEAD
     def hide_a_project(conn, proj_ID, hidden_reason, smtp):
-=======
-    def hide_a_project(conn, proj_ID, hidden_reason):
         """hide a project to hidden
         Param:
         conn -- database connection
@@ -522,7 +519,6 @@ class Project():
         Return:
         Boolean if activate success
         """
->>>>>>> master
         query = "UPDATE project SET is_hidden = 1, hidden_reason = \'" + str(hidden_reason) + "\' WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
@@ -534,10 +530,7 @@ class Project():
 
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
-<<<<<<< HEAD
     def unhide_a_project(conn, proj_ID, smtp):
-=======
-    def unhide_a_project(conn, proj_ID):
         """unhide a project to active
         Param:
         conn -- database connection
@@ -546,7 +539,6 @@ class Project():
         Return:
         Boolean if activate success
         """
->>>>>>> master
         query = "UPDATE project SET is_hidden = 0 WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
