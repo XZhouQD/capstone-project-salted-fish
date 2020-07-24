@@ -369,7 +369,7 @@ class Project():
 
     @staticmethod
     #Admin can hide a project if there is improper content about the new project;
-    def hide_a_project(conn, proj_ID, hidden_reason):
+    def hide_a_project(conn, proj_ID, hidden_reason, smtp):
         query = "UPDATE project SET is_hidden = 1, hidden_reason = \'" + str(hidden_reason) + "\' WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
@@ -381,7 +381,7 @@ class Project():
 
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
-    def unhide_a_project(conn, proj_ID):
+    def unhide_a_project(conn, proj_ID, smtp):
         query = "UPDATE project SET is_hidden = 0 WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
