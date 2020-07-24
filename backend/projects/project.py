@@ -68,7 +68,7 @@ class Project():
         return proj_info['status'] == 9
 
     @staticmethod
-    def get_by_id(conn, proj_id):
+    def get_object_by_id(conn, proj_id):
         """Get project info by project id
         Param:
         conn -- database connection
@@ -87,7 +87,18 @@ class Project():
         proj.roles = Role.get_by_proj_id(conn, proj_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
-        return proj.info()
+        return proj
+
+    @staticmethod
+    def get_by_id(conn, proj_id):
+        """Get project info by project id
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        Return:
+        Project info
+        """
+        return Project.get_object_by_id(conn, proj_id).info()
 
     @staticmethod
     def get_by_proj_id(conn, proj_id):
@@ -466,6 +477,50 @@ class Project():
         return project_list
     
     @staticmethod
+    def hidden_projects(conn):
+        """Get all hidden projects that is not modified
+        Param:
+        conn -- database connection
+        Return:
+        List of hidden projects
+        """
+        query = "SELECT * FROM project WHERE is_hidden = 1 AND is_modified_after_hidden = 0 order by last_update DESC;"
+        result = conn.execute(query)
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
+    def active_projects(conn):
+        """Get all active projects
+        Param:
+        conn -- database connection
+        Return:
+        list of active projects
+        """
+        query = "SELECT * FROM project WHERE project_status = 1 AND is_hidden = 0 order by last_update DESC;"
+        result = conn.execute(query)
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
     #Get projects which has been modified after hidden;
     def modified_projects_after_hidden(conn):
         """Check modified projects after hidden
@@ -474,7 +529,7 @@ class Project():
         Return:
         list of MaH projects
         """
-        query = "SELECT * FROM project WHERE is_hidden = 1 and is_modified_after_hidden = 1 order by ID;"
+        query = "SELECT * FROM project WHERE is_hidden = 1 and is_modified_after_hidden = 1 order by last_update ASC;"
         print(query)
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -523,9 +578,9 @@ class Project():
         print(query)
         conn.execute(query)
         #send email to project owner once it's hidden;
-        Project.get_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True)
+        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True)
         proj = Project.get_by_proj_id(conn, proj_ID)
-        if proj['hidden'] == 1:return True
+        if proj.info()['is_hidden'] == 1:return True
         else:return False
 
     @staticmethod
@@ -543,9 +598,9 @@ class Project():
         print(query)
         conn.execute(query)
         #send email to project owner once it's unhidden;
-        Project.get_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=False)
+        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=False)
         proj = Project.get_by_proj_id(conn, proj_ID)
-        if proj['hidden'] == 0:return True
+        if proj.info()['is_hidden'] == 0:return True
         else:return False
 
     def notify_project_owner(self, conn, smtp, hide=True):
