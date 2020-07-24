@@ -108,7 +108,7 @@ class CollaDash extends React.Component {
                   <div className="card-content posts">
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
-                        <h4 className="left event-title">Ongoing projects</h4>
+                        <h4 className="left event-title">Ongoing</h4>
                         <form className="search-field right">
                           <div className="input-field">
                             <input id="search" type="search" required />
@@ -133,7 +133,7 @@ class CollaDash extends React.Component {
                             description={each.description}
                             category={each.category}
                             id={each.id}
-                            title={each.roles.title}
+                            roleTitle={each.roles.title}
                             create_time={each.create_time}
                             last_update={each.last_update}
                           />
