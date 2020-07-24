@@ -510,7 +510,7 @@ class Project():
 
     @staticmethod
     #Admin can hide a project if there is improper content about the new project;
-    def hide_a_project(conn, proj_ID, hidden_reason):
+    def hide_a_project(conn, proj_ID, hidden_reason, smtp):
         """hide a project to hidden
         Param:
         conn -- database connection
@@ -530,7 +530,8 @@ class Project():
 
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
-    def unhide_a_project(conn, proj_ID):
+
+    def unhide_a_project(conn, proj_ID, smtp):
         """unhide a project to active
         Param:
         conn -- database connection
