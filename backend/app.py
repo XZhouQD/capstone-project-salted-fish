@@ -10,6 +10,9 @@ Keyu Yang       z5177443
 Lisha Jing      z5243620
 Nan Zhao        z5225777
 Qingbei Wu      z5222641
+
+This file does not have Python doc, but using
+Swagger automatic doc for documentation.
 '''
 
 import json, yaml, os

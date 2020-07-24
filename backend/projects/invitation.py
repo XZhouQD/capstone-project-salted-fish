@@ -97,6 +97,15 @@ class Invitation():
 
     @staticmethod
     def get_by_invitee(conn, user_id):
+        """Get a collaborator's all invitations
+        Param:
+        conn -- database connection
+        user_id -- collaborator digit id
+        Return:
+        list of invitations info
+        """
+        # IMPORTANT: Avoid corss import
+        # This import cannot be moved up or it will cause infinite recursive import
         from projects.role import Role
         query = "SELECT * FROM invitation where invitee = " + str(user_id) + " order by ID desc;"
         result = conn.execute(query)
@@ -117,6 +126,16 @@ class Invitation():
 
     @staticmethod
     def accept_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
+        """Accpet and notify an invitation
+        Param:
+        conn -- database connnection
+        smtp -- smtp server object
+        proj_ID -- project digit id
+        role_ID -- role digit id
+        invitation_id -- invitation digit id
+        Return:
+        Accpted invitation
+        """
         # update the invitation status as 1 -  accepte the invitaiton;
         query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)
@@ -171,6 +190,16 @@ class Invitation():
 
     @staticmethod
     def decline_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
+        """Decline and notify an invitation
+        Param:
+        conn -- database connnection
+        smtp -- smtp server object
+        proj_ID -- project digit id
+        role_ID -- role digit id
+        invitation_id -- invitation digit id
+        Return:
+        Declined invitation
+        """
         # update the invitation status as 0 -  decline the invitaiton;
         query_1 = "UPDATE invitation set status = 0 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query_1)
@@ -179,6 +208,13 @@ class Invitation():
         return Invitation.get_by_iid(conn, invitation_id)
 
     def notify_invitee(self, conn, smtp):
+        """Send an email to invitee for notification
+        Param:
+        conn -- database connection
+        smtp -- smtp server object
+        Return:
+        Smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_invite)
         col = Collaborator.get_by_id(conn, self.invitee)
@@ -195,6 +231,14 @@ class Invitation():
         return result
 
     def notify_invitor(self, conn, smtp, accept=True):
+        """Send an email to invitor for notification
+        Param:
+        conn -- database connection
+        smtp -- smtp server object
+        accept -- boolean if invitation is accepted
+        Return:
+        Smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_invite)
         col = Collaborator.get_by_id(conn, self.invitee)
@@ -213,6 +257,13 @@ class Invitation():
         return result
 
     def notify_invitee_auto_decline(self, conn, smtp):
+        """Send an email to invitees for auto decline notification
+        Param:
+        conn -- database connection
+        smtp -- smtp server object
+        Return:
+        Smtp send result
+        """
         proj = Project.get_by_id(conn, self.project_id)
         role = Role.get_by_id(conn, self.role_invite)
         col = Collaborator.get_by_id(conn, self.invitee)
@@ -227,9 +278,21 @@ class Invitation():
         return result
 
     def info(self, conn):
+        """Return invitation info
+        Param:
+        conn -- database connection
+        Return:
+        invitation info
+        """
         return {'id': self.id, 'project_id': self.project_id, 'role_invite': self.role_invite, 'invitor': self.invitor, 'invitee': self.invitee, 'general_text': self.general_text, 'status': self.status, 'Role_information': Role.get_text_by_id(conn, self.role_invite), 'Project_title': Project.get_by_id(conn, self.project_id)['title']}
 
     def duplicate_check(self, conn):
+        """Check if the invitation is duplicate
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if invitation is duplicate
+        """
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " AND role_invited = " + str(self.role_invite) + " AND invitee = " + str(self.invitee)  + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -241,6 +304,12 @@ class Invitation():
         return False
 
     def check_project_role(self,conn):
+        """Check if the project role is valid
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if role is valid
+        """
         query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND ID = " + str(self.role_invite) + " ;"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -248,10 +317,18 @@ class Invitation():
         return False
 
     def create(self, conn):
+        """Create a new Invitation into database
+        Param:
+        conn -- database connection
+        Return:
+        created invitation object
+        """
+        # check if all valid
         if not self.check_project_role(conn):
             return None
         if self.duplicate_check(conn):
             return None
+        # store in database
         query = "INSERT INTO invitation (projectID, role_invited, invitor, invitee, general_text) VALUES (" + str(self.project_id) + ", " + str(self.role_invite) + ", " + str(self.invitor) + ", " + str(self.invitee) +  ", \'" + self.general_text.replace("'", "\\\'") + "\');"
         conn.execute(query)
         query = "SELECT * FROM invitation where projectID = " + str(self.project_id) + " ORDER BY create_time DESC;"
