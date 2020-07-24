@@ -373,6 +373,8 @@ class Project():
         query = "UPDATE project SET is_hidden = 1, hidden_reason = \'" + str(hidden_reason) + "\' WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
+        #send email to project owner once it's hidden;
+        Project.get_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True)
         proj = Project.get_by_proj_id(conn, proj_ID)
         if proj['hidden'] == 1:return True
         else:return False
@@ -383,9 +385,31 @@ class Project():
         query = "UPDATE project SET is_hidden = 0 WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
+        #send email to project owner once it's unhidden;
+        Project.get_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=False)
         proj = Project.get_by_proj_id(conn, proj_ID)
         if proj['hidden'] == 0:return True
         else:return False
+
+    def notify_project_owner(self, conn, smtp, hide=True):
+        proj = Project.get_by_id(conn, self.id)
+        from users.dreamer import Dreamer
+        dre = Dreamer.get_by_id(conn, self.owner)
+        if hide:
+            subject = '[DreamMatchmaker]Your project has been hidden due to improper or sensitive contents, please be noted!'
+            content = f'''<p>Hello {dre['name']},</p>
+<p>   Your project - <b>{proj['title']}</b> has been hidden due to improper or sensitive contents, admin will unhide your project once it's updated!</p>
+<p>Dream Matchmaker Team</p>
+'''
+        else:
+            subject = '[DreamMatchmaker]Your project has been passed audition and unhidden, please be noted!'
+            content = f'''<p>Hello {dre['name']},</p>
+<p>   Your project - <b>{proj['title']}</b> has been passed audition and unhidden, please be noted!</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(dre['email'], content, subject)
+        return result
+
 
     def info(self):
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
