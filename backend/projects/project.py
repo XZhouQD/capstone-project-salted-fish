@@ -530,7 +530,6 @@ class Project():
 
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
-
     def unhide_a_project(conn, proj_ID, smtp):
         """unhide a project to active
         Param:
