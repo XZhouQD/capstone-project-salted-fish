@@ -11,11 +11,10 @@ class SMTP:
         config = yaml.load(f.read(), Loader=yaml.FullLoader)
         smtp_host = config['SMTP']['Host']
         smtp_port = int(config['SMTP']['Port'])
-        smtp_user = config['SMTP']['User']
-        smtp_pass = config['SMTP']['Pass']
+        self.smtp_user = config['SMTP']['User']
+        self.smtp_pass = config['SMTP']['Pass']
         self.sender = config['SMTP']['Sender']
         self.server = smtplib.SMTP_SSL(smtp_host, smtp_port)
-        self.server.login(smtp_user, smtp_pass)
 
     def send_email_plain(self, receiver, content, subject):
         message = MIMEText(content, 'plain', 'utf-8')
@@ -30,10 +29,12 @@ class SMTP:
         message['To'] = Header(receiver)
         message['Subject'] = Header(subject)
         try:
+            self.server.login(self.smtp_user, self.smtp_pass)
             self.server.sendmail(self.sender, receiver, message.as_string())
             print("Email send to " + str(receiver) + " success")
             return True
         except smtplib.SMTPException:
+            print(f"Send email to {str(receiver)} failed")
             return False
 
 '''
