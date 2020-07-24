@@ -4,6 +4,7 @@ from users.dreamer import Dreamer
 from projects.project import Project
 
 class Discussion():
+    """Discussion class under project"""
     def __init__(self, projectID, parent_discussion_ID, is_dreamer, d_author = '',c_author = '',text = ''):
         self.projectID = projectID
         self.parent_discussion_ID = parent_discussion_ID
@@ -16,6 +17,15 @@ class Discussion():
 
     @staticmethod
     def get_notification_by_id(conn, user_id,user_role):
+        """get notifications for specific user
+        Param:
+        conn -- database connection
+        user_id -- user digit id
+        user_role -- role of user, 'Dreamer' or 'Collaborator'
+        Return:
+        notification list
+        """
+        # read role
         if user_role == 'Dreamer':
             query = "SELECT * FROM dreamer_notification where dreamer_ID = " + str(user_id) + " and is_viewed = " + str(0) + ";"
         if user_role == 'Collaborator':
@@ -25,6 +35,7 @@ class Discussion():
             return None
         notification_dict = {}
         notification_list = []
+        # fetch notifications
         for i in range(result.rowcount):
             row = result.fetchone()
             id = row['ID']
@@ -40,6 +51,13 @@ class Discussion():
 
     @staticmethod
     def get_by_did(conn, discussion_id):
+        """Get discussion info by id
+        Param:
+        conn -- database connection
+        discussion_id -- discussion digit id
+        Return:
+        discussion info dict
+        """
         query = "SELECT * FROM discussion where ID = " + str(discussion_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -68,6 +86,13 @@ class Discussion():
 
     @staticmethod
     def get_by_pid(conn, project_id):
+        """Get all discussions under a specific project
+        Param:
+        conn -- database connection
+        project_id -- project digit id
+        Return:
+        discussion list of a project
+        """
         query = "SELECT * FROM discussion where projectID = " + str(project_id) + ";"
         result = conn.execute(query)
         all_discussion = {}
@@ -101,9 +126,14 @@ class Discussion():
 
 
     def info(self):
+        """Return discussion info dict"""
         return {'id': self.id, 'project_id': self.projectID, 'parent_discussion_id': self.parent_discussion_ID,'content': self.text, 'is_dreamer': self.is_dreamer, 'create_time': str(self.create_time)}
 
     def owner_reply(self, conn):
+        """Discussion reply by project owner
+        Param:
+        conn -- database connection
+        """
         query = "SELECT * FROM discussion where ID = " + str(self.parent_discussion_ID) + " ;"
         result = conn.execute(query)
         row = result.fetchone()
@@ -116,6 +146,12 @@ class Discussion():
 
 
     def create_by_dreamer(self, conn):
+        """Discussion reply by a dreamer
+        Param:
+        conn -- database connection
+        Return:
+        discussion object
+        """
         if self.parent_discussion_ID == 0:
             query = "INSERT INTO discussion (projectID, text, is_dreamer, d_author) VALUES (" + str(self.projectID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.d_author) + ");"
         else:
@@ -131,6 +167,12 @@ class Discussion():
         return self
 
     def create_by_collaborator(self, conn):
+        """Discussion reply by a collaborator
+        Param:
+        conn -- database connection
+        Return:
+        discussion object
+        """
         if self.parent_discussion_ID == 0:
             query = "INSERT INTO discussion (projectID, text, is_dreamer, c_author) VALUES (" + str(self.projectID) + ", \'" + self.text.replace("'", "\\\'") + "\', " + str(self.is_dreamer) + ", " + str(self.c_author) + ");"
         else:
