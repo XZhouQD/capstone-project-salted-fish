@@ -2,6 +2,8 @@
 import yaml
 
 class Role():
+    """Project role class"""
+    # shared static values
     education_list = ['Null', 'Other', 'Bachelor', 'Master', 'PhD']
     skills_list = ['Null'] + yaml.load(open('projects/project.config', 'r', encoding='utf-8').read(), Loader=yaml.FullLoader)['Role']['Skills']
 
@@ -18,6 +20,13 @@ class Role():
 
     @staticmethod
     def get_object_by_id(conn, role_id):
+        """Get role object by role id
+        Param:
+        conn -- database connection
+        role_id -- role digit id
+        Return:
+        role object
+        """
         query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -37,6 +46,13 @@ class Role():
 
     @staticmethod
     def get_by_id(conn, role_id):
+        """Get role info by role id
+        Param:
+        conn -- database connection
+        role_id -- role digit id
+        Return:
+        role info
+        """
         query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -56,6 +72,13 @@ class Role():
 
     @staticmethod
     def get_text_by_id(conn, role_id):
+        """Get role text info by role id
+        Param:
+        conn -- database connection
+        role_id -- role digit id
+        Return:
+        role text info
+        """
         query = "SELECT * FROM project_role where ID = " + str(role_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -74,8 +97,15 @@ class Role():
         return role.text_info()
 
     @staticmethod
-    # get by one role with one type of skill;
     def get_by_rid_skill(conn, role_id, skill):
+        """Get role text info by role id and specific skill
+        Param:
+        conn -- database connection
+        role_id -- role digit id
+        skill -- skill digit id
+        Return:
+        role text info
+        """
         query = "SELECT * FROM project_role, role_skill where ID = " + str(role_id) + " and skill = " + str(skill) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -92,6 +122,13 @@ class Role():
 
     @staticmethod
     def get_text_by_pid(conn, pid):
+        """Get role text infos by project
+        Param:
+        conn -- database connection
+        pid -- project digit id
+        Return:
+        list of role text info
+        """
         query = "SELECT * FROM project_role, role_skill where project_role.ID = role_skill.roleID and projectID = " + str(pid) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -112,6 +149,13 @@ class Role():
 
     @staticmethod
     def get_by_proj_id(conn, proj_id):
+        """Get role infos by project
+        Param:
+        conn -- database connection
+        pid -- project digit id
+        Return:
+        list of role info
+        """
         query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
         result = conn.execute(query)
         roles = []
@@ -133,6 +177,7 @@ class Role():
         return roles
 
     @staticmethod
+    # TODO: this seems duplicate with get_text_by_pid and there is error on return value
     def get_text_by_proj_id(conn, proj_id):
         query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
         result = conn.execute(query)
@@ -155,18 +200,27 @@ class Role():
         return role.text_info()
 
     def info(self):
+        """Return role info"""
         return {'id': self.id, 'title': self.title, 'amount': self.amount, 'skill': self.skill, 'experience': self.experience, 'education': self.education, 'general_enquiry': self.general_enquiry, 'project_id': self.project_id}
 
     def text_info(self):
+        """Return role text info"""
         return {'id': self.id, 'title': self.title, 'amount': self.amount, 'skill': self.text_skills(), 'experience': self.experience, 'education': self.education_list[self.education], 'general_enquiry': self.general_enquiry, 'project_id': self.project_id}
 
     def text_skills(self):
+        """Return role text skill info"""
         temp_list = []
         for skill in self.skill:
             temp_list.append(self.skills_list[int(skill)])
         return temp_list
 
     def duplicate_check(self, conn):
+        """Check if the role is duplicate
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if role is duplicate
+        """
         query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND title = \'" + self.title + "\' AND education = " + str(self.education) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -174,6 +228,12 @@ class Role():
         return False
 
     def create(self, conn):
+        """Create a role into database
+        Param:
+        conn -- database connection
+        Return:
+        created role object
+        """
         if self.duplicate_check(conn):
             return None
         query = "INSERT INTO project_role (projectID, title, amount, education, general_enquiry) VALUES (" + str(self.project_id) + ", \'" + self.title.replace("'", "\\\'") + "\', " + str(self.amount) + ", " + str(self.education) + ", \'" + self.general_enquiry.replace("'", "\\\'") + "\');"
@@ -188,6 +248,12 @@ class Role():
         return self
 
     def patch(self, conn):
+        """Patch a role in database
+        Param:
+        conn -- database connection
+        Return:
+        patched role object
+        """
         #Check project status, no more updates allowed if project is finished;
         query = "SELECT * FROM project WHERE ID = " + str(self.project_id) + ";"
         result = conn.execute(query)
