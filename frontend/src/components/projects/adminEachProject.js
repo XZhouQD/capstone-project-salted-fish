@@ -45,6 +45,12 @@ class HideButton extends Component {
 }
 
 class AdminEachProject extends Component {
+
+  state={isHidden:false}
+  handleHide(){
+    this.setState()
+  }
+
   render() {
     var categoryList = [
       "All other",
@@ -72,12 +78,19 @@ class AdminEachProject extends Component {
           <p className="truncate">Description: {this.props.description}</p>
         </div>
         <div className="card-action">
-          <a
-            className="waves-effect waves-light btn-small"
-            style={{ marginRight: "5px" }}
+          {this.state.isHidden == 0? <a
+              className="waves-effect waves-light btn-small"
+              style={{ marginRight: "5px" }}
+              onClick={()=>this.handleHide}
           >
             hide
-          </a>
+          </a>: <a
+              className="waves-effect waves-light btn-small"
+              style={{ marginRight: "5px" }}
+          >
+            reveal
+          </a>}
+
         </div>
         <div className="card-reveal">
           <span className="card-title grey-text text-darken-4">

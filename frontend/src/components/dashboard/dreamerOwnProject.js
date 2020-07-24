@@ -60,34 +60,36 @@ class DreamerOwnProject extends React.Component {
             ) : (
               <b>{this.props.title}</b>
             )}
-            <div className="right">
+              {this.props.owner==this.props.myId?
+                  <div className="right">
 
-                {this.props.status==9? <button disabled={true}
-                    className="red btn-small disabled"
-                    style={{ marginRight: "5px" }}
-                >
-                  Change
-                </button>: <Link to={change}><button
-                    className="red btn-small"
-                    style={{ marginRight: "5px" }}
-                >
-                  Change
-                </button></Link>}
+                      {this.props.status==9? <button disabled={true}
+                                                     className="red btn-small disabled"
+                                                     style={{ marginRight: "5px" }}
+                      >
+                          Change
+                      </button>: <Link to={change}><button
+                          className="red btn-small"
+                          style={{ marginRight: "5px" }}
+                      >
+                          Change
+                      </button></Link>}
 
 
-              {this.props.status==9? <button disabled={true}
-                  className="red btn-small disabled"
-                  onClick={() => this.handleFinish(id)}
-              >
-                Finish
-              </button>: <button
-                  className="red btn-small"
-                  onClick={() => this.handleFinish(id)}
-              >
-                Finish
-              </button>}
+                      {this.props.status==9? <button disabled={true}
+                                                     className="red btn-small disabled"
+                                                     onClick={() => this.handleFinish(id)}
+                      >
+                          Finish
+                      </button>: <button
+                          className="red btn-small"
+                          onClick={() => this.handleFinish(id)}
+                      >
+                          Finish
+                      </button>}
 
-            </div>
+                  </div>: <span className="right" style={{fontSize: 15}}> Followed Project</span>}
+
           </div>
 
           <div className="left" style={{ marginTop: "15px" }}>
@@ -97,12 +99,13 @@ class DreamerOwnProject extends React.Component {
             <p>create project time: {this.props.create_time.split(" ")[0]}</p>
           </div>
           <div className="right-align" style={{ marginTop: "20px" }}>
-
-              {this.props.status==9? <button disabled={true} className="waves-effect waves-light btn-small disabled">
-                <i className="material-icons left">add</i>Add roles
-              </button>:<Link to={addRoleUrl}><button className="waves-effect waves-light btn-small">
-                <i className="material-icons left">add</i>Add roles
-              </button> </Link>}
+              {this.props.owner==this.props.myId?
+                  <div>
+                      {this.props.status==9? <button disabled={true} className="waves-effect waves-light btn-small disabled">
+                      <i className="material-icons left">add</i>Add roles
+                  </button>:<Link to={addRoleUrl}><button className="waves-effect waves-light btn-small">
+                      <i className="material-icons left">add</i>Add roles
+                  </button> </Link>}</div>: <div><br/></div>}
 
 
 
@@ -118,6 +121,7 @@ class DreamerOwnProject extends React.Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+    myId: state.auth.id,
   ProjectLists: state.project.CollaProjectLists,
 });
 
