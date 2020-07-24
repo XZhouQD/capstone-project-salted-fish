@@ -56,7 +56,7 @@ function App() {
           path="/project/:pid/role/:rid/collaborators/:cid/applications"
           component={ApplicationsCard}
         />
-        <Route exact path="/admindash" component={ApplicationsCard} />
+        <Route exact path="/admindash" component={AdminDash} />
         <Route
           exact
           path="/project/:pid/role/:rid"

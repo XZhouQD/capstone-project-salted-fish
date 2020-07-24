@@ -132,6 +132,7 @@ class DreamerDash extends React.Component {
                             create_time={each.create_time}
                             last_update={each.last_update}
                             status={each.status}
+                            owner={each.owner}
                           />
                         );
                       })
