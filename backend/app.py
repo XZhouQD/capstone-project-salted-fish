@@ -1285,6 +1285,8 @@ class PostProject(CorsResource):
         token = request.headers.get('AUTH_KEY')
         userinfo = auth.decode(token)
         dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
         project_info = request.json
         conn = db.conn()
         new_project = Project(project_info['title'], project_info['description'], dreamer_id, project_info['category']).create(conn)
