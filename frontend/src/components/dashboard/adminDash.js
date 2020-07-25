@@ -40,7 +40,7 @@ class AdminDash extends Component {
         <div className="container" style={{ marginTop: "20px" }}>
           <div className="flexLayout">
             {this.props.ProjectLists.map((each, index) => {
-              console.log(each.is_hidden)
+              console.log(each)
               return (
                   <div>
                     <AdminEachProject
@@ -48,21 +48,8 @@ class AdminDash extends Component {
                         category={each.category}
                         description={each.description}
                         isHidden={each.is_hidden}
+                        id={each.id}
                     />
-                    {/*<div className="card-action">*/}
-                    {/*  {each.is_hidden == 0? <a*/}
-                    {/*      className="waves-effect waves-light btn-small"*/}
-                    {/*      style={{ marginRight: "5px" }}*/}
-                    {/*  >*/}
-                    {/*    hide*/}
-                    {/*  </a>: <a*/}
-                    {/*      className="waves-effect waves-light btn-small"*/}
-                    {/*      style={{ marginRight: "5px" }}*/}
-                    {/*  >*/}
-                    {/*    reveal*/}
-                    {/*  </a>}*/}
-
-                    {/*</div>*/}
                   </div>
 
               );

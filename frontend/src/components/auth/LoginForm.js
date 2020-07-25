@@ -36,6 +36,8 @@ const LoginForm = (props) => {
     return <Redirect to="/dashboard" />;
   }else if(authRole==="Collaborator" && isAuthenticated){
     return <Redirect to="/colladash" />;
+  }else if(authRole==="Admin" && isAuthenticated){
+    return <Redirect to="/admindash"/>
   }
 
   return (

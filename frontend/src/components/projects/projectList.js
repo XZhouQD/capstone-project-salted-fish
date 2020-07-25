@@ -44,15 +44,19 @@ class ProjectList extends Component {
     return (
           <div className="flexLayout">
             {this.props.ProjectLists.map((each, index) => {
-              return (
-                  <EachProject
-                      title={each.title}
-                      category={each.category}
-                      description={each.description}
-                      key={index}
-                      id={each.id}
-                  />
-              );
+              if(each.is_hidden==0){
+                return (
+                    <EachProject
+                        title={each.title}
+                        category={each.category}
+                        description={each.description}
+                        key={index}
+                        id={each.id}
+
+                    />
+                );
+              }
+
             })}
           </div>
 
