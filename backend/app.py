@@ -163,7 +163,7 @@ collaborator_patch_model = api.model('Collaborator_Patch', {
     'phone_no': fields.String(required=False, description='Phone number (optional)'),
     'education': fields.Integer(required=False, description='Education required'),
     'skill': fields.String(required=False, description='Skill ids list divide by comma "," e.g. 2,3,4'),
-    'experience': fields.Integer(required=False, description='Experience required in years.')
+    'experience': fields.String(required=False, description='Experience required in years.')
 })
 
 
