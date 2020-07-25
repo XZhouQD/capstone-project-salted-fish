@@ -12,6 +12,5 @@ export const setAlert = (msg) => (dispatch) => {
   });
   // disappear after 5s trigger remove alert
   setTimeout(() => dispatch({ type: REMOVE_ALERT, payload: id }), 6000);
-  // disappear after 5s trigger remove alert
-  setTimeout(() => dispatch({ type: REMOVE_ALERT, payload: id }), 6000);
+
 };

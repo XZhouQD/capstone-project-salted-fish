@@ -46,15 +46,13 @@ const HomePage = () => {
           <div class="col s12 m4">
             <div class="icon-block">
               <h2 class="center brown-text">
-                <i class="material-icons">flash_on</i>
+                <i class="material-icons">people</i>
               </h2>
-              <h5 class="center">Speeds up development</h5>
+              <h5 class="center">Speeds up collaborator</h5>
 
               <p class="light">
-                We did most of the heavy lifting for you to provide a default
-                stylings that incorporate our custom components. Additionally,
-                we refined animations and transitions to provide a smoother
-                experience for developers.
+                FindColla is a community of engineers, designers, project managers, and dreamers.
+                Some have good ideas and some have technical know how to turn those dreams into a reality.
               </p>
             </div>
           </div>
@@ -62,16 +60,12 @@ const HomePage = () => {
           <div class="col s12 m4">
             <div class="icon-block">
               <h2 class="center brown-text">
-                <i class="material-icons">group</i>
+                <i class="material-icons">bubble_chart</i>
               </h2>
-              <h5 class="center">User Experience Focused</h5>
+              <h5 class="center">Easy to communicate</h5>
 
               <p class="light">
-                By utilizing elements and principles of Material Design, we were
-                able to create a framework that incorporates components and
-                animations that provide more feedback to users. Additionally, a
-                single underlying responsive system across all platforms allow
-                for a more unified user experience.
+                Dreamers and collaborators can communicate with each other easily.
               </p>
             </div>
           </div>
@@ -95,7 +89,7 @@ const HomePage = () => {
       </div>
 
       <div class="footer-copyright right">
-        <div class="container">© 2014 Copyright Salted-Fish-team</div>
+        <span class="container">Salted-Fish-team</span>
       </div>
     </div>
   );
