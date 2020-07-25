@@ -182,7 +182,7 @@ class ProjectDetails extends Component {
                 ? "any"
                 : education_list[a.education]}{" "}
               degree
-              {this.state.owner === this.props.id
+              {this.state.owner === this.props.id && this.props.role=== "Dreamer"
                 ? this.renderOwner(a.id)
                 : this.renderUser(a.id)}
             </p>
@@ -241,6 +241,7 @@ class ProjectDetails extends Component {
 const mapStateToProps = (state) => ({
   id: state.auth.id,
   applySuccess: state.project.payload,
+  role: state.auth.role
 });
 
 export default connect(mapStateToProps, { applyRole, setAlert })(

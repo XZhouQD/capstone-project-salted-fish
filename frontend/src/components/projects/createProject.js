@@ -49,7 +49,8 @@ class CreateProject extends Component {
           <div className="row" style={{ paddingTop: "20px" }}>
             <form className="col s12" onSubmit={(e) => this.handleonSubmit(e)}>
               <div className="row">
-                <div className="input-field col s12">
+                <div className=" col s12">
+                  <label htmlFor="title">Project Title</label>
                   <input
                     placeholder="enter your project's title"
                     type="text"
@@ -57,7 +58,7 @@ class CreateProject extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     required
                   />
-                  <label htmlFor="title">Project Title</label>
+
                 </div>
               </div>
 
@@ -88,7 +89,8 @@ class CreateProject extends Component {
               </div>
 
               <div className="row">
-                <div className="input-field col s12">
+                <div className="col s12">
+                  <label htmlFor="description">Describe your project!</label>
                   <textarea
                     placeholder="describe your project details not more than 140 words"
                     className="materialize-textarea"
@@ -97,7 +99,7 @@ class CreateProject extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     required
                   ></textarea>
-                  <label htmlFor="description">Describe your project!</label>
+
                 </div>
               </div>
               <div className="row">
