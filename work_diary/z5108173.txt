@@ -53,7 +53,7 @@ Move from single thread database connection (unsafe) to multi-thread connection 
 *Prepared new demo server on GCP, database moved.
 Conducted retro A online meeting on Zoom, wrote part of retro A report.
 
-Next Week Paln: 7-1. Start work on admin functions; 7-2. Try API view times statistics; 7-3. Prepare all tasks in Sprint 3/4; 7-4. Prepare demo server; 7-5. Start to draft final report.
+Next Week Plan: 7-1. Start work on admin functions; 7-2. Try API view times statistics; 7-3. Prepare all tasks in Sprint 3/4; 7-4. Prepare demo server; 7-5. Start to draft final report.
 
 Week 7
 
@@ -61,3 +61,15 @@ All subtasks in sprint 3 ready on github/jira. [7-3]
 Demo server ready, open to public connect. [7-4]
 Move to new db format for multi-skill selection in roles.
 draft final report doc ready. [7-5]
+
+Next Week Plan: 8-1. Create Sprint 4 subtasks; 8-2. Add python doc to backend.
+
+Week 8
+
+All subtasks in sprint 4 ready on github/jira. [8-1]
+Finished adding python doc. [8-2]
+Implemented Admin management API.
+Fix SMTP timeout error - will reconnect in retry.
+Hold Retro B meeting on zoom.
+
+Next Week Plan: 9-1. Review backend code and re-format; 9-2. Test all functions prepare for final demo; 9-3. First complete version of project report.

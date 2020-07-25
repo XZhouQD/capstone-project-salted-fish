@@ -2,6 +2,7 @@
 from projects.role import Role
 
 class Project():
+    """Project class"""
     category_list = ['Null', 'Other', 'Web', 'Desktop', 'Mobile', 'Library', 'Mod', 'Research']
 
     def __init__(self, title, description, owner, category, status=-1, hidden=0, hidden_reason=''):
@@ -21,6 +22,16 @@ class Project():
     #For all users even visitors can use this query function;
     #General search for projects by project description or category;
     def search_list(conn, description, category, order_by, order):
+        """Search project list by limits
+        Param:
+        conn -- database connection
+        description -- search description
+        category -- search project category
+        order_by -- search order item
+        order -- search order
+        Return:
+        Matched project list
+        """
         if description != '' and category != -1:
             query = "SELECT * FROM project WHERE description LIKE \'%%" + description + "%%\' AND category = " + str(category) + " AND project_status > 0 ORDER BY " + order_by + " " + order + ";"
         elif description != '':
@@ -45,14 +56,26 @@ class Project():
         return {'projects': project_list, 'amount': result.rowcount}
 
     @staticmethod
-    #Check if project has been finished
     def check_finish(conn, proj_id):
+        """Check if the project has been finished
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        Return:
+        Boolean if project is finished
+        """
         proj_info = Project.get_by_id(conn, proj_id)
         return proj_info['status'] == 9
 
     @staticmethod
-    #Get project by project_id;
-    def get_by_id(conn, proj_id):
+    def get_object_by_id(conn, proj_id):
+        """Get project info by project id
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        Return:
+        Project info
+        """
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -64,11 +87,28 @@ class Project():
         proj.roles = Role.get_by_proj_id(conn, proj_id)
         proj.create_time = row['create_time']
         proj.last_update = row['last_update']
-        return proj.info()
+        return proj
 
     @staticmethod
-    #Return a Project object with project generail info;
+    def get_by_id(conn, proj_id):
+        """Get project info by project id
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        Return:
+        Project info
+        """
+        return Project.get_object_by_id(conn, proj_id).info()
+
+    @staticmethod
     def get_by_proj_id(conn, proj_id):
+        """Get another format of project info by project id
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        Return:
+        Project info
+        """
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -83,8 +123,15 @@ class Project():
         return proj
 
     @staticmethod
-    #Get a project by specified project_id and role_id;
     def get_by_pid_rid(conn, proj_id, role_id):
+        """Get another format of project info by project id and specific role
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        role_id -- role digit id
+        Return:
+        Project text info
+        """
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -99,8 +146,16 @@ class Project():
         return proj.text_info()
 
     @staticmethod
-    #Search for project by project_id and skill about one type of role; 
     def get_by_pid_rid_skill(conn, proj_id, role_id, skill):
+        """Get another format of project info by project id and specific role with specific skill
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        role_id -- role digit id
+        skill -- skill digit id
+        Return:
+        Project text info
+        """
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -117,6 +172,13 @@ class Project():
     @staticmethod
     #Get a project by project_title;
     def get_by_title(conn, project_title):
+        """Get project info by project title
+        Param:
+        conn -- database connection
+        proj_title -- title text
+        Return:
+        Project info
+        """
         query = "SELECT * FROM project WHERE project_title = " + project_title.replace("'", "\\\'") + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -133,6 +195,13 @@ class Project():
     @staticmethod
     #Get projects by project_owner_id;
     def get_by_owner(conn, owner_id):
+        """Get projects info by project owner
+        Param:
+        conn -- database connection
+        owner_id -- dreamer digit id
+        Return:
+        list of Project info
+        """
         query = "SELECT * FROM project WHERE dreamerID = " + str(owner_id) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -156,6 +225,14 @@ class Project():
     @staticmethod
     #Update user_level field for both dreamer and collaborator table;
     def update_user_level(conn, user_type, count, user_level, user_ID):
+        """update user level
+        Param:
+        conn -- database connection
+        user_type -- user's role
+        count -- num of projects finished
+        user_level -- user_level digit id
+        user_ID -- user digit id
+        """
         if user_type == 'D':
             table_to_update = 'dreamer'
         if user_type == 'C':
@@ -179,6 +256,13 @@ class Project():
     @staticmethod
     #Caculate the total number of projects which collaborator collaborated with;
     def total_project_finished_by_collabor(conn, collabor_ID):
+        """Calculate projects finished
+        Param:
+        conn -- database connection
+        collabor_ID -- collaborator digit id
+        Return:
+        Total num of finished projects
+        """
         query_1 = "select count(*) as count_1 from application where status = 9 and applicant = " + str(collabor_ID) + ";"
         result_1 = conn.execute(query_1)
         row_1 = result_1.fetchone()
@@ -190,6 +274,14 @@ class Project():
     @staticmethod
     #Finish a project and further update user_level for both dreamer and collaborator based on the number of rojects they have completed;
     def finish_a_project(conn, proj_ID, dreamer_ID):
+        """Finish a project
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        dreamer_ID -- dreamer digit id
+        Return:
+        updated project info
+        """
         #update project_status = 9 as finished
         query_1 = "UPDATE project set project_status = 9 where dreamerID = " + str(dreamer_ID) + " and ID = " + str(proj_ID) + ";"
         conn.execute(query_1)
@@ -226,6 +318,15 @@ class Project():
     @staticmethod
     #Dreamer or collaborator can follow a project;
     def follow_a_project(conn, proj_ID, user_role, user_ID):
+        """Follow project by user
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        user_role -- role string
+        user_ID -- user digit id
+        Return:
+        Follow information of project id and user id
+        """
         if user_role == 'Dreamer':
             #check if the user has subscribed the project or not;
             query_1 = "SELECT * FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
@@ -257,6 +358,15 @@ class Project():
     @staticmethod
     #Dreamer or collaborator can unfollow a project;
     def unfollow_a_project(conn, proj_ID, user_role, user_ID):
+        """Unfollow project by user
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        user_role -- role string
+        user_ID -- user digit id
+        Return:
+        Boolean if unfollow success
+        """
         if user_role == 'Dreamer':
             query = "DELETE FROM subscription WHERE projectID = " + str(proj_ID) + " and d_subscriber = " + str(user_ID) + ";"
             conn.execute(query)
@@ -278,6 +388,13 @@ class Project():
     @staticmethod
     #Get all discussion records about the project;
     def get_discussion_about_one_project(conn, proj_ID):
+        """Get all discussions of a project
+        Param:
+        conn -- database connection
+        proj_ID -- project digit ID
+        Return:
+        list of discussions
+        """
         query = "SELECT * FROM discussion WHERE projectID = " + str(proj_ID) + " ORDER BY ID;"
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -292,6 +409,14 @@ class Project():
     @staticmethod
     #get all discussion records of the projects which user followed;
     def get_discussion_about_followed_projects(conn, user_type, user_ID):
+        """Get all discussions of followed projects
+        Param:
+        conn -- database connection
+        user_type -- user type string
+        user_ID -- user digit ID
+        Return:
+        list of discussions
+        """
         if user_type == 'Dreamer':
             query = "SELECT d.ID as ID, d.projectID as projectID, parent_discussion_ID, text, d.is_dreamer as is_dreamer, d_author, c_author, d.last_update as last_update FROM subscription s, discussion d WHERE s.projectID = d.projectID and s.is_dreamer = 1 and s.d_subscriber = " + str(user_ID) + " ORDER BY d.ID, d.projectID;"
             result = conn.execute(query)
@@ -310,6 +435,14 @@ class Project():
     @staticmethod
     #Check if the dreamer owned the project or not;
     def check_owner(conn, proj_id, owner_id):
+        """Check project owner identity
+        Param:
+        conn -- database connection
+        proj_id -- project digit id
+        owner_id -- dreamer digit id
+        Return:
+        boolean if owner corrent
+        """
         query = "SELECT * FROM project WHERE ID = " + str(proj_id) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -320,6 +453,12 @@ class Project():
     @staticmethod
     #Get pending projects for further auditing process;
     def get_pending_projects(conn):
+        """Check pending projects
+        Param:
+        conn -- database connection
+        Return:
+        list of pending projects
+        """
         query = "SELECT * FROM project WHERE project_status = -1 order by create_time;"
         print(query)
         result = conn.execute(query)
@@ -338,9 +477,59 @@ class Project():
         return project_list
     
     @staticmethod
+    def hidden_projects(conn):
+        """Get all hidden projects that is not modified
+        Param:
+        conn -- database connection
+        Return:
+        List of hidden projects
+        """
+        query = "SELECT * FROM project WHERE is_hidden = 1 AND is_modified_after_hidden = 0 order by last_update DESC;"
+        result = conn.execute(query)
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
+    def active_projects(conn):
+        """Get all active projects
+        Param:
+        conn -- database connection
+        Return:
+        list of active projects
+        """
+        query = "SELECT * FROM project WHERE project_status = 1 AND is_hidden = 0 order by last_update DESC;"
+        result = conn.execute(query)
+        project_list = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            proj = Project(row['project_title'],row['description'],row['dreamerID'],row['category'],status=row['project_status'],hidden=row['is_hidden'],hidden_reason=row['hidden_reason'])
+            proj.id = row['ID']
+            proj.is_modified_after_hidden = row['is_modified_after_hidden']
+            proj.roles = Role.get_text_by_proj_id(conn, proj.id)
+            proj.create_time = row['create_time']
+            proj.last_update = row['last_update']
+            project_list.append(proj.text_info())
+        return project_list
+    
+    @staticmethod
     #Get projects which has been modified after hidden;
     def modified_projects_after_hidden(conn):
-        query = "SELECT * FROM project WHERE is_hidden = 1 and is_modified_after_hidden = 1 order by ID;"
+        """Check modified projects after hidden
+        Param:
+        conn -- database connection
+        Return:
+        list of MaH projects
+        """
+        query = "SELECT * FROM project WHERE is_hidden = 1 and is_modified_after_hidden = 1 order by last_update ASC;"
         print(query)
         result = conn.execute(query)
         if result.rowcount == 0:
@@ -360,6 +549,13 @@ class Project():
     @staticmethod
     #Admin can audit a project and make the project as active status if the project is legal; 
     def audit_a_project(conn, proj_ID):
+        """Audit a project to active
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        Return:
+        Boolean if activate success
+        """
         query = "UPDATE project SET project_status = 1 where ID = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
@@ -369,39 +565,94 @@ class Project():
 
     @staticmethod
     #Admin can hide a project if there is improper content about the new project;
-    def hide_a_project(conn, proj_ID, hidden_reason):
+    def hide_a_project(conn, proj_ID, hidden_reason, smtp):
+        """hide a project to hidden
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        hidden_reason -- 
+        Return:
+        Boolean if activate success
+        """
         query = "UPDATE project SET is_hidden = 1, hidden_reason = \'" + str(hidden_reason) + "\' WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
+        #send email to project owner once it's hidden;
+        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True)
         proj = Project.get_by_proj_id(conn, proj_ID)
-        if proj['hidden'] == 1:return True
+        if proj.info()['is_hidden'] == 1:return True
         else:return False
 
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
-    def unhide_a_project(conn, proj_ID):
+    def unhide_a_project(conn, proj_ID, smtp):
+        """unhide a project to active
+        Param:
+        conn -- database connection
+        proj_ID -- project digit id
+        hidden_reason
+        Return:
+        Boolean if activate success
+        """
         query = "UPDATE project SET is_hidden = 0 WHERE id = " + str(proj_ID) + ";"
         print(query)
         conn.execute(query)
+        #send email to project owner once it's unhidden;
+        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=False)
         proj = Project.get_by_proj_id(conn, proj_ID)
-        if proj['hidden'] == 0:return True
+        if proj.info()['is_hidden'] == 0:return True
         else:return False
 
+    def notify_project_owner(self, conn, smtp, hide=True):
+        proj = Project.get_by_id(conn, self.id)
+        from users.dreamer import Dreamer
+        dre = Dreamer.get_by_id(conn, self.owner)
+        if hide:
+            subject = '[DreamMatchmaker]Your project has been hidden due to improper or sensitive contents, please be noted!'
+            content = f'''<p>Hello {dre['name']},</p>
+<p>   Your project - <b>{proj['title']}</b> has been hidden due to improper or sensitive contents, admin will unhide your project once it's updated!</p>
+<p>Dream Matchmaker Team</p>
+'''
+        else:
+            subject = '[DreamMatchmaker]Your project has been passed audition and unhidden, please be noted!'
+            content = f'''<p>Hello {dre['name']},</p>
+<p>   Your project - <b>{proj['title']}</b> has been passed audition and unhidden, please be noted!</p>
+<p>Dream Matchmaker Team</p>
+'''
+        result = smtp.send_email_html(dre['email'], content, subject)
+        return result
+
+
     def info(self):
+        """Return project info"""
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category, 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     def text_info(self):
+        """Return project text info"""
         return {'id': self.id, 'title': self.title, 'description': self.description, 'owner': self.owner, 'category': self.category_list[self.category], 'status': self.project_status, 'is_hidden': self.is_hidden, 'hidden_reason': self.hidden_reason, 'is_modified_after_hidden': self.is_modified_after_hidden, "roles": self.roles, "create_time": str(self.create_time), "last_update": str(self.last_update)}
 
     #Check if the project which has the same title has been created or not from the same owner;
     def duplicate_check(self, conn):
+        """Duplicate check of project
+        Param:
+        conn -- database connection
+        Return:
+        Boolean if project is duplicate
+        """
         query = "SELECT * FROM project WHERE project_title = \'" + self.title + "\' AND dreamerID = " + str(self.owner) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
         return False
+        
     #Patch the project title, description or category info, and also update the is_modified_after_hidden as 1 if it has been marked as hidden;
     def patch(self, conn):
+        """Patch project info into database
+        Param:
+        conn -- database connection
+        Return:
+        patched project object
+        """
         query = "select * from project WHERE id = " + str(self.id) + ";"
         result = conn.execute(query)
         if result.rowcount > 0:
@@ -419,6 +670,12 @@ class Project():
 
     #Greate a new project;
     def create(self, conn):
+        """create project info into database
+        Param:
+        conn -- database connection
+        Return:
+        created project object
+        """
         if self.duplicate_check(conn):
             return None
         query = "INSERT INTO project (project_title, description, category, dreamerID) VALUES (\'" + self.title.replace("'", "\\\'") + "\', \'" + self.description.replace("'", "\\\'") + "\', " + str(self.category) + ", " + str(self.owner) + ");"

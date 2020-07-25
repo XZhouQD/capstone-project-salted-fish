@@ -5,6 +5,7 @@ from projects.project import Project
 from users.collaborator import Collaborator
 
 class Dreamer():
+    """Dreamer user class"""
     def __init__(self, name, email, password_plain='', password_encrypted='', id='', create_time='', last_update='', phone_no='', user_level=0, description=''):
         self.name = name
         self.email = email.lower()
@@ -26,12 +27,24 @@ class Dreamer():
 
     @staticmethod
     def login(conn, email, password_plain='', password_encrypted=''):
+        """Dreamer login function
+        Param:
+        conn -- database connection
+        email -- collaborator email address
+        password_plain -- plain text password
+        password_encrypted -- sha256 encrypted password
+        Return:
+        Dreamer info or None
+        """
+        # ignore case
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"
         result = conn.execute(query)
         if result.rowcount == 0:
+            # not exist
             return None
         row = result.fetchone()
+        # use sha256 encrypted password to compare
         if password_encrypted == '':
             enc_pass = sha256(password_plain)
         else:
@@ -42,10 +55,19 @@ class Dreamer():
 
     @staticmethod
     def get_followed_projects(conn, id):
+        """Get projects user followed by user id
+        Param:
+        conn -- database connection
+        id -- dreamer digital id
+        Return:
+        followed project info list
+        """
+        # query subscription table
         query = f"SELECT * FROM subscription WHERE is_dreamer=1 AND d_subscriber={id};"
         result = conn.execute(query)
         project_list = []
         for i in range(result.rowcount):
+            # fetch project information
             row = result.fetchone()
             pid = row['projectID']
             proj_info = Project.get_by_id(conn, pid)
@@ -55,6 +77,14 @@ class Dreamer():
 
     @staticmethod
     def is_email_exist(conn, email):
+        """Check if a email exist in dreamers
+        Param:
+        conn -- database connection
+        email -- user email address
+        Return:
+        Boolean if email exist
+        """
+        # ignore case
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"
         result = conn.execute(query)
@@ -62,24 +92,47 @@ class Dreamer():
 
     @staticmethod
     def getObject(conn, email):
+        """Get dreamer object by email
+        Param:
+        conn -- database connection
+        email -- user email address
+        Return:
+        Dreamer object or None
+        """
+        # ignore case
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"
         result = conn.execute(query)
         if result.rowcount == 0:
+            # not exist
             return None
         row = result.fetchone()
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description'])
 
     @staticmethod
     def get_by_id(conn, id):
+        """Get dreamer info by id
+        Param:
+        conn -- database connection
+        id -- draemer digital id
+        Return:
+        Dreamer info or None
+        """
         query = "select * from dreamer where ID = " + str(int(id)) + ";"
         result = conn.execute(query)
         if result.rowcount == 0:
+            # not exist
             return None
         row = result.fetchone()
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description']).info()
 
     def collaborators_recommdation(self, conn):
+        """Recommend collaborators for owned project roles
+        Param:
+        conn -- database connection
+        Return:
+        collaborators list by recommendation project/role
+        """
         owner = self.id
         #fetch all project owned by dreamer;
         query_1 = "SELECT ID as proj_ID, project_title, description, category, dreamerID, project_status, is_hidden, hidden_reason, is_modified_after_hidden FROM project WHERE dreamerID = " + str(owner) + " and project_status = 1 ORDER BY ID;"
@@ -132,6 +185,15 @@ class Dreamer():
 
     @staticmethod
     def check_password(conn, email, password_plain='', password_encrypted=''):
+        """Check if the password of dreamer is correct
+        Param:
+        conn -- database connection
+        email -- dreamer email address
+        password_plain -- plain text password
+        password_encrypted -- sha256 encrypted password
+        Return:
+        Boolean if password is correct
+        """
         email = email.lower()
         query = "select * from dreamer where email = \'" + email + "\';"
         result = conn.execute(query)
@@ -146,6 +208,13 @@ class Dreamer():
     
     @staticmethod
     def commit_newpassword(conn, email, password_plain='', password_encrypted=''):
+        """Commit new password into database
+        Param:
+        conn -- database connection
+        email -- dreamer email address
+        password_plain -- plain text password
+        password_encrypted -- sha256 encrypted password
+        """
         email = email.lower()
         if password_encrypted == '':
             new_pass = sha256(password_plain)
@@ -156,9 +225,11 @@ class Dreamer():
     
 
     def info(self):
+        """Return dreamer info"""
         return {'role': 'Dreamer', 'name': self.name, 'email': self.email, 'id': self.id, 'creation_time': str(self.create_time), 'last_update': str(self.last_update), 'phone_no': self.phone_no, 'user_level': self.level_text, 'description': self.description}
 
 
     def commit(self, conn):
+        """Commit dreamer info into database"""
         query = "INSERT INTO dreamer (name, email, password, phone_no, user_level, description) VALUES (\'" + self.name.replace("'", "\\\'") + "\', \'" + self.email + "\', \'" + self.password_encrypted + "\', \'" + self.phone_no.replace("'", "\\\'") + "\', " + str(self.user_level) + ", \'" + self.description.replace("'", "\\\'") + "\') ON DUPLICATE KEY UPDATE `name`= \'" + self.name.replace("'", "\\\'") + "\', `password` = \'" + self.password_encrypted + "\', `phone_no` = \'" + self.phone_no.replace("'", "\\\'") + "\', `user_level` = " + str(self.user_level) + ", `description` = \'" + self.description.replace("'", "\\\'") + "\';"
         conn.execute(query)

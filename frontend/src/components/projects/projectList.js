@@ -42,19 +42,24 @@ class ProjectList extends Component {
 
   renderProject() {
     return (
-      <div className="flexLayout">
-        {this.props.ProjectLists.map((each, index) => {
-          return (
-            <EachProject
-              title={each.title}
-              category={each.category}
-              description={each.description}
-              key={index}
-              id={each.id}
-            />
-          );
-        })}
-      </div>
+          <div className="flexLayout">
+            {this.props.ProjectLists.map((each, index) => {
+              if(each.is_hidden==0){
+                return (
+                    <EachProject
+                        title={each.title}
+                        category={each.category}
+                        description={each.description}
+                        key={index}
+                        id={each.id}
+
+                    />
+                );
+              }
+
+            })}
+          </div>
+
     );
   }
   renderLoading() {
@@ -155,9 +160,10 @@ class ProjectList extends Component {
               </form>
             </div>
           </div>
-          {this.props.ProjectLists.length === 0
-            ? this.renderLoading()
-            : this.renderProject()}
+            {this.props.ProjectLists.length === 0
+                ? this.renderLoading()
+                : this.renderProject()}
+
         </div>
       </div>
     );

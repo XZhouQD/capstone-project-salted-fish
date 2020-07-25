@@ -1,7 +1,9 @@
 import React from "react";
 import CollaNav from "./collaNav";
 import DreamerNav from "./dreamerNav";
+import AdminNav from "./adminNav";
 import { connect } from "react-redux";
+import adminDash from "../dashboard/adminDash";
 
 const AfterAuthNarvbar = (props) => {
   const { isDreamerOrCollaOrAdmin } = props;
@@ -19,7 +21,11 @@ const AfterAuthNarvbar = (props) => {
     );
   } else {
     // admin
-    return;
+    return(
+        <div>
+          <AdminNav />
+        </div>
+    );
   }
 };
 

@@ -10,6 +10,9 @@ Keyu Yang       z5177443
 Lisha Jing      z5243620
 Nan Zhao        z5225777
 Qingbei Wu      z5222641
+
+This file does not have Python doc, but using
+Swagger automatic doc for documentation.
 '''
 
 import json, yaml, os
@@ -122,6 +125,10 @@ collaborator_register_model = api.model('Collaborator_Register', {
     'experience': fields.String(required=False, description='experience (in years). Format: exp1,exp2,exp3,...', example='3,2,1')
 })
 
+admin_hide_project_model = api.model('Hide_Project', {
+    'hidden_reason': fields.String(required=True, description='Hide reason')
+})
+
 project_post_model = api.model('Project_Post', {
     'title': fields.String(required=True, description='Project title'),
     'description': fields.String(required=True, description='Project description'),
@@ -197,12 +204,45 @@ class AdminAPI(CorsResource):
             return {'message': 'You are not logged in as admin'}, 401
         return {'email': admin_email}, 200
 
+@api.route('/admin/hidden_projects')
+class GetAllHiddenProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description="Get all hidden projects")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.hidden_projects(conn)
+        conn.close()
+        return {"hidden_projects": result}, 200
+        
+@api.route('/admin/modified_after_hidden_projects')
+class GetModifiedAfterHiddenProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description="Get all hidden projects")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.modified_projects_after_hidden(conn)
+        conn.close()
+        return {"modified_after_hidden_projects": result}, 200
 
 @api.route('/admin/pending_projects')
-class GetAllPendingAProjects(CorsResource):
+class GetAllPendingProjects(CorsResource):
     @api.response(200, 'Success')
-    @api.response(400, 'Auth Failed')
-    @api.response(401, 'No pending projects found')
+    @api.response(400, 'No pending projects found')
+    @api.response(401, 'Auth Failed')
     @api.doc(description="Get all pending projects")
     @require_auth
     def get(self):
@@ -218,9 +258,31 @@ class GetAllPendingAProjects(CorsResource):
         conn.close()
         if result is None:
             return {'message': 'No pending projects are found now!'}, 400
-        return result, 200
+        return {"pending_projects": result}, 200
+        
+@api.route('/admin/active_projects')
+class GetAllActiveProjects(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'No active projects found')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description="Get all active projects")
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        #admin_email = userinfo['email']
+        #admin_id = userinfo['id']
+        admin_role = userinfo['role']
+        if admin_role != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.active_projects(conn)
+        conn.close()
+        if result is None:
+            return {'message': 'No pending projects are found now!'}, 400
+        return {'active_projects': result}, 200
 
-@api.route('/admin/<int:id>')
+'''@api.route('/admin/<int:id>')
 class AuditAProject(CorsResource):
     @api.response(200, 'Success')
     @api.response(401, 'Auth Failed')
@@ -239,7 +301,7 @@ class AuditAProject(CorsResource):
         result = Project.audit_a_project(conn, int(id))
         conn.close()
         if result:return {'message': 'Audit the project successfully!'}, 200
-        else:return {'message': 'Fail to udit the project!'}, 402
+        else:return {'message': 'Fail to udit the project!'}, 402'''
 
 @api.route('/categories')
 class Categories(CorsResource):
@@ -450,6 +512,46 @@ class CollaboratorsRecommendation(CorsResource):
         if result is None:
             return {'collaborators': [], 'amount': 0, 'message': 'No matching collaborators were found.'}, 200
         return {'collaborators': result, 'amount': len(result), 'message': 'Some matching collaborators were found for your projects.'}, 200
+
+@api.route('/project/<int:id>/hide')
+@api.param('id', 'The project id')
+class AdminHideProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Failed to hide')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Hide a project')
+    @api.expect(admin_hide_project_model, validate=True)
+    @require_auth
+    def post(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        info = request.json
+        result = Project.hide_a_project(conn, int(id), info['hidden_reason'], smtp)
+        if not result:
+            return {'message': 'Failed to hide the project'}, 400
+        return {'message': 'Successfully hide the project!', 'Project_ID':int(id)}, 200
+        
+@api.route('/project/<int:id>/unhide')
+@api.param('id', 'The project id')
+class AdminUnhideProject(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(400, 'Failed to hide')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Unhide a project')
+    @require_auth
+    def get(self, id):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        if userinfo['role'] != 'Admin':
+            return {'message': 'You are not logged in as admin'}, 401
+        conn = db.conn()
+        result = Project.unhide_a_project(conn, int(id), smtp)
+        if not result:
+            return {'message': 'Failed to unhide the project'}, 400
+        return {'message': 'Successfully unhide the project!', 'Project_ID':int(id)}, 200
 
 @api.route('/project/<int:id>/finish')
 @api.param('id', 'The project id')
