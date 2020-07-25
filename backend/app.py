@@ -1236,7 +1236,7 @@ class PatchRole(CorsResource):
 
     
 @api.route('/collaborator/patch')
-class PatchRole(CorsResource):
+class PatchCollaborator(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
@@ -1253,6 +1253,8 @@ class PatchRole(CorsResource):
             return {'message': 'You are not logged in as collaborator'}, 400
         collaborator_info = request.json
         cursor_collaborator = Collaborator.get_object_by_id(conn, int(collaborator_id))
+        skills = collaborator_info['skill'].split(',')
+        exps = collaborator_info['experience'].split(',')
         try:
             cursor_collaborator.phone_no = collaborator_info['phone_no']
         except:
@@ -1262,7 +1264,7 @@ class PatchRole(CorsResource):
         except:
             pass
         try:
-            skill_dict = {int(i.strip()): collaborator_info['experience'] for i in collaborator_info['skill'].split(',') if i != ''}
+            skill_dict = {int(i.strip()): j for i,j in zip(skills,exps)}
             cursor_collaborator.skill_dict = skill_dict
         except:
             pass
