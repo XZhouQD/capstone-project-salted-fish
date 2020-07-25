@@ -164,12 +164,14 @@ class CollaInfo extends React.Component {
                         This is {this.state.info.Name}'s profile as a
                         collaborator {this.state.info.Description}
                       </p>
+                      <Link to="/collapatch">
                       <button
                         className="msg-btn button1"
                         onClick={(e) => this.update(e)}
                       >
                         update
                       </button>
+                      </Link>
                       <button
                         className="msg-btn button1 file-field input-field"
                         style={{ marginLeft: "15px" }}
