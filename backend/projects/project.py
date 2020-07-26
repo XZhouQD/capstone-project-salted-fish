@@ -578,7 +578,7 @@ class Project():
         print(query)
         conn.execute(query)
         #send email to project owner once it's hidden;
-        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True)
+        Project.get_object_by_id(conn, proj_ID).notify_project_owner(conn, smtp, hide=True, hidden_reason=hidden_reason)
         proj = Project.get_by_proj_id(conn, proj_ID)
         if proj.info()['is_hidden'] == 1:return True
         else:return False
@@ -603,14 +603,16 @@ class Project():
         if proj.info()['is_hidden'] == 0:return True
         else:return False
 
-    def notify_project_owner(self, conn, smtp, hide=True):
+    def notify_project_owner(self, conn, smtp, hide=True, hidden_reason=""):
         proj = Project.get_by_id(conn, self.id)
         from users.dreamer import Dreamer
         dre = Dreamer.get_by_id(conn, self.owner)
+        if hidden_reason == "":
+            hidden_reason = "improper or sensitive contents"
         if hide:
             subject = '[DreamMatchmaker]Your project has been hidden due to improper or sensitive contents, please be noted!'
             content = f'''<p>Hello {dre['name']},</p>
-<p>   Your project - <b>{proj['title']}</b> has been hidden due to improper or sensitive contents, admin will unhide your project once it's updated!</p>
+<p>   Your project - <b>{proj['title']}</b> has been hidden due to {hidden_reason}, admin will unhide your project once it's updated!</p>
 <p>Dream Matchmaker Team</p>
 '''
         else:
