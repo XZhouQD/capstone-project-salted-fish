@@ -14,9 +14,9 @@ class ProjectList extends Component {
 
   state = {
     description: "",
-    category: "",
-    order_by: "",
-    sorting: "",
+    category: "0", //Since it will automatically minus 1, keep a 0 here for All categories
+    order_by: "last_update",
+    sorting: "DESC",
   };
 
   componentWillMount() {
@@ -30,7 +30,9 @@ class ProjectList extends Component {
 
   handleonChange = (e) => {
     // get target element name
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      //add callback to avoid one step behind
+    });
   };
 
   handleonSubmit = (e) => {
@@ -90,8 +92,8 @@ class ProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="category"
                   >
-                    <option value="" disabled selected>
-                      Choose your option
+                    <option value="0" selected>
+                      All Categories
                     </option>
                     <option value="1">All other</option>
                     <option value="2">A web based application</option>
@@ -116,8 +118,7 @@ class ProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="order_by"
                   >
-                    <option value="">Choose your option</option>
-                    <option value="last_update">last_update</option>
+                    <option value="last_update" selected>last_update</option>
                     <option value="project_title">project_title</option>
                   </select>
                   <label className="left">SORTING ORDER</label>
@@ -132,9 +133,8 @@ class ProjectList extends Component {
                     name="sorting"
                     required
                   >
-                    <option value="">Choose your option</option>
                     <option value="ASC">ASC</option>
-                    <option value="DESC">DESC</option>
+                    <option value="DESC" selected>DESC</option>
                   </select>
                   <label className="left">ASCENDING/DESCENDING</label>
                 </div>
