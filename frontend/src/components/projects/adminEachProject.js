@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component as component, Component, useCallback} from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import M from "materialize-css";
@@ -41,6 +41,7 @@ class AdminEachProject extends Component {
         console.log(res)
         alert(res.data.message)
         this.setState({isHidden:1})
+
     };
 
   async handleReveal(){
@@ -104,17 +105,18 @@ class AdminEachProject extends Component {
                   className="col s12"
                   onSubmit={(e) => this.handleonSubmit(e)}
               >
-                  <div className="input-field ">
+                  <div>
+                      <label htmlFor="title">
+                          Hide reason
+                      </label>
                       <input
-                          placeholder="Say HI"
+                          placeholder="Tell user why you hide this project to the public"
                           type="text"
                           name="hideReason"
                           onChange={(e) => this.handleonChange(e)}
                           required
                       />
-                      <label htmlFor="title">
-                          hide reason
-                      </label>
+
                   </div>
                   <input
                       type="submit"

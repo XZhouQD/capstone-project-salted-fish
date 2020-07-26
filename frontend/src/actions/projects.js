@@ -22,6 +22,7 @@ import {
   FINISH_PROJECTS,
   CHANGE_PROJECTS,
   UNDO_CHANGE,
+  GET_ACTIVE_PROJECT_LIST,
 } from "./actionTypes";
 
 // createProject
@@ -76,6 +77,23 @@ export const getProject = () => async (dispatch) => {
 
     dispatch({
       type: GET_PROJECT_LIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    // error -> dispatch setAlert to reducers
+    const errors = err.response.data.message;
+    console.log(err.response);
+  }
+};
+
+// getActiveProject list
+export const getActiveProject = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/admin/active_projects");
+    console.log(res.data);
+
+    dispatch({
+      type: GET_ACTIVE_PROJECT_LIST,
       payload: res.data,
     });
   } catch (err) {
