@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 // Import Materialize
@@ -18,7 +19,13 @@ class ChangeProject extends Component {
     description: "",
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const role_url = "/project/" + this.props.match.params.id;
+    const res = await axios.get(role_url);
+    console.log(res.data);
+    this.setState({title: res.data.title});
+    this.setState({category: res.data.category});
+    this.setState({description: res.data.description});
     // Auto initialize all the materailize css!
     M.AutoInit();
   }
@@ -50,6 +57,7 @@ class ChangeProject extends Component {
               <div className="row">
                 <div className="input-field col s12">
                   <input
+                    value={this.state.title}
                     placeholder="enter your project's title"
                     type="text"
                     name="title"
@@ -64,10 +72,11 @@ class ChangeProject extends Component {
                 <div className="input-field col s12">
                   <select
                     name="category"
+                    value={this.state.category}
                     onChange={(e) => this.handleonChange(e)}
                     placeholder="please choose the realated fields"
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       Choose your option
                     </option>
                     <option value="1">All other</option>
@@ -89,6 +98,7 @@ class ChangeProject extends Component {
               <div className="row">
                 <div className="input-field col s12">
                   <textarea
+                    value={this.state.description}
                     placeholder="describe your project details not more than 140 words"
                     className="materialize-textarea"
                     length="140"

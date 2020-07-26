@@ -1181,6 +1181,16 @@ class PostRole(CorsResource):
 @api.param('rid', 'The role id')
 class PatchRole(CorsResource):
     @api.response(200, 'Success')
+    @api.response(404, 'Role is not found!')
+    @api.doc(description='Fetch a role information')
+    def get(self, pid, rid):
+        conn = db.conn()
+        result = Role.get_by_id(conn, int(rid))
+        if result == None:
+            return {'message': 'Role is not found!'}, 404
+        return result, 200
+
+    @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(402, 'Project is not in active status, no update is allowed!')
@@ -1234,7 +1244,6 @@ class PatchRole(CorsResource):
             return {'message': 'This project is not in active status, no update is allowed!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
-    
 @api.route('/collaborator/patch')
 class PatchCollaborator(CorsResource):
     @api.response(200, 'Success')

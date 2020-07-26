@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { changeProjectRole } from "../../actions/projects";
@@ -19,7 +20,16 @@ class ChangeRoleDetails extends React.Component {
     general_enquiry: "",
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const role_url = "/project/" + this.props.match.params.pid + "/role/" + this.props.match.params.rid;
+    const res = await axios.get(role_url);
+    console.log(res.data);
+    this.setState({title: res.data.title});
+    this.setState({amount: res.data.amount});
+    this.setState({skill: res.data.skill});
+    this.setState({experience: res.data.experience});
+    this.setState({education: res.data.education});
+    this.setState({general_enquiry: res.data.general_enquiry});
     M.AutoInit();
   }
   handleonChange = (e) => {
@@ -74,6 +84,7 @@ class ChangeRoleDetails extends React.Component {
     if (this.props.hasChange) {
       return <Redirect to={url} />;
     }
+    
     return (
       <div className="container">
         <div className="valign-wrapper" style={{ marginTop: "50px" }}>
@@ -85,11 +96,11 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's Title</label>
                     <input
                       type="text"
+                      value={this.state.title}
                       placeholder="enter roles title of your project"
                       name="title"
                       onChange={(e) => this.handleonChange(e)}
                       min="0"
-                      required
                     />
                   </div>
 
@@ -97,11 +108,11 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's Amount</label>
                     <input
                       type="number"
+                      value={this.state.amount}
                       placeholder="enter roles amount of your project"
                       name="amount"
                       onChange={(e) => this.handleonChange(e)}
                       min="0"
-                      required
                     />
                   </div>
 
@@ -109,11 +120,11 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's General_enquiry</label>
                     <input
                       type="text"
+                      value={this.state.general_enquiry}
                       placeholder="enter the basic skills you wish your collabortors have"
                       name=""
                       onChange={(e) => this.handleonChange(e)}
                       min="0"
-                      required
                       name="general_enquiry"
                     />
                   </div>
@@ -123,18 +134,26 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's education level</label>
                     <select
                       className="browser-default"
-                      name={this.state.education}
                       onChange={(e) => this.handleonChange(e)}
                       placeholder="enter the role's education level of your project"
                       name="education"
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Choose your option
                       </option>
-                      <option value="1">Other</option>
-                      <option value="2">Bachelor</option>
-                      <option value="3">Master</option>
-                      <option value="4">Phd</option>
+                      {["Other",
+                        "Bachelor",
+                        "Master",
+                        "PhD",
+                      ].map((element, index) => {
+                        var is_select = "";
+                        if (index + 1 === this.state.education) {
+                          is_select = "selected";
+                        }
+                        return (
+                          <option value={index + 1} selected={is_select}>{element}</option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -161,8 +180,12 @@ class ChangeRoleDetails extends React.Component {
                         "Deep Learning/Neural Network",
                         "Distribution System",
                       ].map((ele, index) => {
+                        var is_select = "";
+                        if (this.state.skill.includes(index + 1)) {
+                          is_select = "selected";
+                        }
                         return (
-                          <option value={index + 1} key={index}>
+                          <option value={index + 1} key={index} selected={is_select}>
                             {ele}
                           </option>
                         );
@@ -175,10 +198,10 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's Experience</label>
                     <input
                       type="number"
+                      value={this.state.education}
                       placeholder="enter the minimal skill experience of your role"
                       onChange={(e) => this.handleonChange(e)}
                       min="0"
-                      required
                       name="experience"
                     />
                   </div>
