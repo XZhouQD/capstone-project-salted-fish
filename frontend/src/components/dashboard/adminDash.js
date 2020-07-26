@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getProject, searchProject, getActiveProject } from "../../actions/projects";
+import { getProject, searchProject } from "../../actions/projects";
 import M from "materialize-css";
 import AdminEachProject from "../projects/adminEachProject";
 import axios from "axios";
-import {GET_ACTIVE_PROJECT_LIST} from "../../actions/actionTypes";
 
 class AdminDash extends Component {
 

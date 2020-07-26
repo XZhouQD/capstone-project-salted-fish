@@ -60,7 +60,10 @@ class CollaProjectList extends Component {
   renderLoading() {
     return (
       <div>
-        Sorry, there is no project that matches your skills and education levels
+        <div className="progress">
+          <div className="indeterminate">Trying to looking for project that matches your skills and education levels</div>
+        </div>
+
       </div>
     );
   }
