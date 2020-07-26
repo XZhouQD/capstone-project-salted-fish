@@ -64,7 +64,7 @@ class ChangeProject extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     required
                   />
-                  <label htmlFor="title">Project Title</label>
+                  <label htmlFor="title" className="active">Project Title</label>
                 </div>
               </div>
 
@@ -106,7 +106,7 @@ class ChangeProject extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     required
                   ></textarea>
-                  <label htmlFor="description">Describe your project!</label>
+                  <label htmlFor="description" className="active">Describe your project!</label>
                 </div>
               </div>
               <div className="row">

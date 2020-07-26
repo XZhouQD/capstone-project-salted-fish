@@ -15,6 +15,7 @@ class ChangeRoleDetails extends React.Component {
     title: "",
     amount: 0,
     skill: "",
+    skills: [],
     experience: 0,
     education: 0,
     general_enquiry: "",
@@ -26,7 +27,8 @@ class ChangeRoleDetails extends React.Component {
     console.log(res.data);
     this.setState({title: res.data.title});
     this.setState({amount: res.data.amount});
-    this.setState({skill: res.data.skill});
+    this.setState({skills: res.data.skill});
+    this.setState({skill: res.data.skill.join(',')});
     this.setState({experience: res.data.experience});
     this.setState({education: res.data.education});
     this.setState({general_enquiry: res.data.general_enquiry});
@@ -198,7 +200,7 @@ class ChangeRoleDetails extends React.Component {
                     <label className="left">Role's Experience</label>
                     <input
                       type="number"
-                      value={this.state.education}
+                      value={this.state.experience}
                       placeholder="enter the minimal skill experience of your role"
                       onChange={(e) => this.handleonChange(e)}
                       min="0"
