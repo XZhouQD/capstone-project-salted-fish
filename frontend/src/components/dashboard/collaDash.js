@@ -30,8 +30,9 @@ class CollaDash extends React.Component {
     };
 
     const res = await axios.get("/collaborator/my_projects", config);
-    console.log("colla project", res.data);
+
     this.setState({ myProjects: res.data.my_projects });
+    console.log("colla project", this.state.myProjects);
   }
 
   render() {
