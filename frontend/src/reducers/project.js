@@ -20,7 +20,6 @@ import {
   FINISH_PROJECTS,
   CHANGE_PROJECTS,
   UNDO_CHANGE,
-    GET_ACTIVE_PROJECT_LIST,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -54,9 +53,6 @@ export default function (state = initialState, action) {
 
     case GET_PROJECT_LIST:
       return { ...state, ProjectLists: payload.projects };
-
-    case GET_ACTIVE_PROJECT_LIST:
-      return { ...state, ActiveProjectLists: payload.projects };
 
     case SEARCH_COLLA_PROJECT_LIST:
       return {

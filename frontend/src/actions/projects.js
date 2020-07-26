@@ -86,22 +86,6 @@ export const getProject = () => async (dispatch) => {
   }
 };
 
-// getActiveProject list
-export const getActiveProject = () => async (dispatch) => {
-  try {
-    const res = await axios.get("/admin/active_projects");
-    console.log(res.data);
-
-    dispatch({
-      type: GET_ACTIVE_PROJECT_LIST,
-      payload: res.data,
-    });
-  } catch (err) {
-    // error -> dispatch setAlert to reducers
-    const errors = err.response.data.message;
-    console.log(err.response);
-  }
-};
 
 // search
 export const searchProject = ({
@@ -429,6 +413,14 @@ export const searchCollaProject = ({
   sorting,
 }) => async (dispatch) => {
   category = Number(category) - 1;
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
   try {
     const res = await axios.get(
       "/collaborator/projects?description=" +
@@ -438,7 +430,8 @@ export const searchCollaProject = ({
         "&order_by=" +
         order_by +
         "&sorting=" +
-        sorting
+        sorting,
+        config
     );
     console.log(res.data);
 
