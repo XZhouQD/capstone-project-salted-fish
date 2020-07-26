@@ -42,3 +42,9 @@ Post discussion api finished
 View all discussions api finished 
 View single discussion api finished 
 Next week: Finished sprint 3 and start sprint4
+
+week8
+Patch collaborator api finished
+Adjust format of message from backend
+Join the retrospect meeting with team and finish repost
+Next week:Finish code and test function,start write finial report
