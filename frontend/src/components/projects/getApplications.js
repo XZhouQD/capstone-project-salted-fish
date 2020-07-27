@@ -15,34 +15,43 @@ class GetApplication extends React.Component {
         "AUTH-KEY": a,
       },
     });
+    console.log("url", this.props.url_1);
 
     this.setState({ a: res.data.applications });
     console.log(this.state.a);
   }
   render() {
-    return (
-      <div>
-        {this.state.a.map((each, index) => {
-          const url =
-            "/project/" +
-            this.props.pid +
-            "/role/" +
-            this.props.rid +
-            "/collaborators/" +
-            each.id +
-            "/applications";
-          return (
-            <div key={index} style={{ fontFamily: "Ubuntu" }}>
-              <Link to={url} style={{ marginRight: "10px" }}>
-                {each.name}
-              </Link>
-              want to apply for this role and leaves his messgae：
-              {each.general_text}
-            </div>
-          );
-        })}
-      </div>
-    );
+    console.log("applications",this.state.a.length)
+    if (this.state.a.length == 0){
+      return(
+          <p>No applicaitons got.</p>
+      )
+    }else{
+      return (
+          <div>
+            {this.state.a.map((each, index) => {
+              const url =
+                  "/project/" +
+                  this.props.pid +
+                  "/role/" +
+                  this.props.rid +
+                  "/collaborators/" +
+                  each.id +
+                  "/applications";
+              return (
+                  <div key={index} style={{ fontFamily: "Ubuntu" }}>
+                    <Link to={url} style={{ marginRight: "10px" }}>
+                      {each.name}
+                    </Link>
+                    want to apply for this role and leaves his messgae：
+                    {each.general_text}
+                  </div>
+              );
+            })}
+          </div>
+      );
+    }
+
   }
 }
 
