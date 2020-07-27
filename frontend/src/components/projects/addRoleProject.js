@@ -6,10 +6,6 @@ import M from "materialize-css";
 
 const AddRoleProject = (props) => {
   const [flag, setFlag] = useState(0);
-  function handleFlag(e) {
-    const Flag = 1;
-    setFlag(Flag);
-  }
 
   useEffect(() => {
     M.AutoInit();
@@ -110,6 +106,36 @@ const AddRoleProject = (props) => {
     });
     console.log(values);
     setFields(values);
+  }
+  
+  function handleFlag(e) {
+    const {
+      title,
+      amount,
+      skill,
+      experience,
+      education,
+      general_enquiry,
+    } = fields[fields.length - 1];
+    
+    let fi = fields[fields.length - 1];
+    
+    if (fi.title == "" || fi.amount == 0 || fi.skill == "" || fi.experience == 0 || fi.education == 0 || fi.general_enquiry == "") {
+      console.log("finish with last one not valid, skip");
+    } else {
+      props.postProjectRole({
+        title,
+        amount,
+        skill,
+        experience,
+        education,
+        general_enquiry,
+        id,
+      });
+    }
+    
+    const Flag = 1;
+    setFlag(Flag);
   }
 
   if (flag === 1) {
