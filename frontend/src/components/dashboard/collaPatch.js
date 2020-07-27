@@ -86,7 +86,7 @@ const CollaPatch = ({ setAlert, registerColla, flag }) => {
             skill,
             experience
         });
-        console.log(body)
+        console.log("body!",body)
         const res = await axios.patch(url,body,config )
         console.log(res)
         alert(res.data.message)

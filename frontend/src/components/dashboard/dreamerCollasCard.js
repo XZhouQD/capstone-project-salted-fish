@@ -49,7 +49,7 @@ class DreamerCollasCard extends React.Component {
   };
 
   handleonSubmit = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     const { general_text } = this.state;
     const pid = this.props.match.params.pid;
@@ -190,16 +190,16 @@ class DreamerCollasCard extends React.Component {
                           className="col s12"
                           onSubmit={(e) => this.handleonSubmit(e)}
                         >
-                          <div >
-                            <label htmlFor="title">
-                              Send the invitation message!
+                          <div className="input-field">
+                            <label htmlFor="invitation message">
+                              Type in the invitation message
                             </label>
                             <input
-                              placeholder="Say HI"
                               type="text"
                               name="general_text"
                               onChange={(e) => this.handleonChange(e)}
                               required
+                              id = "invitation message"
                             />
 
                           </div>

@@ -23,6 +23,7 @@ class ProjectDetails extends Component {
     owner: null,
     general_text: "",
     follow: true,
+    status:null,
   };
 
   async componentDidMount() {
@@ -35,6 +36,7 @@ class ProjectDetails extends Component {
       category: res.data.category,
       title: res.data.title,
       description: res.data.description,
+      status:res.data.status,
     });
   }
   async handleFollow(e) {
@@ -80,22 +82,34 @@ class ProjectDetails extends Component {
     const url1 = "/project/" + pid + "/role/" + rid + "/applications";
     return (
       <div>
-        <Link to={url} style={{ marginRight: "10px" }}>
-          <button className="btn-small">
-            <i className="material-icons icon left">star</i>
-            change
-          </button>
-        </Link>
-        <Modal
-          trigger={
-            <Button className="btn-small">
+        {this.state.status==9?
+            <button className="btn-small disabled" style={{ marginRight: "10px" }}>
+              <i className="material-icons icon left">star</i>
+              change
+            </button>:
+            <Link to={url} style={{ marginRight: "10px" }}>
+              <button className="btn-small">
+                <i className="material-icons icon left">star</i>
+                change
+              </button>
+            </Link>}
+        {this.state.status==9?
+            <Button className="btn-small disabled">
               <i className="material-icons icon left">done_all</i>
               application
-            </Button>
-          }
-        >
-          <GetApplications url_1={url1} rid={rid} pid={pid} />
-        </Modal>
+            </Button>:
+            <Modal
+                trigger={
+                  <Button className="btn-small">
+                    <i className="material-icons icon left">done_all</i>
+                    application
+                  </Button>
+                }
+            >
+              <GetApplications url_1={url1} rid={rid} pid={pid}/>
+            </Modal>
+        }
+
       </div>
     );
   }
@@ -115,15 +129,17 @@ class ProjectDetails extends Component {
             className="col s12"
             onSubmit={(e) => this.handleonSubmit(e, rid)}
           >
-            <div className="input-field ">
+            <div className="input-field">
+              <label htmlFor="apply message">Type in your apply message here</label>
               <input
-                placeholder="Say HI"
+                // placeholder="Send the apply message here"
                 type="text"
                 name="general_text"
                 onChange={(e) => this.handleonChange(e)}
                 required
+                id="apply message"
               />
-              <label htmlFor="title">Send the apply message!</label>
+
             </div>
             <input
               type="submit"
