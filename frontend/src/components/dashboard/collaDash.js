@@ -94,9 +94,6 @@ class CollaDash extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
@@ -134,9 +131,10 @@ class CollaDash extends React.Component {
                             description={each.description}
                             category={each.category}
                             id={each.id}
-                            roleTitle={each.roles.title}
+                            roleTitle={each.follow?"":each.roles.title}
                             create_time={each.create_time}
                             last_update={each.last_update}
+                            follow={each.follow}
                           />
                         );
                       })

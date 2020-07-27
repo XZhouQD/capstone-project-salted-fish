@@ -33,8 +33,8 @@ class CollaOngoingProject extends React.Component {
           <div className="right-align" style={{ marginTop: "20px" }}>
             <p>
 
-              {this.props.roleTitle? <span>Your role:{this.props.roleTitle}</span>: <span>
-                <i className="material-icons icon">favorite</i> Your followed project</span>}
+              {this.props.follow ? <span>
+                <i className="material-icons icon">favorite</i> Your followed project</span> : <span>Your role:{this.props.roleTitle}</span>}
             </p>
             <p>
               <b>category:</b> {this.props.category}

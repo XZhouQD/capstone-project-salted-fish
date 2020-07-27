@@ -128,9 +128,6 @@ class DreamerCollasCard extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
@@ -169,19 +166,21 @@ class DreamerCollasCard extends React.Component {
                         This is {this.state.info.Name}'s profile as a
                         collaborator {this.state.info.Description}
                       </p>
-                      <button
-                        className="msg-btn button1"
-                        onClick={(e) => this.approveApplication(e)}
-                      >
-                        Message
-                      </button>
+                      {/*<button*/}
+                      {/*  className="msg-btn button1"*/}
+                      {/*  onClick={(e) => this.approveApplication(e)}*/}
+                      {/*>*/}
+                      {/*  Message*/}
+                      {/*</button>*/}
 
                       <Modal
                         dialogClassName="custom-dialog"
                         trigger={
                           <Button
                             waves="follow-btn button1"
-                            style={{ marginLeft: "10px" }}
+                            style={{ marginLeft: "10px" ,
+                                      marginBottom: "10px",
+                                      marginTop: "10px"}}
                           >
                             Invite
                           </Button>
@@ -191,7 +190,10 @@ class DreamerCollasCard extends React.Component {
                           className="col s12"
                           onSubmit={(e) => this.handleonSubmit(e)}
                         >
-                          <div className="input-field ">
+                          <div >
+                            <label htmlFor="title">
+                              Send the invitation message!
+                            </label>
                             <input
                               placeholder="Say HI"
                               type="text"
@@ -199,9 +201,7 @@ class DreamerCollasCard extends React.Component {
                               onChange={(e) => this.handleonChange(e)}
                               required
                             />
-                            <label htmlFor="title">
-                              Send the invitation message!
-                            </label>
+
                           </div>
                           <input
                             type="submit"

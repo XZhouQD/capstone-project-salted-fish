@@ -76,9 +76,6 @@ class DreamerRecommend extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
@@ -112,7 +109,7 @@ class DreamerRecommend extends React.Component {
                         <DreamerOwnRecommend each={each} key={index} />
                       ))
                     ) : (
-                      <p>no projects</p>
+                      <p>Currently we have no recommended collaborators for you. Maybe you need to create a project and some roles to receive recommendations.</p>
                     )}
                   </div>
                 </div>
