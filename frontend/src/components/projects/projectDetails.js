@@ -24,10 +24,10 @@ class ProjectDetails extends Component {
     general_text: "",
     follow: true,
     status:null,
+    colla_disable:false,
   };
 
   async componentDidMount() {
-    M.AutoInit();
     const res = await axios.get("/project/" + this.props.match.params.id);
     console.log(res.data);
     this.setState({
@@ -38,6 +38,29 @@ class ProjectDetails extends Component {
       description: res.data.description,
       status:res.data.status,
     });
+    const role = this.props.role;
+    const uid = this.props.id;
+    const pid = this.props.match.params.id;
+    if (role === "Collaborator"){
+      const b = localStorage.getItem("token");
+      const config = {
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8",
+          "Access-Control-Allow-Origin": "*",
+          "AUTH-KEY": b,
+        },
+      };
+      const url = "/collaborator/my_projects";
+      const res2 = await axios.get(url, config);
+      const projects = res2.data.my_projects;
+      for (var i = 0; i < projects.length; i++) {
+        if (pid == projects[i].id && projects[i].follow == false) {
+          this.setState({ colla_disable: true });
+        }
+      }
+    }
+    
+    M.AutoInit();
   }
   async handleFollow(e) {
     const a = localStorage.getItem("token");
@@ -119,7 +142,7 @@ class ProjectDetails extends Component {
       <div>
         <Modal
           trigger={
-            <Button className="blue-grey darken-1 waves-light btn-small">
+            <Button className="blue-grey darken-1 waves-light btn-small" disabled={this.state.colla_disable}>
               <i className="material-icons icon left">done_all</i>
               apply
             </Button>
