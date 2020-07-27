@@ -135,12 +135,13 @@ class ChangeRoleDetails extends React.Component {
                   <div className="col l4">
                     <label className="left">Role's education level</label>
                     <select
+                      required
                       className="browser-default"
                       onChange={(e) => this.handleonChange(e)}
                       placeholder="enter the role's education level of your project"
                       name="education"
                     >
-                      <option value="">
+                      <option selected disabled>
                         Choose your option
                       </option>
                       {["Other",
@@ -161,10 +162,12 @@ class ChangeRoleDetails extends React.Component {
 
                   <div className="input-field col l4">
                     <select
+                      required
                       multiple
                       onChange={(e) => this.handleSkillChange(e)}
                       placeholder="role's skills of your project"
                     >
+                    <option disabled>Select some skills</option>
                       {[
                         "Web Development",
                         "Java",

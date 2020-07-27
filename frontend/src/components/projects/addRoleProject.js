@@ -113,6 +113,7 @@ const AddRoleProject = (props) => {
   }
 
   if (flag === 1) {
+    
     return <Redirect to="/dashboard" />;
   }
 
@@ -167,9 +168,10 @@ const AddRoleProject = (props) => {
                           <select
                             className="browser-default"
                             onChange={(e) => handleEducationChange(idx, e)}
+                            required
                             placeholder="enter the role's education level of your project"
                           >
-                            <option value="" disabled>
+                            <option selected disabled>
                               Choose your option
                             </option>
                             <option value="1">Other</option>
@@ -181,10 +183,12 @@ const AddRoleProject = (props) => {
 
                         <div className="input-field col l4">
                           <select
+                            required
                             multiple
                             onChange={(e) => handleSkillChange(e, idx)}
                             placeholder="role's skills of your project"
                           >
+                          <option disabled>Select some skills</option>
                             {[
                               "Web Development",
                               "Java",
