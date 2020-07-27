@@ -70,7 +70,7 @@ class ProjectDetails extends Component {
   };
 
   handleonSubmit = (e, rid) => {
-    e.preventDefault();
+    // e.preventDefault();
     const { general_text } = this.state;
     const pid = this.props.match.params.id;
     this.props.applyRole({ general_text, pid, rid });
