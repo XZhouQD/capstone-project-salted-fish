@@ -30,7 +30,9 @@ class CollaProjectList extends Component {
 
   handleonChange = (e) => {
     // get target element name
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value },() => {
+      //add callback to avoid one step behind
+    });
   };
 
   handleonSubmit = (e) => {
@@ -102,8 +104,8 @@ class CollaProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="category"
                   >
-                    <option value="" disabled selected>
-                      Choose your option
+                    <option value="0" selected>
+                      All categories
                     </option>
                     <option value="1">All other</option>
                     <option value="2">A web based application</option>
@@ -128,8 +130,7 @@ class CollaProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="order_by"
                   >
-                    <option value="">Choose your option</option>
-                    <option value="last_update">last_update</option>
+                    <option value="last_update" selected>last_update</option>
                     <option value="project_title">project_title</option>
                   </select>
                   <label className="left">SORTING ORDER</label>
@@ -143,18 +144,18 @@ class CollaProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="sorting"
                   >
-                    <option value="">Choose your option</option>
                     <option value="ASC">ASC</option>
-                    <option value="DESC">DESC</option>
+                    <option value="DESC" selected>DESC</option>
                   </select>
                   <label className="left">ASCENDING/DESCENDING</label>
                 </div>
-
-                <input
-                  type="submit"
-                  className="btn btn-small right"
-                  value="Search"
-                />
+                <div className="right">
+                  <input
+                    type="submit"
+                    className="btn btn-small blue-grey darken-1"
+                    value="Search"
+                  />
+                </div>
               </form>
             </div>
           </div>
