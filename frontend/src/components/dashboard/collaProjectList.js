@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getCollaProject, searchCollaProject } from "../../actions/projects";
+import {getCollaProject, getProject, searchCollaProject, searchProject} from "../../actions/projects";
 import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import EachProject from "../projects/eachProject";
@@ -14,9 +14,9 @@ class CollaProjectList extends Component {
 
   state = {
     description: "",
-    category: "",
-    order_by: "",
-    sorting: "",
+    category: "0", //Since it will automatically minus 1, keep a 0 here for All categories
+    order_by: "last_update",
+    sorting: "DESC",
   };
 
   componentWillMount() {
@@ -36,23 +36,27 @@ class CollaProjectList extends Component {
   handleonSubmit = (e) => {
     e.preventDefault();
     const { description, category, order_by, sorting } = this.state;
-    console.log(this.state);
+    console.log("colla match search",this.props.ProjectLists);
     this.props.searchCollaProject({ description, category, order_by, sorting });
+
   };
 
   renderProject() {
     return (
       <div className="flexLayout">
         {this.props.ProjectLists.map((each, index) => {
-          return (
-            <EachProject
-              title={each.title}
-              category={each.category}
-              description={each.description}
-              key={index}
-              id={each.id}
-            />
-          );
+          // console.log("change,", this.props.ProjectLists)
+          if(each.is_hidden==0){
+            return (
+                <EachProject
+                    title={each.title}
+                    category={each.category}
+                    description={each.description}
+                    key={index}
+                    id={each.id}
+                />
+            );
+          }
         })}
       </div>
     );
@@ -138,7 +142,6 @@ class CollaProjectList extends Component {
                   <select
                     onChange={(e) => this.handleonChange(e)}
                     name="sorting"
-                    required
                   >
                     <option value="">Choose your option</option>
                     <option value="ASC">ASC</option>
@@ -171,7 +174,7 @@ const mapStateToProps = (state) => ({
   ProjectLists: state.project.CollaProjectLists,
 });
 
-export default connect(mapStateToProps, {
-  getCollaProject,
-  searchCollaProject,
-})(CollaProjectList);
+export default connect(mapStateToProps, { getCollaProject, searchCollaProject })(
+    CollaProjectList
+);
+

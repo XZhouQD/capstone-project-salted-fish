@@ -57,7 +57,7 @@ export default function (state = initialState, action) {
     case SEARCH_COLLA_PROJECT_LIST:
       return {
         ...state,
-        ProjectLists: payload.projects,
+        CollaProjectLists: payload.projects,
         flag: "search project",
       };
 
