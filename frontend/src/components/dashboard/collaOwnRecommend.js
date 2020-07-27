@@ -93,9 +93,6 @@ class CollaOwnRecommend extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
