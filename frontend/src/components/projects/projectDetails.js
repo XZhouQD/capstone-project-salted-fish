@@ -129,15 +129,17 @@ class ProjectDetails extends Component {
             className="col s12"
             onSubmit={(e) => this.handleonSubmit(e, rid)}
           >
-            <div className="input-field ">
+            <div className="input-field">
+              <label htmlFor="apply message">Type in your apply message here</label>
               <input
-                placeholder="Say HI"
+                // placeholder="Send the apply message here"
                 type="text"
                 name="general_text"
                 onChange={(e) => this.handleonChange(e)}
                 required
+                id="apply message"
               />
-              <label htmlFor="title">Send the apply message!</label>
+
             </div>
             <input
               type="submit"
