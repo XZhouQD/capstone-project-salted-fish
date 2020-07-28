@@ -1304,6 +1304,41 @@ class PostProject(CorsResource):
             return {'message': 'project create request duplicate'}, 400
         return {'message': 'project create success', 'project_id': new_project.info()['id']}, 200
 
+@api.route('/collaborator/my_follows_id')
+class CollaboratorFollowsID(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Get a list of followed projects id')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        conn = db.conn()
+        follow_list = Collaborator.get_follow_ids(conn, collaborator_id)
+        conn.close()
+        return {'follows': follow_list}, 200
+        
+
+@api.route('/dreamer/my_follows_id')
+class DreamerFollowsID(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Get a list of followed projects id')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        conn = db.conn()
+        follow_list = Dreamer.get_follow_ids(conn, dreamer_id)
+        conn.close()
+        return {'follows': follow_list}, 200
+
 @api.route('/collaborator/register')
 class CollaboratorRegister(CorsResource):
     @api.response(200, 'Success')
