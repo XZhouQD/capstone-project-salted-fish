@@ -959,10 +959,6 @@ class ApproveAnApplication(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
-    @api.response(405, 'Failed to approve an application')
-    @api.response(406, 'This project role has been fullfilled, no more collaborator needed!')
-    @api.response(407, 'This apploication has been approved already!')
-    @api.response(408, 'This apploication has been declined already!')
     @api.doc(description='Approve an application')
     @require_auth
     def get(self, pid, rid, aid):
@@ -977,7 +973,7 @@ class ApproveAnApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 405
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -985,13 +981,13 @@ class ApproveAnApplication(CorsResource):
         result = Application.approve_an_application(conn, smtp, int(pid), int(rid), int(aid))
         conn.close()
         if result == 0:
-            return {'message': 'This apploication has been declined already!'}, 408
+            return {'message': 'This apploication has been declined already!'}, 400
         if result == 1:
-            return {'message': 'This apploication has been approved already!'}, 407
+            return {'message': 'This apploication has been approved already!'}, 400
         if result == 88:
-            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 406
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['apply_status'] != 1:
-            return {'message': 'Failed to approve an application'}, 405
+            return {'message': 'Failed to approve an application'}, 400
         return {'message': 'Approve application successfully','Application':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/decline')
@@ -1003,7 +999,6 @@ class DeclineAnApplication(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
-    @api.response(405, 'Failed to decline an application')
     @api.doc(description='Decline an application')
     @require_auth
     def get(self, pid, rid, aid):
@@ -1018,7 +1013,7 @@ class DeclineAnApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 405
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
@@ -1026,7 +1021,7 @@ class DeclineAnApplication(CorsResource):
         result = Application.decline_an_application(conn, smtp, int(aid))
         conn.close()
         if result['apply_status'] != 0:
-            return {'message': 'Failed to decline an application'}, 405
+            return {'message': 'Failed to decline an application'}, 400
         return {'message': 'Decline the application successfully','Application':result}, 200
 
 @api.route('/project/<int:id>')
