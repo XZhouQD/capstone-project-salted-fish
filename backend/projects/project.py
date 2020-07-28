@@ -218,11 +218,11 @@ class Project():
             info = proj.info()
             info['follow'] = False
             project_list.append(info)
-        own_id_list = [proj['ID'] for proj in project_list]
+        own_id_list = [proj['id'] for proj in project_list]
         from users.dreamer import Dreamer
         follow_list = Dreamer.get_followed_projects(conn, owner_id)
         for proj in follow_list:
-            if proj['ID'] in own_id_list:
+            if proj['id'] in own_id_list:
                 follow_list.remove(proj)
         project_list.extend(follow_list)
         # Move finished projects to tail of the list
