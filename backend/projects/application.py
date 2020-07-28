@@ -311,7 +311,7 @@ class Application():
         return False
     
     def check_project_status(self,conn):
-        """Check if the project is active
+        """Check if the project is in active status
         Param:
         conn -- database connection
         Return:

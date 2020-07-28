@@ -318,7 +318,7 @@ class Project():
     @staticmethod
     #Dreamer or collaborator can follow a project;
     def follow_a_project(conn, proj_ID, user_role, user_ID):
-        """Follow project by user
+        """Follow a project by user
         Param:
         conn -- database connection
         proj_ID -- project digit id
@@ -358,7 +358,7 @@ class Project():
     @staticmethod
     #Dreamer or collaborator can unfollow a project;
     def unfollow_a_project(conn, proj_ID, user_role, user_ID):
-        """Unfollow project by user
+        """Unfollow a project by user
         Param:
         conn -- database connection
         proj_ID -- project digit id
@@ -388,7 +388,7 @@ class Project():
     @staticmethod
     #Get all discussion records about the project;
     def get_discussion_about_one_project(conn, proj_ID):
-        """Get all discussions of a project
+        """Get all discussions of one project
         Param:
         conn -- database connection
         proj_ID -- project digit ID
@@ -409,7 +409,7 @@ class Project():
     @staticmethod
     #get all discussion records of the projects which user followed;
     def get_discussion_about_followed_projects(conn, user_type, user_ID):
-        """Get all discussions of followed projects
+        """Get all discussions of user followed projects
         Param:
         conn -- database connection
         user_type -- user type string
@@ -453,7 +453,7 @@ class Project():
     @staticmethod
     #Get pending projects for further auditing process;
     def get_pending_projects(conn):
-        """Check pending projects
+        """Get all pending status projects
         Param:
         conn -- database connection
         Return:
@@ -478,7 +478,7 @@ class Project():
     
     @staticmethod
     def hidden_projects(conn):
-        """Get all hidden projects that is not modified
+        """Get all projects which are in hidden status and are not modified after hidden
         Param:
         conn -- database connection
         Return:
@@ -549,7 +549,7 @@ class Project():
     @staticmethod
     #Admin can audit a project and make the project as active status if the project is legal; 
     def audit_a_project(conn, proj_ID):
-        """Audit a project to active
+        """Audit a project and put it in active status
         Param:
         conn -- database connection
         proj_ID -- project digit id
@@ -566,7 +566,7 @@ class Project():
     @staticmethod
     #Admin can hide a project if there is improper content about the new project;
     def hide_a_project(conn, proj_ID, hidden_reason, smtp):
-        """hide a project to hidden
+        """hide a project due to improper contents and so forth
         Param:
         conn -- database connection
         proj_ID -- project digit id
@@ -586,7 +586,7 @@ class Project():
     @staticmethod
     #Admin can unhide a project if the owner has made the project content being proper and legal;
     def unhide_a_project(conn, proj_ID, smtp):
-        """unhide a project to active
+        """unhide a project and put it active status
         Param:
         conn -- database connection
         proj_ID -- project digit id
