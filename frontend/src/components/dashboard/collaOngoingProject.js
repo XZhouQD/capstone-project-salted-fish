@@ -22,7 +22,13 @@ class CollaOngoingProject extends React.Component {
         </div>
         <div className="card-content">
           <div className="card-title">
-            <b>{this.props.title}</b>
+            {this.props.status == 9 ? (
+                <b style={{ textDecoration: "line-through" }}>
+                  {this.props.title}
+                </b>
+            ) : (
+                <b>{this.props.title}</b>
+            )}
           </div>
           <div className="left" style={{ marginTop: "15px" }}>
             <p>
