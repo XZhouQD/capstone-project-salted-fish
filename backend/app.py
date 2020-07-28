@@ -712,10 +712,7 @@ class InviteRole(CorsResource):
 class AcceptAnInvitation(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Auth Failed')
-    @api.response(401, 'Not authorized to accept this invitation')
-    @api.response(402, 'Invitation not found')
-    @api.response(403, 'Invitation has been declined')
-    @api.response(404, 'Failed to accept an invitation')
+    @api.response(404, 'Invitation not found')
     @api.doc(description='Accept an invitation')
     @require_auth
     def get(self, pid, rid, iid):
@@ -727,21 +724,27 @@ class AcceptAnInvitation(CorsResource):
         invitation = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
         if invitation['invitee'] != userinfo['id']:
             conn.close()
-            return {'message': 'You are not authorized to accept this invitation'}, 401
+            return {'message': 'You are not authorized to accept this invitation'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 404
+            return {'message': 'The project has been finished.'}, 400
         if invitation['status'] == 0:
             conn.close()
-            return {'message': 'This invitation has been declined'}, 403
+            return {'message': 'This invitation has been declined'}, 400
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             conn.close()
-            return {'message': 'Invitation not found'}, 402
+            return {'message': 'Invitation not found'}, 404
         result = Invitation.accept_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         conn.close()
+        if result == 0:
+            return {'message': 'This invitation has been declined already!'}, 400
+        if result == 1:
+            return {'message': 'This invitation has been accepted already!'}, 400
+        if result == 88:
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['invite_status'] != 1:
-            return {'message': 'Failed to accept an invitation'}, 404
+            return {'message': 'Failed to accept an invitation'}, 400
         return {'message': 'Accept invitation successfully','Invitation':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
@@ -765,12 +768,12 @@ class DeclineAnInvitation(CorsResource):
         if invitation['invitee'] != userinfo['id']:
             conn.close()
             return {'message': 'You are not authorized to decline this invitation'}, 400
-        if Project.check_finish(conn, int(pid)):
-            conn.close()
-            return {'message': 'The project has been finished.'}, 400
         if invitation['status'] == 1:
             conn.close()
             return {'message': 'This invitation has been accepted already!'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             conn.close()
