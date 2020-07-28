@@ -130,6 +130,13 @@ class Application():
         Return:
         Approved application info
         """
+        #check the application status first, if not in pending(-1) status, return application status;
+        query_pre = "select * from application where ID = " + str(application_id) + ";"
+        result_pre = conn.execute(query_pre)
+        row = result_pre.fetchone()
+        if row['status'] != -1:
+            return row['status']
+
         #check if all members have been recruited or not for the same project role;
         query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
         result_1 = conn.execute(query_1)
@@ -143,7 +150,7 @@ class Application():
         #If all collaborators recruited for the project role, return 88 as a flag;
         if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
             return 88
-            
+
         # update the application status as 1 - application approved;
         query = "UPDATE application set status = 1 where ID = " + str(application_id) + ";"
         conn.execute(query)
