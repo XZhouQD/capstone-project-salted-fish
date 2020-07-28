@@ -76,6 +76,24 @@ class Dreamer():
         return project_list
 
     @staticmethod
+    def get_follow_ids(conn, user_ID):
+        """Get dreamer's followed project id list by user id
+        Param:
+        conn -- database connection
+        user_ID -- collaborator digital id
+        Return:
+        List of followed project info
+        """
+        projects_followed = []
+        # query subscription tabale
+        query = f"SELECT * FROM subscription WHERE is_dreamer=1 AND d_subscriber={user_ID}"
+        result = conn.execute(query)
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            projects_followed.append(row['projectID'])
+        return projects_followed
+
+    @staticmethod
     def is_email_exist(conn, email):
         """Check if a email exist in dreamers
         Param:
