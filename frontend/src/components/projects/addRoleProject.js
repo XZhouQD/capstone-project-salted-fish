@@ -274,7 +274,6 @@ const AddRoleProject = (props) => {
               <Modal
               trigger={
                 <button className="btn-small right"
-                        href="#role update modal"
                         style={{ marginTop: "10px" }}
                     // onClick={(e) => handleFlag(e)}
                 >
