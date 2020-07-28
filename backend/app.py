@@ -616,7 +616,7 @@ class UnfollowAProject(CorsResource):
         if userinfo['role'] == 'Dreamer':
             result = Project.unfollow_a_project(conn, int(id), 'Dreamer', user_ID)
         else:
-            result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
+            result = Project.unfollow_a_project(conn, int(id), 'Collaborator', user_ID)
         conn.close()
         if result:
             return {'message': 'Successfully unfollow the project!'}, 200
