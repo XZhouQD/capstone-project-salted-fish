@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { postProjectRole } from "../../actions/projects";
+import { Modal } from "react-materialize";
 import M from "materialize-css";
+import GetApplications from "./getApplications";
 
 const AddRoleProject = (props) => {
   const [flag, setFlag] = useState(0);
@@ -266,13 +268,30 @@ const AddRoleProject = (props) => {
                 style={{ marginBottom: "10px" }}
               />
 
-              <button
-                className="btn-small right"
-                style={{ marginTop: "20px" }}
-                onClick={(e) => handleFlag(e)}
-              >
-                FINISH
-              </button>
+              {/*There is bug with this Modal*/}
+              {/*Close button does not work*/}
+
+              <Modal
+              trigger={
+                <button className="btn-small right"
+                        style={{ marginTop: "10px" }}
+                    // onClick={(e) => handleFlag(e)}
+                >
+                  FINISH
+                </button>
+              }>
+                <h5>Role Update Notice</h5>
+                <p>Are you sure you want to update these role information?</p>
+                <button
+                    className="btn-small"
+                    style={{ marginTop: "10px" }}
+                    onClick={(e) => handleFlag(e)}
+                >
+                  Update
+                </button>
+              </Modal>
+
+
             </form>
           </div>
         </div>

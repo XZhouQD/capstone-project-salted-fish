@@ -135,6 +135,7 @@ class CollaDash extends React.Component {
                             create_time={each.create_time}
                             last_update={each.last_update}
                             follow={each.follow}
+                            status={each.status}
                           />
                         );
                       })

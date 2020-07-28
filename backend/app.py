@@ -961,6 +961,9 @@ class ApproveAnApplication(CorsResource):
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
     @api.response(405, 'Failed to approve an application')
+    @api.response(406, 'This project role has been fullfilled, no more collaborator needed!')
+    @api.response(407, 'This apploication has been approved already!')
+    @api.response(408, 'This apploication has been declined already!')
     @api.doc(description='Approve an application')
     @require_auth
     def get(self, pid, rid, aid):
@@ -982,6 +985,12 @@ class ApproveAnApplication(CorsResource):
             return {'message': 'Application not found'}, 404
         result = Application.approve_an_application(conn, smtp, int(pid), int(rid), int(aid))
         conn.close()
+        if result == 0:
+            return {'message': 'This apploication has been declined already!'}, 408
+        if result == 1:
+            return {'message': 'This apploication has been approved already!'}, 407
+        if result == 88:
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 406
         if result['apply_status'] != 1:
             return {'message': 'Failed to approve an application'}, 405
         return {'message': 'Approve application successfully','Application':result}, 200

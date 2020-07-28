@@ -88,6 +88,8 @@ class ApplicationCard extends React.Component {
       "Distribution System",
     ];
 
+    const dinfoUrl = "/dreamer/" + this.props.id
+
     return (
       <div>
         <header>
@@ -118,13 +120,7 @@ class ApplicationCard extends React.Component {
               </li>
 
               <li className="bold">
-                <Link className="waves-effect waves-teal" to="/drecommend">
-                  Followed collaborators
-                </Link>
-              </li>
-              {/*There is a bug here!!!👇*/}
-              <li className="bold">
-                <Link className="waves-effect waves-teal" to="/drecommend">
+                <Link className="waves-effect waves-teal" to={dinfoUrl}>
                   My Info
                 </Link>
               </li>
@@ -236,6 +232,10 @@ class ApplicationCard extends React.Component {
   }
 }
 
-export default connect(null, { sendInvitation, approve, decline })(
+const mapStateToProps = (state) => ({
+  id: state.auth.id,
+});
+
+export default connect(mapStateToProps, { sendInvitation, approve, decline })(
   ApplicationCard
 );
