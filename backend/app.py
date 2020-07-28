@@ -15,13 +15,14 @@ This file does not have Python doc, but using
 Swagger automatic doc for documentation.
 '''
 
+# PyPi libraries
 import json, yaml, os
 from functools import wraps
 from flask import Flask, request, send_from_directory
-from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
-from itsdangerous import JSONWebSignatureSerializer, BadSignature
+from flask_restplus import Api, abort, fields, reqparse
 from werkzeug.datastructures import FileStorage
 
+# Own libraries
 from db import DB
 from auth_token import AuthToken
 from util import check_email, allowed_file, CorsResource
