@@ -220,6 +220,8 @@ class Project():
             project_list.append(info)
         from users.dreamer import Dreamer
         project_list.extend(Dreamer.get_followed_projects(conn, owner_id))
+        # Move finished projects to tail of the list
+        project_list.sort(key=lambda p:p['status'])
         return project_list
 
     @staticmethod

@@ -290,6 +290,8 @@ class Collaborator():
             myproject_list.append(proj)
         # final merge of project info list
         myproject_list.extend(follow_list)
+        # move finished projects to bottom
+        myproject_list.sort(key=lambda p:p['status'])
         return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
