@@ -327,7 +327,7 @@ class Collaborator():
         return {'projects': project_list, 'amount': result.rowcount}
 
     def projects_recommdation(self, conn):
-        """Recommend projects to collaborator based on skill/exp
+        """Recommend projects for collaborator based on skill/exp/edu
         Param:
         conn -- database connection
         Return:

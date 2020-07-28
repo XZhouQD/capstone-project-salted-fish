@@ -97,7 +97,7 @@ class Invitation():
 
     @staticmethod
     def get_by_invitee(conn, user_id):
-        """Get a collaborator's all invitations
+        """Get all invitations for a collaborator's
         Param:
         conn -- database connection
         user_id -- collaborator digit id
@@ -126,7 +126,7 @@ class Invitation():
 
     @staticmethod
     def accept_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
-        """Accpet and notify an invitation
+        """Accpet an invitation and further notify process
         Param:
         conn -- database connnection
         smtp -- smtp server object
@@ -190,7 +190,7 @@ class Invitation():
 
     @staticmethod
     def decline_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
-        """Decline and notify an invitation
+        """Decline an invitation and further notify process
         Param:
         conn -- database connnection
         smtp -- smtp server object

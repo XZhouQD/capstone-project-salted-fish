@@ -127,7 +127,7 @@ class Dreamer():
         return Dreamer(row['name'], row['email'], password_encrypted=row['password'], id=row['ID'], create_time=row['create_time'], last_update=row['last_update'], phone_no=row['phone_no'], user_level=row['user_level'], description=row['description']).info()
 
     def collaborators_recommdation(self, conn):
-        """Recommend collaborators for owned project roles
+        """Recommend collaborators for dreamer owned projects' roles
         Param:
         conn -- database connection
         Return:
