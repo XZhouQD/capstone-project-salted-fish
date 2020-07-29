@@ -1275,7 +1275,9 @@ class PatchCollaborator(CorsResource):
         collaborator_info = request.json
         cursor_collaborator = Collaborator.get_object_by_id(conn, int(collaborator_id))
         skills = collaborator_info['skill'].split(',')
+        skills = [0 if i=="" else int(i.strip()) for i in skills]
         exps = collaborator_info['experience'].split(',')
+        exps = [0 if i=="" else int(i.strip()) for i in exps]
         try:
             cursor_collaborator.phone_no = collaborator_info['phone_no']
         except:
@@ -1285,7 +1287,7 @@ class PatchCollaborator(CorsResource):
         except:
             pass
         try:
-            skill_dict = {int(i.strip()): int(j.strip()) for i,j in zip(skills,exps)}
+            skill_dict = {i: j for i,j in zip(skills,exps)}
             cursor_collaborator.skill_dict = skill_dict
         except:
             pass
