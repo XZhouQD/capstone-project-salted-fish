@@ -1285,7 +1285,7 @@ class PatchCollaborator(CorsResource):
         except:
             pass
         try:
-            skill_dict = {int(i.strip()): j for i,j in zip(skills,exps)}
+            skill_dict = {int(i.strip()): int(j.strip()) for i,j in zip(skills,exps)}
             cursor_collaborator.skill_dict = skill_dict
         except:
             pass
