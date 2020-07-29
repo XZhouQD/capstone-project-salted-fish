@@ -53,6 +53,7 @@ class Project():
             proj.create_time = row['create_time']
             proj.last_update = row['last_update']
             project_list.append(proj.info())
+        project_list.sort(key=lambda p:p['status'])
         return {'projects': project_list, 'amount': result.rowcount}
 
     @staticmethod

@@ -344,6 +344,7 @@ class Collaborator():
                 if not is_exist:
                     project_list.append(proj)
         if len(project_list) == 0: return None
+        project_list.sort(key=lambda p:p['status'])
         return {'projects': project_list, 'amount': result.rowcount}
 
     def projects_recommdation(self, conn):
