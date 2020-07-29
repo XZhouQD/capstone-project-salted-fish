@@ -22,3 +22,15 @@ However, receiving invitation function is stacked due to backend bug. Static pag
 Week 7
 Continue building the front-end with Keyu. The discussion function is fully functional. Upload and download resume function is working well.
 We also add some protection routes. The sprint 3 is funished.
+
+Week 8
+Functionality implementation: Hide/reveal button in administrator's page; Collaborator can update his/her information.
+User expereince enhancement: finished projects should not be modified; Projects are classified into 3 categorys in administrator's page:
+active projects, hidden projects, and modifed projects after hidden.
+Fixed some bugs: Token lost when collaborator search for projects that match his/her skills and education levels.
+
+Next week I will continue to improve user experience and fix bugs.
+
+Week 9
+Fixed some bugs: No projects information shown after the collaborator searching the matched projects and then searching for the projects again.
+User experience enhancement: Collaborator and dreamer do not have to wait after they send messages. Pages will be automatically refreshed.
