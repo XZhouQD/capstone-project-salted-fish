@@ -38,10 +38,21 @@ Add invitation function.
 
 
 
-week 6
+week 7
 implemented the dashboard,recommendation pages,personal info pages,and invited/apply modals for collaborators and dreamers.
 implemented the page through using api provided by the backend.
 design the layout and css part.
 implemented the link between each pages.
 add protected route for dashboard.
+
+
+week 8
+implemented the comment area and add reply functions to let user communication.
+add follow, unfllow, finish function for both collaborators and dreamers.
+attend all the meeting in times.
+finish all features in frontend.
+
+
+week 9
+fixed bugs of our software and improve user feeling when using our software
 
