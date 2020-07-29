@@ -94,7 +94,7 @@ class ProjectDetails extends Component {
   };
 
   handleonSubmit = (e, rid) => {
-    // e.preventDefault();
+    e.preventDefault();
     const { general_text } = this.state;
     const pid = this.props.match.params.id;
     this.props.applyRole({ general_text, pid, rid });
@@ -123,15 +123,15 @@ class ProjectDetails extends Component {
               application
             </Button>:
             <Modal
-                trigger={
-                  <Button className="btn-small">
-                    <i className="material-icons icon left">done_all</i>
-                    application
-                  </Button>
-                }
-            >
-              <GetApplications url_1={url1} rid={rid} pid={pid}/>
-            </Modal>
+          trigger={
+          <Button className="btn-small">
+          <i className="material-icons icon left">done_all</i>
+          application
+          </Button>
+        }
+          >
+          <GetApplications url_1={url1} rid={rid} pid={pid}/>
+          </Modal>
         }
 
       </div>
@@ -143,7 +143,7 @@ class ProjectDetails extends Component {
       <div>
         <Modal
           trigger={
-            <Button className="blue-grey darken-1 waves-light btn-small" disabled={this.state.colla_disable}>
+            <Button className="blue-grey darken-1 waves-light btn-small">
               <i className="material-icons icon left">done_all</i>
               apply
             </Button>

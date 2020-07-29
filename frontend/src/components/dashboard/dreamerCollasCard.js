@@ -49,7 +49,7 @@ class DreamerCollasCard extends React.Component {
   };
 
   handleonSubmit = (e) => {
-    // e.preventDefault();
+     e.preventDefault();
 
     const { general_text } = this.state;
     const pid = this.props.match.params.pid;

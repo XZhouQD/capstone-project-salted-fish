@@ -13,7 +13,7 @@ const Alert = ({ alerts }) =>
       style={{
         position: "sticky",
         top: "5px",
-        zIndex: 100,
+        zIndex: 2,
       }}
     >
       {alert.msg}
