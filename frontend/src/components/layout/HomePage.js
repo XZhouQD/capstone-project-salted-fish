@@ -66,6 +66,8 @@ const HomePage = () => {
 
               <p class="light">
                 Dreamers and collaborators can communicate with each other easily.
+                There are communicate board under each projects and invitation messages
+                can be emailed between users.
               </p>
             </div>
           </div>
@@ -75,13 +77,11 @@ const HomePage = () => {
               <h2 class="center brown-text">
                 <i class="material-icons">settings</i>
               </h2>
-              <h5 class="center">Easy to work with</h5>
+              <h5 class="center">Good community environment</h5>
 
               <p class="light">
-                We have provided detailed documentation as well as specific code
-                examples to help new users get started. We are also always open
-                to feedback and can answer any questions a user may have about
-                Materialize.
+                Administrator will hide improper projects and supervise dreamers to modify them.
+                Hence the community will keep safe, efficient, and professional.
               </p>
             </div>
           </div>
