@@ -91,6 +91,18 @@ Next week plan:
 1. support frontend for testing and issue fixing is any;
 2. start to prepare final report for the whole project;
 
+week 9
+1. complete email sending function for hide/unhide function;
+2. do funnctional and integration test, highlight the questions during testing and fixing;
+3. drafting the final report;
+4. work with team to clear the invalidate data in database and load valid data in;
+
+Next week plan:
+1. complete the integration testing for the whole system;
+2. complete the final report with team;
+3. Get the whole system ready for submission;
+
+
 
 
   

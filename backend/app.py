@@ -15,13 +15,14 @@ This file does not have Python doc, but using
 Swagger automatic doc for documentation.
 '''
 
+# PyPi libraries
 import json, yaml, os
 from functools import wraps
 from flask import Flask, request, send_from_directory
-from flask_restplus import Api, abort, fields, inputs, reqparse, marshal
-from itsdangerous import JSONWebSignatureSerializer, BadSignature
+from flask_restplus import Api, abort, fields, reqparse
 from werkzeug.datastructures import FileStorage
 
+# Own libraries
 from db import DB
 from auth_token import AuthToken
 from util import check_email, allowed_file, CorsResource
@@ -616,7 +617,7 @@ class UnfollowAProject(CorsResource):
         if userinfo['role'] == 'Dreamer':
             result = Project.unfollow_a_project(conn, int(id), 'Dreamer', user_ID)
         else:
-            result = Project.follow_a_project(conn, int(id), 'Collaborator', user_ID)
+            result = Project.unfollow_a_project(conn, int(id), 'Collaborator', user_ID)
         conn.close()
         if result:
             return {'message': 'Successfully unfollow the project!'}, 200
@@ -712,10 +713,7 @@ class InviteRole(CorsResource):
 class AcceptAnInvitation(CorsResource):
     @api.response(200, 'Success')
     @api.response(400, 'Auth Failed')
-    @api.response(401, 'Not authorized to accept this invitation')
-    @api.response(402, 'Invitation not found')
-    @api.response(403, 'Invitation has been declined')
-    @api.response(404, 'Failed to accept an invitation')
+    @api.response(404, 'Invitation not found')
     @api.doc(description='Accept an invitation')
     @require_auth
     def get(self, pid, rid, iid):
@@ -727,21 +725,29 @@ class AcceptAnInvitation(CorsResource):
         invitation = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
         if invitation['invitee'] != userinfo['id']:
             conn.close()
-            return {'message': 'You are not authorized to accept this invitation'}, 401
+            return {'message': 'You are not authorized to accept this invitation'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 404
+            return {'message': 'The project has been finished.'}, 400
         if invitation['status'] == 0:
             conn.close()
-            return {'message': 'This invitation has been declined'}, 403
+            return {'message': 'This invitation has been declined'}, 400
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             conn.close()
-            return {'message': 'Invitation not found'}, 402
+            return {'message': 'Invitation not found'}, 404
         result = Invitation.accept_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         conn.close()
+        if result == 0:
+            return {'message': 'This invitation has been declined already!'}, 400
+        if result == 1:
+            return {'message': 'This invitation has been accepted already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this invitation has been finished.'}, 400
+        if result == 88:
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['invite_status'] != 1:
-            return {'message': 'Failed to accept an invitation'}, 404
+            return {'message': 'Failed to accept an invitation'}, 400
         return {'message': 'Accept invitation successfully','Invitation':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/invitation/<int:iid>/decline')
@@ -750,11 +756,9 @@ class AcceptAnInvitation(CorsResource):
 @api.param('iid', 'The invitation id')
 class DeclineAnInvitation(CorsResource):
     @api.response(200, 'Success')
-    @api.response(400, 'Auth Failed')
-    @api.response(401, 'Not authorized to decline this invitation')
-    @api.response(402, 'Invitation not found')
-    @api.response(403, 'Invitation has been accepted')
-    @api.response(404, 'Failed to decline an invitation')
+    @api.response(400, 'Validate Failed')
+    @api.response(401, 'Auth Failed')
+    @api.response(404, 'Invitation not found!')
     @api.doc(description='Decline an invitation')
     @require_auth
     def get(self, pid, rid, iid):
@@ -766,25 +770,25 @@ class DeclineAnInvitation(CorsResource):
         invitation = Invitation.get_by_pid_rid_iid(conn, int(pid), int(rid), int(iid))
         if invitation['invitee'] != userinfo['id']:
             conn.close()
-            return {'message': 'You are not authorized to decline this invitation'}, 401
-        if Project.check_finish(conn, int(pid)):
-            conn.close()
-            return {'message': 'The project has been finished.'}, 404
+            return {'message': 'You are not authorized to decline this invitation'}, 400
         if invitation['status'] == 1:
             conn.close()
-            return {'message': 'This invitation has been accepted'}, 403
+            return {'message': 'This invitation has been accepted already!'}, 400
+        if Project.check_finish(conn, int(pid)):
+            conn.close()
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Invitation.get_by_iid(conn, int(iid))
         if result_1 is None:
             conn.close()
-            return {'message': 'Invitation not found'}, 402
+            return {'message': 'Invitation not found'}, 404
         result = Invitation.decline_an_invitation(conn, smtp, int(pid), int(rid), int(iid))
         if result['invite_status'] != 0:
             conn.close()
-            return {'message': 'Failed to decline an invitation'}, 404
+            return {'message': 'Failed to decline an invitation'}, 400
         invite = Invitation.get_object_by_id(conn, iid)
         invite.notify_invitor(conn, smtp, accept=False)
         conn.close()
-        return {'message': 'Invitation has been declined!','Invitation':result}, 200
+        return {'message': 'Invitation has been declined successfully!','Invitation':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
@@ -959,7 +963,6 @@ class ApproveAnApplication(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
-    @api.response(405, 'Failed to approve an application')
     @api.doc(description='Approve an application')
     @require_auth
     def get(self, pid, rid, aid):
@@ -974,15 +977,23 @@ class ApproveAnApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 405
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
             return {'message': 'Application not found'}, 404
         result = Application.approve_an_application(conn, smtp, int(pid), int(rid), int(aid))
         conn.close()
+        if result == 0:
+            return {'message': 'This apploication has been declined already!'}, 400
+        if result == 1:
+            return {'message': 'This apploication has been approved already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this application has been finished.'}, 400
+        if result == 88:
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['apply_status'] != 1:
-            return {'message': 'Failed to approve an application'}, 405
+            return {'message': 'Failed to approve an application'}, 400
         return {'message': 'Approve application successfully','Application':result}, 200
 
 @api.route('/project/<int:pid>/role/<int:rid>/application/<int:aid>/decline')
@@ -994,7 +1005,6 @@ class DeclineAnApplication(CorsResource):
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(404, 'Application not found')
-    @api.response(405, 'Failed to decline an application')
     @api.doc(description='Decline an application')
     @require_auth
     def get(self, pid, rid, aid):
@@ -1009,15 +1019,23 @@ class DeclineAnApplication(CorsResource):
             return {'message': 'You are not the owner of the project'}, 400
         if Project.check_finish(conn, int(pid)):
             conn.close()
-            return {'message': 'The project has been finished.'}, 405
+            return {'message': 'The project has been finished.'}, 400
         result_1 = Application.get_by_aid(conn, int(aid))
         if result_1 is None:
             conn.close()
             return {'message': 'Application not found'}, 404
         result = Application.decline_an_application(conn, smtp, int(aid))
         conn.close()
+        if result == 0:
+            return {'message': 'This application has been declined already!'}, 400
+        if result == 1:
+            return {'message': 'This application has been approved already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this application has been finished.'}, 400
+        if result == 88:
+            return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['apply_status'] != 0:
-            return {'message': 'Failed to decline an application'}, 405
+            return {'message': 'Failed to decline an application'}, 400
         return {'message': 'Decline the application successfully','Application':result}, 200
 
 @api.route('/project/<int:id>')
@@ -1181,6 +1199,16 @@ class PostRole(CorsResource):
 @api.param('rid', 'The role id')
 class PatchRole(CorsResource):
     @api.response(200, 'Success')
+    @api.response(404, 'Role is not found!')
+    @api.doc(description='Fetch a role information')
+    def get(self, pid, rid):
+        conn = db.conn()
+        result = Role.get_by_id(conn, int(rid))
+        if result == None:
+            return {'message': 'Role is not found!'}, 404
+        return result, 200
+
+    @api.response(200, 'Success')
     @api.response(400, 'Validate Failed')
     @api.response(401, 'Auth Failed')
     @api.response(402, 'Project is not in active status, no update is allowed!')
@@ -1234,7 +1262,6 @@ class PatchRole(CorsResource):
             return {'message': 'This project is not in active status, no update is allowed!', 'info': result}, 402
         return {'message': 'Patch success', 'info': result}, 200
 
-    
 @api.route('/collaborator/patch')
 class PatchCollaborator(CorsResource):
     @api.response(200, 'Success')
@@ -1254,7 +1281,9 @@ class PatchCollaborator(CorsResource):
         collaborator_info = request.json
         cursor_collaborator = Collaborator.get_object_by_id(conn, int(collaborator_id))
         skills = collaborator_info['skill'].split(',')
+        skills = [0 if i=="" else int(i.strip()) for i in skills]
         exps = collaborator_info['experience'].split(',')
+        exps = [0 if i=="" else int(i.strip()) for i in exps]
         try:
             cursor_collaborator.phone_no = collaborator_info['phone_no']
         except:
@@ -1264,7 +1293,7 @@ class PatchCollaborator(CorsResource):
         except:
             pass
         try:
-            skill_dict = {int(i.strip()): j for i,j in zip(skills,exps)}
+            skill_dict = {i: j for i,j in zip(skills,exps)}
             cursor_collaborator.skill_dict = skill_dict
         except:
             pass
@@ -1294,6 +1323,41 @@ class PostProject(CorsResource):
         if new_project == None:
             return {'message': 'project create request duplicate'}, 400
         return {'message': 'project create success', 'project_id': new_project.info()['id']}, 200
+
+@api.route('/collaborator/my_follows_id')
+class CollaboratorFollowsID(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Get a list of followed projects id')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Collaborator':
+            return {'message': 'You are not logged in as collaborator'}, 401
+        conn = db.conn()
+        follow_list = Collaborator.get_follow_ids(conn, collaborator_id)
+        conn.close()
+        return {'follows': follow_list}, 200
+        
+
+@api.route('/dreamer/my_follows_id')
+class DreamerFollowsID(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Get a list of followed projects id')
+    @require_auth
+    def get(self):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        dreamer_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        conn = db.conn()
+        follow_list = Dreamer.get_follow_ids(conn, dreamer_id)
+        conn.close()
+        return {'follows': follow_list}, 200
 
 @api.route('/collaborator/register')
 class CollaboratorRegister(CorsResource):

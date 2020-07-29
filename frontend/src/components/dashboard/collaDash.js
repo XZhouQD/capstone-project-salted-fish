@@ -30,8 +30,9 @@ class CollaDash extends React.Component {
     };
 
     const res = await axios.get("/collaborator/my_projects", config);
-    console.log("colla project", res.data);
+
     this.setState({ myProjects: res.data.my_projects });
+    console.log("colla projectsssss", res.data.my_projects);
   }
 
   render() {
@@ -93,9 +94,6 @@ class CollaDash extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
@@ -133,9 +131,11 @@ class CollaDash extends React.Component {
                             description={each.description}
                             category={each.category}
                             id={each.id}
-                            roleTitle={each.roles.title}
+                            roleTitle={each.follow?"":each.roles.title}
                             create_time={each.create_time}
                             last_update={each.last_update}
+                            follow={each.follow}
+                            status={each.status}
                           />
                         );
                       })

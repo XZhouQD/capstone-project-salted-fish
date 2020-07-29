@@ -22,6 +22,7 @@ import {
   FINISH_PROJECTS,
   CHANGE_PROJECTS,
   UNDO_CHANGE,
+  GET_ACTIVE_PROJECT_LIST,
 } from "./actionTypes";
 
 // createProject
@@ -84,6 +85,7 @@ export const getProject = () => async (dispatch) => {
     console.log(err.response);
   }
 };
+
 
 // search
 export const searchProject = ({
@@ -411,6 +413,14 @@ export const searchCollaProject = ({
   sorting,
 }) => async (dispatch) => {
   category = Number(category) - 1;
+  const a = localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8",
+      "Access-Control-Allow-Origin": "*",
+      "AUTH-KEY": a,
+    },
+  };
   try {
     const res = await axios.get(
       "/collaborator/projects?description=" +
@@ -420,7 +430,8 @@ export const searchCollaProject = ({
         "&order_by=" +
         order_by +
         "&sorting=" +
-        sorting
+        sorting,
+        config
     );
     console.log(res.data);
 

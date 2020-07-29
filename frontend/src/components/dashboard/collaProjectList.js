@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getCollaProject, searchCollaProject } from "../../actions/projects";
+import {getCollaProject, getProject, searchCollaProject, searchProject} from "../../actions/projects";
 import M from "materialize-css";
 import { Redirect } from "react-router-dom";
 import EachProject from "../projects/eachProject";
@@ -14,9 +14,9 @@ class CollaProjectList extends Component {
 
   state = {
     description: "",
-    category: "",
-    order_by: "",
-    sorting: "",
+    category: "0", //Since it will automatically minus 1, keep a 0 here for All categories
+    order_by: "last_update",
+    sorting: "DESC",
   };
 
   componentWillMount() {
@@ -30,29 +30,35 @@ class CollaProjectList extends Component {
 
   handleonChange = (e) => {
     // get target element name
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value },() => {
+      //add callback to avoid one step behind
+    });
   };
 
   handleonSubmit = (e) => {
     e.preventDefault();
     const { description, category, order_by, sorting } = this.state;
-    console.log(this.state);
+    console.log("colla match search",this.props.ProjectLists);
     this.props.searchCollaProject({ description, category, order_by, sorting });
+
   };
 
   renderProject() {
     return (
       <div className="flexLayout">
         {this.props.ProjectLists.map((each, index) => {
-          return (
-            <EachProject
-              title={each.title}
-              category={each.category}
-              description={each.description}
-              key={index}
-              id={each.id}
-            />
-          );
+          // console.log("change,", this.props.ProjectLists)
+          if(each.is_hidden==0){
+            return (
+                <EachProject
+                    title={each.title}
+                    category={each.category}
+                    description={each.description}
+                    key={index}
+                    id={each.id}
+                />
+            );
+          }
         })}
       </div>
     );
@@ -60,7 +66,10 @@ class CollaProjectList extends Component {
   renderLoading() {
     return (
       <div>
-        Sorry, there is no project that matches your skills and education levels
+        <div className="progress">
+          <div className="indeterminate">Trying to looking for project that matches your skills and education levels</div>
+        </div>
+
       </div>
     );
   }
@@ -95,8 +104,8 @@ class CollaProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="category"
                   >
-                    <option value="" disabled selected>
-                      Choose your option
+                    <option value="0" selected>
+                      All categories
                     </option>
                     <option value="1">All other</option>
                     <option value="2">A web based application</option>
@@ -121,8 +130,7 @@ class CollaProjectList extends Component {
                     onChange={(e) => this.handleonChange(e)}
                     name="order_by"
                   >
-                    <option value="">Choose your option</option>
-                    <option value="last_update">last_update</option>
+                    <option value="last_update" selected>last_update</option>
                     <option value="project_title">project_title</option>
                   </select>
                   <label className="left">SORTING ORDER</label>
@@ -135,25 +143,24 @@ class CollaProjectList extends Component {
                   <select
                     onChange={(e) => this.handleonChange(e)}
                     name="sorting"
-                    required
                   >
-                    <option value="">Choose your option</option>
                     <option value="ASC">ASC</option>
-                    <option value="DESC">DESC</option>
+                    <option value="DESC" selected>DESC</option>
                   </select>
                   <label className="left">ASCENDING/DESCENDING</label>
                 </div>
-
-                <input
-                  type="submit"
-                  className="btn btn-small right"
-                  value="Search"
-                />
+                <div className="right">
+                  <input
+                    type="submit"
+                    className="btn btn-small blue-grey darken-1"
+                    value="Search"
+                  />
+                </div>
               </form>
             </div>
           </div>
 
-          {this.props.ProjectLists.length === 0
+          {this.props.ProjectLists.length && this.props.ProjectLists.length === 0
             ? this.renderLoading()
             : this.renderProject()}
         </div>
@@ -168,7 +175,7 @@ const mapStateToProps = (state) => ({
   ProjectLists: state.project.CollaProjectLists,
 });
 
-export default connect(mapStateToProps, {
-  getCollaProject,
-  searchCollaProject,
-})(CollaProjectList);
+export default connect(mapStateToProps, { getCollaProject, searchCollaProject })(
+    CollaProjectList
+);
+

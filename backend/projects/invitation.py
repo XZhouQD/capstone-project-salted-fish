@@ -97,7 +97,7 @@ class Invitation():
 
     @staticmethod
     def get_by_invitee(conn, user_id):
-        """Get a collaborator's all invitations
+        """Get all invitations for a collaborator's
         Param:
         conn -- database connection
         user_id -- collaborator digit id
@@ -126,7 +126,7 @@ class Invitation():
 
     @staticmethod
     def accept_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
-        """Accpet and notify an invitation
+        """Accpet an invitation and further notify process
         Param:
         conn -- database connnection
         smtp -- smtp server object
@@ -136,6 +136,27 @@ class Invitation():
         Return:
         Accpted invitation
         """
+        #check the invitation status first, if not in pending(-1) status, return invitation status;
+        query_pre = "select * from invitation where ID = " + str(invitation_id) + ";"
+        result_pre = conn.execute(query_pre)
+        row = result_pre.fetchone()
+        if row['status'] != -1:
+            return row['status']
+
+        #check if all members have been recruited or not for the same project role;
+        query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
+        result_1 = conn.execute(query_1)
+        row_1 = result_1.fetchone()
+        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status = 1;"
+        result_2 = conn.execute(query_2)
+        row_2 = result_2.fetchone()
+        query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID = " + str(role_ID) + ";"
+        result_3 = conn.execute(query_3)
+        row_3 = result_3.fetchone()
+        #If all collaborators recruited for the project role, return 88 as a flag;
+        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
+            return 88
+
         # update the invitation status as 1 -  accepte the invitaiton;
         query = "UPDATE invitation set status = 1 where ID = " + str(invitation_id) + " and projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + ";"
         conn.execute(query)
@@ -152,18 +173,8 @@ class Invitation():
             Invitation.get_object_by_id(conn, row_0['iid']).notify_invitee(conn, smtp)
             Invitation.get_object_by_id(conn, row_0['iid']).notify_invitor(conn, smtp)
 
-        #check if all members have been recruited or not for the same project role;
-        query_1 = "select count(*) as count_1 from application where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status = 1;"
-        result_1 = conn.execute(query_1)
-        row_1 = result_1.fetchone()
-        query_2 = "select count(*) as count_2 from invitation where projectID = " + str(proj_ID) + " and role_invited = " + str(role_ID) + " and status = 1;"
-        result_2 = conn.execute(query_2)
-        row_2 = result_2.fetchone()
-        query_3 = "select amount from project_role where projectID = " + str(proj_ID) + " and ID = " + str(role_ID) + ";"
-        result_3 = conn.execute(query_3)
-        row_3 = result_3.fetchone()
         #decline all other applications/invitation for the same project role if all members have been recruited; 
-        if row_1['count_1'] + row_2['count_2'] == row_3['amount']:
+        if row_1['count_1'] + row_2['count_2'] + 1 == row_3['amount']:
             query_4 = "UPDATE application set status = 0 where projectID = " + str(proj_ID) + " and role_applied = " + str(role_ID) + " and status != 1;"
             conn.execute(query_4)
             # notify applicants for result
@@ -190,7 +201,7 @@ class Invitation():
 
     @staticmethod
     def decline_an_invitation(conn, smtp, proj_ID, role_ID, invitation_id):
-        """Decline and notify an invitation
+        """Decline an invitation and further notify process
         Param:
         conn -- database connnection
         smtp -- smtp server object

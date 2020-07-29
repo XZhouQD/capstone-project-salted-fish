@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { postProjectRole } from "../../actions/projects";
+import { Modal } from "react-materialize";
 import M from "materialize-css";
+import GetApplications from "./getApplications";
 
 const AddRoleProject = (props) => {
   const [flag, setFlag] = useState(0);
-  function handleFlag(e) {
-    const Flag = 1;
-    setFlag(Flag);
-  }
 
   useEffect(() => {
     M.AutoInit();
@@ -111,8 +109,39 @@ const AddRoleProject = (props) => {
     console.log(values);
     setFields(values);
   }
+  
+  function handleFlag(e) {
+    const {
+      title,
+      amount,
+      skill,
+      experience,
+      education,
+      general_enquiry,
+    } = fields[fields.length - 1];
+    
+    let fi = fields[fields.length - 1];
+    
+    if (fi.title == "" || fi.amount == 0 || fi.skill == "" || fi.experience == 0 || fi.education == 0 || fi.general_enquiry == "") {
+      console.log("finish with last one not valid, skip");
+    } else {
+      props.postProjectRole({
+        title,
+        amount,
+        skill,
+        experience,
+        education,
+        general_enquiry,
+        id,
+      });
+    }
+    
+    const Flag = 1;
+    setFlag(Flag);
+  }
 
   if (flag === 1) {
+    
     return <Redirect to="/dashboard" />;
   }
 
@@ -167,9 +196,10 @@ const AddRoleProject = (props) => {
                           <select
                             className="browser-default"
                             onChange={(e) => handleEducationChange(idx, e)}
+                            required
                             placeholder="enter the role's education level of your project"
                           >
-                            <option value="" disabled>
+                            <option selected disabled>
                               Choose your option
                             </option>
                             <option value="1">Other</option>
@@ -181,10 +211,12 @@ const AddRoleProject = (props) => {
 
                         <div className="input-field col l4">
                           <select
+                            required
                             multiple
                             onChange={(e) => handleSkillChange(e, idx)}
                             placeholder="role's skills of your project"
                           >
+                          <option disabled>Select some skills</option>
                             {[
                               "Web Development",
                               "Java",
@@ -203,7 +235,7 @@ const AddRoleProject = (props) => {
                               "Distribution System",
                             ].map((ele, index) => {
                               return (
-                                <option value={index + 1} key={index}>
+                                <option value={index+1} key={index}>
                                   {ele}
                                 </option>
                               );
@@ -236,13 +268,30 @@ const AddRoleProject = (props) => {
                 style={{ marginBottom: "10px" }}
               />
 
-              <button
-                className="btn-small right"
-                style={{ marginTop: "20px" }}
-                onClick={(e) => handleFlag(e)}
-              >
-                FINISH
-              </button>
+              {/*There is bug with this Modal*/}
+              {/*Close button does not work*/}
+
+              <Modal
+              trigger={
+                <button className="btn-small right"
+                        style={{ marginTop: "10px" }}
+                    // onClick={(e) => handleFlag(e)}
+                >
+                  FINISH
+                </button>
+              }>
+                <h5>Role Update Notice</h5>
+                <p>Are you sure you want to update these role information?</p>
+                <button
+                    className="btn-small"
+                    style={{ marginTop: "10px" }}
+                    onClick={(e) => handleFlag(e)}
+                >
+                  Update
+                </button>
+              </Modal>
+
+
             </form>
           </div>
         </div>

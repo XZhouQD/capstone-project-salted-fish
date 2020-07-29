@@ -22,11 +22,14 @@ class ProjectDetails extends Component {
     title: "",
     owner: null,
     general_text: "",
-    follow: true,
+    follow: null,
+    dreamer_follow:[],
+    colla_follow:[],
+    status:null,
+    colla_disable:false,
   };
 
   async componentDidMount() {
-    M.AutoInit();
     const res = await axios.get("/project/" + this.props.match.params.id);
     console.log(res.data);
     this.setState({
@@ -35,7 +38,59 @@ class ProjectDetails extends Component {
       category: res.data.category,
       title: res.data.title,
       description: res.data.description,
+      status:res.data.status,
     });
+    const role = this.props.role;
+    const uid = this.props.id;
+    const pid = this.props.match.params.id;
+    // get follow
+    const b = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": b,
+      },
+    };
+
+
+
+
+    if (this.props.role ==="Dreamer"){
+      const res_dreamer = await axios.get("/dreamer/my_follows_id",config);
+      console.log("RESFOLLOW",res_dreamer)
+      this.setState({dreamer_follow:res_dreamer.data.follows})
+      var i = Number(pid)
+      // console.log("!!!!",this.state.dreamer_follow.includes(i))
+      if(this.state.dreamer_follow.includes(i)){
+        this.setState({follow:false})
+      }else{
+        this.setState({follow:true})
+      }
+    }else if(this.props.role ==="Collaborator"){
+      const res_colla = await axios.get("/collaborator/my_follows_id",config);
+      this.setState({colla_follow:res_colla.data.follows})
+      var i = Number(pid)
+      if(this.state.colla_follow.includes(i)){
+        this.setState({follow:false})
+      }else{
+        this.setState({follow:true})
+      }
+    }
+
+    //
+    if (role === "Collaborator"){
+      const url = "/collaborator/my_projects";
+      const res2 = await axios.get(url, config);
+      const projects = res2.data.my_projects;
+      for (var i = 0; i < projects.length; i++) {
+        if (pid == projects[i].id && projects[i].follow == false) {
+          this.setState({ colla_disable: true });
+        }
+      }
+    }
+    
+    M.AutoInit();
   }
   async handleFollow(e) {
     const a = localStorage.getItem("token");
@@ -54,10 +109,11 @@ class ProjectDetails extends Component {
     this.setState({ follow: !this.state.follow });
     if (this.state.follow) {
       const res = await axios.get(followUrl, config);
-      console.log(res);
+      console.log("RES",res);
       this.props.setAlert(res.data.message);
     } else {
       const res = await axios.get(unfollowUrl, config);
+      console.log("RES.DATA",res.data)
       this.props.setAlert(res.data.message);
     }
   }
@@ -80,22 +136,34 @@ class ProjectDetails extends Component {
     const url1 = "/project/" + pid + "/role/" + rid + "/applications";
     return (
       <div>
-        <Link to={url} style={{ marginRight: "10px" }}>
-          <button className="btn-small">
-            <i className="material-icons icon left">star</i>
-            change
-          </button>
-        </Link>
-        <Modal
-          trigger={
-            <Button className="btn-small">
+        {this.state.status==9?
+            <button className="btn-small disabled" style={{ marginRight: "10px" }}>
+              <i className="material-icons icon left">star</i>
+              change
+            </button>:
+            <Link to={url} style={{ marginRight: "10px" }}>
+              <button className="btn-small">
+                <i className="material-icons icon left">star</i>
+                change
+              </button>
+            </Link>}
+        {this.state.status==9?
+            <Button className="btn-small disabled">
               <i className="material-icons icon left">done_all</i>
               application
-            </Button>
-          }
-        >
-          <GetApplications url_1={url1} rid={rid} pid={pid} />
-        </Modal>
+            </Button>:
+            <Modal
+          trigger={
+          <Button className="btn-small">
+          <i className="material-icons icon left">done_all</i>
+          application
+          </Button>
+        }
+          >
+          <GetApplications url_1={url1} rid={rid} pid={pid}/>
+          </Modal>
+        }
+
       </div>
     );
   }
@@ -115,15 +183,17 @@ class ProjectDetails extends Component {
             className="col s12"
             onSubmit={(e) => this.handleonSubmit(e, rid)}
           >
-            <div className="input-field ">
+            <div className="input-field">
+              <label htmlFor="apply message">Type in your apply message here</label>
               <input
-                placeholder="Say HI"
+                // placeholder="Send the apply message here"
                 type="text"
                 name="general_text"
                 onChange={(e) => this.handleonChange(e)}
                 required
+                id="apply message"
               />
-              <label htmlFor="title">Send the apply message!</label>
+
             </div>
             <input
               type="submit"
@@ -141,7 +211,7 @@ class ProjectDetails extends Component {
     var content = [];
     for (var i = 0; i < list.length; i++) {
       console.log(i);
-      content.push(skill_list[list[i] - 1]);
+      content.push(skill_list[list[i] -1]);
     }
     content = content.join(",");
     console.log(content);
@@ -178,11 +248,11 @@ class ProjectDetails extends Component {
               {a.title} needs {a.amount} people who have{" "}
               {this.renderSkill(a.skill, skill_list)} skill, and experience at
               least {a.experience} years with{" "}
-              {education_list[a.education] === "Other"
+              {education_list[a.education-1] === "Other"
                 ? "any"
-                : education_list[a.education]}{" "}
+                : education_list[a.education-1]}{" "}
               degree
-              {this.state.owner === this.props.id
+              {this.state.owner === this.props.id && this.props.role=== "Dreamer"
                 ? this.renderOwner(a.id)
                 : this.renderUser(a.id)}
             </p>
@@ -219,7 +289,8 @@ class ProjectDetails extends Component {
                     onClick={(e) => this.handleFollow(e)}
                   >
                     <i className="material-icons icon left">favorite</i>
-                    {this.state.follow ? "follow" : "unfollow"}
+
+                    {this.state.follow !== null&&this.state.follow? "follow" : "unfollow"}
                   </button>
                 </div>
               </div>
@@ -241,6 +312,7 @@ class ProjectDetails extends Component {
 const mapStateToProps = (state) => ({
   id: state.auth.id,
   applySuccess: state.project.payload,
+  role: state.auth.role
 });
 
 export default connect(mapStateToProps, { applyRole, setAlert })(

@@ -49,7 +49,7 @@ class DreamerCollasCard extends React.Component {
   };
 
   handleonSubmit = (e) => {
-    e.preventDefault();
+     e.preventDefault();
 
     const { general_text } = this.state;
     const pid = this.props.match.params.pid;
@@ -128,9 +128,6 @@ class DreamerCollasCard extends React.Component {
                 </Link>
               </li>
 
-              <div className="logo">
-                <h3>Logo</h3>
-              </div>
             </ul>
           </div>
         </header>
@@ -169,19 +166,21 @@ class DreamerCollasCard extends React.Component {
                         This is {this.state.info.Name}'s profile as a
                         collaborator {this.state.info.Description}
                       </p>
-                      <button
-                        className="msg-btn button1"
-                        onClick={(e) => this.approveApplication(e)}
-                      >
-                        Message
-                      </button>
+                      {/*<button*/}
+                      {/*  className="msg-btn button1"*/}
+                      {/*  onClick={(e) => this.approveApplication(e)}*/}
+                      {/*>*/}
+                      {/*  Message*/}
+                      {/*</button>*/}
 
                       <Modal
                         dialogClassName="custom-dialog"
                         trigger={
                           <Button
                             waves="follow-btn button1"
-                            style={{ marginLeft: "10px" }}
+                            style={{ marginLeft: "10px" ,
+                                      marginBottom: "10px",
+                                      marginTop: "10px"}}
                           >
                             Invite
                           </Button>
@@ -191,17 +190,18 @@ class DreamerCollasCard extends React.Component {
                           className="col s12"
                           onSubmit={(e) => this.handleonSubmit(e)}
                         >
-                          <div className="input-field ">
+                          <div className="input-field">
+                            <label htmlFor="invitation message">
+                              Type in the invitation message
+                            </label>
                             <input
-                              placeholder="Say HI"
                               type="text"
                               name="general_text"
                               onChange={(e) => this.handleonChange(e)}
                               required
+                              id = "invitation message"
                             />
-                            <label htmlFor="title">
-                              Send the invitation message!
-                            </label>
+
                           </div>
                           <input
                             type="submit"

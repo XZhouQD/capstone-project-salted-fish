@@ -4,6 +4,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Mac OSX
+.DS_Store
+
 # Idea environment
 .idea/
 
@@ -11,6 +14,7 @@ __pycache__/
 *.py~
 *.txt~
 *.config~
+*.js~
 
 # C extensions
 *.so

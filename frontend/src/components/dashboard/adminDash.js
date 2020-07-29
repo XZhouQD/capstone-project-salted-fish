@@ -3,58 +3,136 @@ import { connect } from "react-redux";
 import { getProject, searchProject } from "../../actions/projects";
 import M from "materialize-css";
 import AdminEachProject from "../projects/adminEachProject";
+import axios from "axios";
 
 class AdminDash extends Component {
 
-
   constructor(props) {
     super(props);
-    this.handleonChange = this.handleonChange.bind(this);
-    this.handleonSubmit = this.handleonSubmit.bind(this);
   }
+
+  state = {
+    activeProjects:[],
+    hiddenProjects:[],
+    modifiedProjects:[],
+  };
+
 
   componentWillMount() {
     this.props.getProject();
   }
 
-  componentDidMount() {
+
+
+  async componentDidMount() {
     // Auto initialize all the materailize css!
     M.AutoInit();
+    // Auto initialize all the materailize css!
+    const a = localStorage.getItem("token");
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": a,
+      },
+    };
+
+    const res1 = await axios.get("/admin/active_projects", config);
+    this.setState({ activeProjects: res1.data.active_projects });
+    console.log(res1.data)
+    const res2 = await axios.get("/admin/hidden_projects", config);
+    this.setState({ hiddenProjects: res2.data.hidden_projects});
+
+    const res3 = await axios.get("/admin/modified_after_hidden_projects", config);
+    this.setState({ modifiedProjects: res3.data.modified_after_hidden_projects});
+
   }
 
-  handleonChange = (e) => {
-    // get target element name
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  handleonSubmit = (e) => {
-    e.preventDefault();
-    const { description, category, order_by, sorting } = this.state;
-    console.log(this.state);
-    this.props.searchProject({ description, category, order_by, sorting });
-  };
 
   render() {
+    var categoryList = [
+      "All other",
+      "A web based application",
+      "A desktop application",
+      "A mobile application",
+      "A library for other project to reference",
+      "A modification to existing platform",
+      "A research oriented project",
+    ];
     return (
       <div>
         <div className="container" style={{ marginTop: "20px" }}>
-          <div className="flexLayout">
-            {this.props.ProjectLists.map((each, index) => {
-              console.log(each)
-              return (
-                  <div>
-                    <AdminEachProject
-                        title={each.title}
-                        category={each.category}
-                        description={each.description}
-                        isHidden={each.is_hidden}
-                        id={each.id}
-                    />
-                  </div>
 
-              );
-            })}
+          <div className="divider"></div>
+          <div className="section">
+            <h5>Modified Projects</h5>
+            <div className="flexLayout">
+              {/*{this.props.ProjectLists.map((each, index) => {*/}
+              {this.state.modifiedProjects&&this.state.modifiedProjects.map((each, index) => {
+                // console.log("Active projects",this.state.activeProjects)
+                // console.log("All projects",this.props.ProjectLists)
+                return (
+                    <div>
+                      <AdminEachProject
+                          title={each.title}
+                          category={each.category}
+                          description={each.description}
+                          isHidden={each.is_hidden}
+                          id={each.id}
+                      />
+                    </div>
+                );
+              })}
+            </div>
           </div>
+
+          <div className="divider"></div>
+          <div className="section">
+            <h5>Hidden Projects</h5>
+            <div className="flexLayout">
+              {/*{this.props.ProjectLists.map((each, index) => {*/}
+              {this.state.hiddenProjects&&this.state.hiddenProjects.map((each, index) => {
+                // console.log("Active projects",this.state.activeProjects)
+                // console.log("All projects",this.props.ProjectLists)
+                return (
+                    <div>
+                      <AdminEachProject
+                          title={each.title}
+                          category={each.category}
+                          description={each.description}
+                          isHidden={each.is_hidden}
+                          id={each.id}
+                      />
+                    </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="divider"></div>
+          <div className="section">
+            <h5>Active Projects</h5>
+            <div className="flexLayout">
+              {/*{this.props.ProjectLists.map((each, index) => {*/}
+              {this.state.activeProjects&&this.state.activeProjects.map((each, index) => {
+                // console.log("Active projects",this.state.activeProjects)
+                // console.log("All projects",this.props.ProjectLists)
+                return (
+                    <div>
+                      <AdminEachProject
+                          title={each.title}
+                          category={each.category}
+                          description={each.description}
+                          isHidden={each.is_hidden}
+                          id={each.id}
+                      />
+                    </div>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
       </div>
     );

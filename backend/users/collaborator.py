@@ -250,6 +250,24 @@ class Collaborator():
         return proj_list
 
     @staticmethod
+    def get_follow_ids(conn, user_ID):
+        """Get collaborator's followed project id list by user id
+        Param:
+        conn -- database connection
+        user_ID -- collaborator digital id
+        Return:
+        List of followed project info
+        """
+        projects_followed = []
+        # query subscription tabale
+        query = f"SELECT * FROM subscription WHERE is_dreamer=0 AND c_subscriber={user_ID}"
+        result = conn.execute(query)
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            projects_followed.append(row['projectID'])
+        return projects_followed
+
+    @staticmethod
     def get_my_projects(conn, user_ID):
         """Get collaborator's engaged project list by user id
         Param:
@@ -290,6 +308,8 @@ class Collaborator():
             myproject_list.append(proj)
         # final merge of project info list
         myproject_list.extend(follow_list)
+        # move finished projects to bottom
+        myproject_list.sort(key=lambda p:p['status'])
         return {'my_projects': myproject_list, 'amount': len(myproject_list)}
 
     def search_list(self, conn, description, category, order_by, order):
@@ -324,10 +344,11 @@ class Collaborator():
                 if not is_exist:
                     project_list.append(proj)
         if len(project_list) == 0: return None
+        project_list.sort(key=lambda p:p['status'])
         return {'projects': project_list, 'amount': result.rowcount}
 
     def projects_recommdation(self, conn):
-        """Recommend projects to collaborator based on skill/exp
+        """Recommend projects for collaborator based on skill/exp/edu
         Param:
         conn -- database connection
         Return:
@@ -411,10 +432,12 @@ class Collaborator():
         elif self.education == 4: self.education_text='PhD'
         # update skills/experience requirement
         if len(self.skill_dict) == 0:  # cannot delete requirements and put nothing there - skip if no provided
+            print("skill_dict is empty")
             return self
         query = f"DELETE FROM skills where collaboratorID = {self.id};"
         conn.execute(query)
         for i,j in self.skill_dict.items():
             query = f"INSERT INTO skills (skill, experience, collaboratorID) VALUES ({str(i)}, {str(j)}, {str(self.id)});"
+            print(query)
             conn.execute(query)
         return self

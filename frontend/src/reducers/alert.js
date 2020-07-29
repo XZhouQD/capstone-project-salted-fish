@@ -8,6 +8,7 @@ export default function (state = initialState, action) {
       // immutable state
       return [...state, action.payload];
     case REMOVE_ALERT:
+      console.log(action, state);
       return state.filter((alert) => alert.id !== action.payload);
 
     default:
