@@ -431,12 +431,10 @@ class Collaborator():
         elif self.education == 4: self.education_text='PhD'
         # update skills/experience requirement
         if len(self.skill_dict) == 0:  # cannot delete requirements and put nothing there - skip if no provided
-            print("skill_dict is empty")
             return self
         query = f"DELETE FROM skills where collaboratorID = {self.id};"
         conn.execute(query)
         for i,j in self.skill_dict.items():
             query = f"INSERT INTO skills (skill, experience, collaboratorID) VALUES ({str(i)}, {str(j)}, {str(self.id)});"
-            print(query)
             conn.execute(query)
         return self
