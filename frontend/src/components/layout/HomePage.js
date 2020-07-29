@@ -88,8 +88,14 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div class="footer-copyright right">
-        <span class="container">Salted-Fish-team</span>
+      <div className="footer-copyright right">
+        <div className="container">
+          © 2020 Copyright
+
+        </div>
+        <div>
+          <span className="container">Salted-Fish-team</span>
+        </div>
       </div>
     </div>
   );
