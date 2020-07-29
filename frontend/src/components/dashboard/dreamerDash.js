@@ -29,7 +29,7 @@ class DreamerDash extends React.Component {
     };
 
     const res = await axios.get("/dreamer/my_projects", config);
-    console.log(res.data);
+    console.log("projects",res.data);
     this.setState({ myProjects: res.data.projects });
   }
 
