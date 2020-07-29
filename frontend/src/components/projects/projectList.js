@@ -65,7 +65,7 @@ class ProjectList extends Component {
     );
   }
   renderLoading() {
-    return <div>loading....</div>;
+    return <div>No projects</div>;
   }
   render() {
     return (

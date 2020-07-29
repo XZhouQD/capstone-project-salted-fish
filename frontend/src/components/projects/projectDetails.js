@@ -22,7 +22,9 @@ class ProjectDetails extends Component {
     title: "",
     owner: null,
     general_text: "",
-    follow: true,
+    follow: null,
+    dreamer_follow:[],
+    colla_follow:[],
     status:null,
     colla_disable:false,
   };
@@ -41,15 +43,43 @@ class ProjectDetails extends Component {
     const role = this.props.role;
     const uid = this.props.id;
     const pid = this.props.match.params.id;
+    // get follow
+    const b = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
+        "AUTH-KEY": b,
+      },
+    };
+
+
+
+
+    if (this.props.role ==="Dreamer"){
+      const res_dreamer = await axios.get("/dreamer/my_follows_id",config);
+      console.log("RESFOLLOW",res_dreamer)
+      this.setState({dreamer_follow:res_dreamer.data.follows})
+      var i = Number(pid)
+      // console.log("!!!!",this.state.dreamer_follow.includes(i))
+      if(this.state.dreamer_follow.includes(i)){
+        this.setState({follow:false})
+      }else{
+        this.setState({follow:true})
+      }
+    }else if(this.props.role ==="Collaborator"){
+      const res_colla = await axios.get("/collaborator/my_follows_id",config);
+      this.setState({colla_follow:res_colla.data.follows})
+      var i = Number(pid)
+      if(this.state.colla_follow.includes(i)){
+        this.setState({follow:false})
+      }else{
+        this.setState({follow:true})
+      }
+    }
+
+    //
     if (role === "Collaborator"){
-      const b = localStorage.getItem("token");
-      const config = {
-        headers: {
-          "Content-Type": "application/json;charset=UTF-8",
-          "Access-Control-Allow-Origin": "*",
-          "AUTH-KEY": b,
-        },
-      };
       const url = "/collaborator/my_projects";
       const res2 = await axios.get(url, config);
       const projects = res2.data.my_projects;
@@ -259,7 +289,8 @@ class ProjectDetails extends Component {
                     onClick={(e) => this.handleFollow(e)}
                   >
                     <i className="material-icons icon left">favorite</i>
-                    {this.state.follow ? "follow" : "unfollow"}
+
+                    {this.state.follow !== null&&this.state.follow? "follow" : "unfollow"}
                   </button>
                 </div>
               </div>

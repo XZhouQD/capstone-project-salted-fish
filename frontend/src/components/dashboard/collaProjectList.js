@@ -160,7 +160,7 @@ class CollaProjectList extends Component {
             </div>
           </div>
 
-          {this.props.ProjectLists.length === 0
+          {this.props.ProjectLists.length && this.props.ProjectLists.length === 0
             ? this.renderLoading()
             : this.renderProject()}
         </div>
