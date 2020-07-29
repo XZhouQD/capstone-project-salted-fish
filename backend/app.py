@@ -1390,7 +1390,9 @@ class CollaboratorRegister(CorsResource):
         skill_dict = {}
         try:
             skills = register_info['skills'].split(',')
+            skills = [0 if i=="" else int(i.strip()) for i in skills]
             exps = register_info['experience'].split(',')
+            exps = [0 if i=="" else int(i.strip()) for i in exps]
             print(skills, exps)
             if not (len(skills) == len(exps)): return {'message': 'Skills and experience have different length.'}, 400
             for i in range(len(skills)):
