@@ -181,7 +181,7 @@ class ProjectDetails extends Component {
     var content = [];
     for (var i = 0; i < list.length; i++) {
       console.log(i);
-      content.push(skill_list[list[i] - 1]);
+      content.push(skill_list[list[i] -1]);
     }
     content = content.join(",");
     console.log(content);
@@ -218,9 +218,9 @@ class ProjectDetails extends Component {
               {a.title} needs {a.amount} people who have{" "}
               {this.renderSkill(a.skill, skill_list)} skill, and experience at
               least {a.experience} years with{" "}
-              {education_list[a.education] === "Other"
+              {education_list[a.education-1] === "Other"
                 ? "any"
-                : education_list[a.education]}{" "}
+                : education_list[a.education-1]}{" "}
               degree
               {this.state.owner === this.props.id && this.props.role=== "Dreamer"
                 ? this.renderOwner(a.id)
