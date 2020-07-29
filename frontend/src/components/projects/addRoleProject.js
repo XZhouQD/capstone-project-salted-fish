@@ -272,6 +272,7 @@ const AddRoleProject = (props) => {
               {/*Close button does not work*/}
 
               <Modal
+                  isOpen={false}
               trigger={
                 <button className="btn-small right"
                         style={{ marginTop: "10px" }}
