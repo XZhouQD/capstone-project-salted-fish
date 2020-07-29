@@ -40,7 +40,7 @@ class AdminDash extends Component {
 
     const res1 = await axios.get("/admin/active_projects", config);
     this.setState({ activeProjects: res1.data.active_projects });
-
+    console.log(res1.data)
     const res2 = await axios.get("/admin/hidden_projects", config);
     this.setState({ hiddenProjects: res2.data.hidden_projects});
 
@@ -51,6 +51,15 @@ class AdminDash extends Component {
 
 
   render() {
+    var categoryList = [
+      "All other",
+      "A web based application",
+      "A desktop application",
+      "A mobile application",
+      "A library for other project to reference",
+      "A modification to existing platform",
+      "A research oriented project",
+    ];
     return (
       <div>
         <div className="container" style={{ marginTop: "20px" }}>
@@ -60,7 +69,7 @@ class AdminDash extends Component {
             <h5>Modified Projects</h5>
             <div className="flexLayout">
               {/*{this.props.ProjectLists.map((each, index) => {*/}
-              {this.state.modifiedProjects.map((each, index) => {
+              {this.state.modifiedProjects&&this.state.modifiedProjects.map((each, index) => {
                 // console.log("Active projects",this.state.activeProjects)
                 // console.log("All projects",this.props.ProjectLists)
                 return (
@@ -83,7 +92,7 @@ class AdminDash extends Component {
             <h5>Hidden Projects</h5>
             <div className="flexLayout">
               {/*{this.props.ProjectLists.map((each, index) => {*/}
-              {this.state.hiddenProjects.map((each, index) => {
+              {this.state.hiddenProjects&&this.state.hiddenProjects.map((each, index) => {
                 // console.log("Active projects",this.state.activeProjects)
                 // console.log("All projects",this.props.ProjectLists)
                 return (
@@ -106,7 +115,7 @@ class AdminDash extends Component {
             <h5>Active Projects</h5>
             <div className="flexLayout">
               {/*{this.props.ProjectLists.map((each, index) => {*/}
-              {this.state.activeProjects.map((each, index) => {
+              {this.state.activeProjects&&this.state.activeProjects.map((each, index) => {
                 // console.log("Active projects",this.state.activeProjects)
                 // console.log("All projects",this.props.ProjectLists)
                 return (

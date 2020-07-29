@@ -83,7 +83,7 @@ class AdminEachProject extends Component {
             <i className="material-icons right">more_vert</i>
           </span>
           <p className="truncate">
-            Category: {categoryList[this.props.category]}
+            Category: {this.props.category}
           </p>
           <p className="truncate">Description: {this.props.description}</p>
         </div>
