@@ -235,7 +235,7 @@ const AddRoleProject = (props) => {
                               "Distribution System",
                             ].map((ele, index) => {
                               return (
-                                <option value={index} key={index}>
+                                <option value={index+1} key={index}>
                                   {ele}
                                 </option>
                               );
