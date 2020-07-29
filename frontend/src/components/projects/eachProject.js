@@ -23,7 +23,7 @@ class EachProject extends Component {
         <div className="card-image waves-effect waves-block waves-light"></div>
         <div className="card-content">
           <span className="card-title activator grey-text text-darken-4">
-            {this.props.title}
+            {this.props.status===9? <span style={{textDecoration: "line-through"}}>this.props.title</span>:this.props.title}
             <i className="material-icons right">more_vert</i>
           </span>
           <p className="truncate">

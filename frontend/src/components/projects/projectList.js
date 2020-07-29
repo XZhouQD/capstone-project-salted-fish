@@ -54,7 +54,7 @@ class ProjectList extends Component {
                         description={each.description}
                         key={index}
                         id={each.id}
-
+                        status={each.status}
                     />
                 );
               }
