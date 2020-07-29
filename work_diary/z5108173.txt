@@ -73,3 +73,10 @@ Fix SMTP timeout error - will reconnect in retry.
 Hold Retro B meeting on zoom.
 
 Next Week Plan: 9-1. Review backend code and re-format; 9-2. Test all functions prepare for final demo; 9-3. First complete version of project report.
+
+Week 9
+
+Fix a lot of backend code and removed unused import [9-1]
+Engaged in frontend code debug and fixing.
+Testing in progress [9-2]
+Final report drafting [9-3]
