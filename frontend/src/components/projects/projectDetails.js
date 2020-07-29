@@ -79,10 +79,11 @@ class ProjectDetails extends Component {
     this.setState({ follow: !this.state.follow });
     if (this.state.follow) {
       const res = await axios.get(followUrl, config);
-      console.log(res);
+      console.log("RES",res);
       this.props.setAlert(res.data.message);
     } else {
       const res = await axios.get(unfollowUrl, config);
+      console.log("RES.DATA",res.data)
       this.props.setAlert(res.data.message);
     }
   }

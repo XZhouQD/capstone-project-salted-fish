@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 
 export const setAlert = (msg) => (dispatch) => {
   // generate unique id
-  const id = uuid;
+  const id = uuid();
   // dispatch to reducer
   // console.log(msg);
   dispatch({
