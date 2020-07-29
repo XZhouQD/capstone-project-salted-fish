@@ -171,38 +171,41 @@ class ProjectDetails extends Component {
   renderUser(rid) {
     return (
       <div>
-        <Modal
-          trigger={
-            <Button className="blue-grey darken-1 waves-light btn-small">
-              <i className="material-icons icon left">done_all</i>
-              apply
-            </Button>
-          }
-        >
-          <form
-            className="col s12"
-            onSubmit={(e) => this.handleonSubmit(e, rid)}
-          >
-            <div className="input-field">
-              <label htmlFor="apply message">Type in your apply message here</label>
-              <input
-                // placeholder="Send the apply message here"
-                type="text"
-                name="general_text"
-                onChange={(e) => this.handleonChange(e)}
-                required
-                id="apply message"
-              />
+        {this.props.role==="Collaborator"?
+            <Modal
+                trigger={
+                  <Button className="blue-grey darken-1 waves-light btn-small">
+                    <i className="material-icons icon left">done_all</i>
+                    apply
+                  </Button>
+                }
+            >
+              <form
+                  className="col s12"
+                  onSubmit={(e) => this.handleonSubmit(e, rid)}
+              >
+                <div className="input-field">
+                  <label htmlFor="apply message">Type in your apply message here</label>
+                  <input
+                      // placeholder="Send the apply message here"
+                      type="text"
+                      name="general_text"
+                      onChange={(e) => this.handleonChange(e)}
+                      required
+                      id="apply message"
+                  />
 
-            </div>
-            <input
-              type="submit"
-              className="btn-small left"
-              value="send"
-              style={{ marginTop: "38px" }}
-            />
-          </form>
-        </Modal>
+                </div>
+                <input
+                    type="submit"
+                    className="btn-small left"
+                    value="send"
+                    style={{ marginTop: "38px" }}
+                />
+              </form>
+            </Modal>:
+        null}
+
       </div>
     );
   }
@@ -269,7 +272,7 @@ class ProjectDetails extends Component {
         <div className="container">
           <div className="row">
             <div className="col s12 m12 l12">
-              <div className="card">
+              <div className="card ">
                 <div className="card-image">
                   <img src={url} width="650" />
                   <span className="card-title">{this.state.title}</span>
