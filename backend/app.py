@@ -742,6 +742,8 @@ class AcceptAnInvitation(CorsResource):
             return {'message': 'This invitation has been declined already!'}, 400
         if result == 1:
             return {'message': 'This invitation has been accepted already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this invitation has been finished.'}, 400
         if result == 88:
             return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['invite_status'] != 1:
@@ -986,6 +988,8 @@ class ApproveAnApplication(CorsResource):
             return {'message': 'This apploication has been declined already!'}, 400
         if result == 1:
             return {'message': 'This apploication has been approved already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this application has been finished.'}, 400
         if result == 88:
             return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['apply_status'] != 1:
@@ -1023,9 +1027,11 @@ class DeclineAnApplication(CorsResource):
         result = Application.decline_an_application(conn, smtp, int(aid))
         conn.close()
         if result == 0:
-            return {'message': 'This invitation has been declined already!'}, 400
+            return {'message': 'This application has been declined already!'}, 400
         if result == 1:
-            return {'message': 'This invitation has been approved already!'}, 400
+            return {'message': 'This application has been approved already!'}, 400
+        if result == 9:
+            return {'message': 'The related project of this application has been finished.'}, 400
         if result == 88:
             return {'message': 'This project role has been fullfilled, no more collaborator needed!'}, 400
         if result['apply_status'] != 0:
