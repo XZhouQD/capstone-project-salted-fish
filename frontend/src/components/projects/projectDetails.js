@@ -27,11 +27,13 @@ class ProjectDetails extends Component {
     colla_follow:[],
     status:null,
     colla_disable:false,
+    approveList:[],
   };
 
   async componentDidMount() {
     M.AutoInit();
     const res = await axios.get("/project/" + this.props.match.params.id);
+
     console.log(res.data);
     this.setState({
       owner: res.data.owner,
@@ -70,8 +72,10 @@ class ProjectDetails extends Component {
       }
     }else if(this.props.role ==="Collaborator"){
       const res_colla = await axios.get("/collaborator/my_follows_id",config);
-      this.setState({colla_follow:res_colla.data.follows})
+
+      this.setState({colla_follow:res_colla.data.follows});
       var i = Number(pid)
+      console.log("APPROVE LIST",this.state.approveList)
       if(this.state.colla_follow.includes(i)){
         this.setState({follow:false})
       }else{
@@ -170,7 +174,7 @@ class ProjectDetails extends Component {
   renderUser(rid) {
     return (
       <div>
-        {this.props.role==="Collaborator"?
+        {this.props.role==="Collaborator" && this.state.status!==9?
             <Modal
                 dialogClassName="custom-dialog"
                 trigger={

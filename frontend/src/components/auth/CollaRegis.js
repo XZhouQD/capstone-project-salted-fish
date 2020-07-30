@@ -193,7 +193,7 @@ const CollaRegis = ({ setAlert, registerColla, flag }) => {
                     onChange={(e) => handleSkillChange(idx, e)}
                     id="computer_skill"
                   >
-                    <option value="" disabled>
+                    <option value="" disabled selected>
                       Choose your option
                     </option>
                     {[
