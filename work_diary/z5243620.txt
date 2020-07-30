@@ -98,9 +98,11 @@ week 9
 4. work with team to clear the invalidate data in database and load valid data in;
 
 Next week plan:
-1. complete the integration testing for the whole system;
-2. complete the final report with team;
+1. do functional integration testing and focusing on issue fixing;
+2. draft the final report and review with team for final version;
 3. Get the whole system ready for submission;
+4. prepare for final demo;
+
 
 
 
