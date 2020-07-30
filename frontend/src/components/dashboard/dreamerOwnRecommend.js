@@ -52,7 +52,7 @@ class DreamerOwnRecommend extends React.Component {
                       <div key={index}>
                         <p style={{ fontFamily: "Cherry Swash" }}>
                           Form your requirements,
-                          <br /> Skill:{skill_list[res.Skill]}, Title:
+                          <br /> Skill:{skill_list[res.Skill-1]}, Title:
                           {res.Title}
                         </p>
                         <p style={{ fontFamily: "Cherry Swash" }}>
