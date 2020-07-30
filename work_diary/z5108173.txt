@@ -80,3 +80,5 @@ Fix a lot of backend code and removed unused import [9-1]
 Engaged in frontend code debug and fixing.
 Testing in progress [9-2]
 Final report drafting [9-3]
+
+Next Week Paln: 10-1. Dump data into database; 10-2. Prepare final demo
