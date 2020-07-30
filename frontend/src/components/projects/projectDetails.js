@@ -170,7 +170,7 @@ class ProjectDetails extends Component {
   renderUser(rid) {
     return (
       <div>
-        {this.props.role==="Collaborator"?
+        {this.props.role==="Collaborator" && this.state.status!==9?
             <Modal
                 dialogClassName="custom-dialog"
                 trigger={
