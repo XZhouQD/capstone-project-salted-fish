@@ -67,7 +67,10 @@ class DreamerCollasCard extends React.Component {
 
   render() {
     const url =
-      "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
+        "https://api.adorable.io/avatars/48/" +
+        this.props.id+
+        "@adorable.io.png";
+
 
     const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
 
@@ -281,6 +284,7 @@ class DreamerCollasCard extends React.Component {
 }
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  id: state.auth.id
 });
 
 export default connect(mapStateToProps, { sendInvitation, approve })(

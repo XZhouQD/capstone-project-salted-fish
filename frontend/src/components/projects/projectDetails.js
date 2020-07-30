@@ -90,8 +90,6 @@ class ProjectDetails extends Component {
         }
       }
     }
-    
-    M.AutoInit();
   }
   async handleFollow(e) {
     const a = localStorage.getItem("token");
@@ -156,7 +154,7 @@ class ProjectDetails extends Component {
             <Modal
                 dialogClassName="custom-dialog"
           trigger={
-          <Button className="btn-small">
+          <Button className="btn-small ">
           <i className="material-icons icon left">done_all</i>
           application
           </Button>
