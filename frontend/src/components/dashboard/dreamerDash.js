@@ -102,18 +102,6 @@ class DreamerDash extends React.Component {
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
                         <h4 className="left event-title">EVENTS</h4>
-                        <form className="search-field right">
-                          <div className="input-field">
-                            <input id="search" type="search" required />
-                            <label
-                              className="label-icon search-icon"
-                              for="search"
-                            >
-                              <i className="material-icons">search</i>
-                            </label>
-                            <i className="material-icons close-icon">close</i>
-                          </div>
-                        </form>
                       </div>
                     </nav>
 

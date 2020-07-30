@@ -56,7 +56,7 @@ class CollaInfo extends React.Component {
       "A modification to existing platform",
       "A research oriented project",
     ];
-    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
+    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional", 4:"expert" };
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
     const skill_list = [
@@ -138,18 +138,6 @@ class CollaInfo extends React.Component {
                     <nav className="pink darken-1">
                       <div className="nav-wrapper">
                         <h4 className="left event-title">EVENTS</h4>
-                        <form className="search-field right">
-                          <div className="input-field">
-                            <input id="search" type="search" required />
-                            <label
-                              className="label-icon search-icon"
-                              for="search"
-                            >
-                              <i className="material-icons">search</i>
-                            </label>
-                            <i className="material-icons close-icon">close</i>
-                          </div>
-                        </form>
                       </div>
                     </nav>
                     <div className="container1">
