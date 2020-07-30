@@ -95,7 +95,8 @@ class DreamerCollasCard extends React.Component {
       return <Redirect to="/login" />;
     }
     const downloadUrl =
-      "http://localhost:5000/download/" + this.state.resume.filename;
+        "http://localhost:5000/download/" + this.state.resume.filename;
+    // const downloadUrl = "http://gcp.x-zhou.com:5000/download/" + this.state.resume.filename;
     return (
       <div>
         <header>

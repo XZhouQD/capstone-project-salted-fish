@@ -41,15 +41,17 @@ class GetApplication extends React.Component {
                   each.application_id +
                   "/applications/"+each.id;
               console.log(each)
-              return (
-                  <div key={index} style={{ fontFamily: "Ubuntu" }}>
-                    <Link to={url} style={{ marginRight: "10px" }}>
-                      {each.name}
-                    </Link>
-                    want to apply for this role and leaves his messgae：
-                    {each.general_text}
-                  </div>
-              );
+              if (each.apply_status == -1){
+                return (
+                    <div key={index} style={{ fontFamily: "Ubuntu" }}>
+                      <Link to={url} style={{ marginRight: "10px" }}>
+                        {each.name}
+                      </Link>
+                      want to apply for this role and leaves his messgae：
+                      {each.general_text}
+                    </div>
+                );
+              }
             })}
           </div>
       );
