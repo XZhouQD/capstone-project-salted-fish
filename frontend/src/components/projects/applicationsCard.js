@@ -26,9 +26,9 @@ class ApplicationCard extends React.Component {
         "AUTH-KEY": a,
       },
     };
-    console.log(this.props.match.params.cid);
+    console.log(this.props.match.params.aid);
     const res = await axios.get(
-      "/collaborator/" + this.props.match.params.cid,
+      "/collaborator/" + this.props.match.params.aid,
       config
     );
     console.log(res.data);

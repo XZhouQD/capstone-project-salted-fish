@@ -12,6 +12,8 @@ class GetApplication extends React.Component {
 
     const res = await axios.get(this.props.url_1, {
       headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": "*",
         "AUTH-KEY": a,
       },
     });
@@ -36,8 +38,9 @@ class GetApplication extends React.Component {
                   "/role/" +
                   this.props.rid +
                   "/collaborators/" +
-                  each.id +
-                  "/applications";
+                  each.application_id +
+                  "/applications/"+each.id;
+              console.log(each)
               return (
                   <div key={index} style={{ fontFamily: "Ubuntu" }}>
                     <Link to={url} style={{ marginRight: "10px" }}>
