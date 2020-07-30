@@ -36,7 +36,7 @@ class GetApplication extends React.Component {
                   "/role/" +
                   this.props.rid +
                   "/collaborators/" +
-                  each.application_id +
+                  each.id +
                   "/applications";
               return (
                   <div key={index} style={{ fontFamily: "Ubuntu" }}>
