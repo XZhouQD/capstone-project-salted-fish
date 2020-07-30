@@ -165,7 +165,6 @@ class ProjectDetails extends Component {
           <GetApplications url_1={url1} rid={rid} pid={pid}/>
           </Modal>
         }
-
       </div>
     );
   }

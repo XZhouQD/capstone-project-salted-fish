@@ -55,7 +55,7 @@ function App() {
         <Route exact path="/comment" component={ReactApp} />
         <Route
           exact
-          path="/project/:pid/role/:rid/collaborators/:cid/applications"
+          path="/project/:pid/role/:rid/collaborators/:cid/applications/:aid"
           component={ApplicationsCard}
         />
         <Route exact path="/admindash" component={AdminDash} />
