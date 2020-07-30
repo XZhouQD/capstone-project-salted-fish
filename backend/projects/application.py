@@ -315,7 +315,11 @@ class Application():
         Return:
         Boolean if role exist
         """
-        query = "SELECT * FROM project_role where projectID = " + str(self.project_id) + " AND ID = " + str(self.role_apply) + " ;"
+        query = f"SELECT * FROM application where projectID = {self.project_id} AND applicant = {self.applicant} AND status = 1;"
+        result = conn.execute(query)
+        if result.rowcount > 0:
+            return True
+        query = f"SELECT * FROM invitation where projectID = {self.project_id} AND invitee = {self.applicant} AND status = 1;"
         result = conn.execute(query)
         if result.rowcount > 0:
             return True
@@ -359,8 +363,7 @@ class Application():
             return True
         else:
             return False
-    
-    
+
     def create(self, conn):
         """Create a new Application into database
         Param:
@@ -369,7 +372,7 @@ class Application():
         created application object
         """
         # check all validation
-        if not self.check_project_role(conn):
+        if self.check_project_role(conn):
             return None
         if self.duplicate_check(conn):
             return None
