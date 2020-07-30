@@ -285,7 +285,7 @@ class Invitation():
 <p>   has been automaticlly cancelled due to "Role is fullfilled".</p>
 <p>Dream Matchmaker Team</p>
 '''
-        result = smtp.send_email_html(dre['email'], content, subject)
+        result = smtp.send_email_html(col['email'], content, subject)
         return result
 
     def info(self, conn):
