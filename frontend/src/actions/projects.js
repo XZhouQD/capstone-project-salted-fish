@@ -334,7 +334,7 @@ export const approve = ({ aid, rid, pid }) => async (dispatch) => {
       "/project/" + pid + "/role/" + rid + "/application/" + aid + "/approve";
     console.log(url);
     const res = await axios.get(url, config);
-    console.log(res);
+    console.log(res.data);
     dispatch(setAlert(res.data.message));
 
     dispatch({

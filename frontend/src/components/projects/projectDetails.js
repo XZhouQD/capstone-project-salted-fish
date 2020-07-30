@@ -30,6 +30,7 @@ class ProjectDetails extends Component {
   };
 
   async componentDidMount() {
+    M.AutoInit();
     const res = await axios.get("/project/" + this.props.match.params.id);
     console.log(res.data);
     this.setState({
@@ -153,6 +154,7 @@ class ProjectDetails extends Component {
               application
             </Button>:
             <Modal
+                dialogClassName="custom-dialog"
           trigger={
           <Button className="btn-small">
           <i className="material-icons icon left">done_all</i>
@@ -173,8 +175,9 @@ class ProjectDetails extends Component {
       <div>
         {this.props.role==="Collaborator"?
             <Modal
+                dialogClassName="custom-dialog"
                 trigger={
-                  <Button className="blue-grey darken-1 waves-light btn-small">
+                  <Button className="blue-grey darken-1 btn-small">
                     <i className="material-icons icon left">done_all</i>
                     apply
                   </Button>

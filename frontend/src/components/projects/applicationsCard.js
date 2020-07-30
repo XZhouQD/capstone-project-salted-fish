@@ -50,11 +50,11 @@ class ApplicationCard extends React.Component {
     this.props.sendInvitation({ general_text, pid, rid, cid });
   };
 
-  async approveApplication(e) {
+  approveApplication(e) {
     const pid = this.props.match.params.pid;
     const rid = this.props.match.params.rid;
     const aid = this.props.match.params.cid;
-    await this.props.approve({ aid, rid, pid });
+    this.props.approve({ aid, rid, pid });
   }
 
   async declineApplication(e) {
