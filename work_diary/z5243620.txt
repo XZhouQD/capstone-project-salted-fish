@@ -86,6 +86,7 @@ week 8
 4. support frontend for testing and issue fixing;
 5. with teammates got ready for demo2 on wednesday;
 6. finish backend coding for sprint4 before the end of this week;
+7. online retrospect meeting2 and prepare for the report;
 
 Next week plan:
 1. support frontend for testing and issue fixing is any;
@@ -93,14 +94,14 @@ Next week plan:
 
 week 9
 1. complete email sending function for hide/unhide function;
-2. do funnctional and integration test, highlight the questions during testing and fixing;
+2. do funnctional and integration test, highlight the questions during testing and issue fixing;
 3. drafting the final report;
-4. work with team to clear the invalidate data in database and load valid data in;
+4. work with team to clear the invalidate data in database;
+5. Prepared for code submission for the whole project;
 
 Next week plan:
-1. do functional integration testing and focusing on issue fixing;
-2. draft the final report and review with team for final version;
-3. Get the whole system ready for submission;
+1. review with team for formal version final report;
+2. clean database tables and upload valid data in system;
 4. prepare for final demo;
 
 
