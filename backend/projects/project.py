@@ -245,19 +245,19 @@ class Project():
             table_to_update = 'dreamer'
         if user_type == 'C':
             table_to_update = 'collaborator'
-        if count >= 1 and count <= 3 and user_level != 1:
+        if count >= 1 and count <= 3 and user_level != 0:
             query = "UPDATE " + str(table_to_update) + " set user_level = 1 where ID = " + str(user_ID) + ";"
             conn.execute(query)
-        if count > 3 and count <= 5 and user_level != 2:
+        if count > 3 and count <= 5 and user_level != 1:
             query = "UPDATE " + str(table_to_update) + " set user_level = 2 where ID = " + str(user_ID) + ";"
             conn.execute(query)
-        if count > 5 and count <= 8 and user_level != 3:
+        if count > 5 and count <= 8 and user_level != 2:
             query = "UPDATE " + str(table_to_update) + " set user_level = 3 where ID = " + str(user_ID) + ";"
             conn.execute(query)
-        if count > 8 and count <= 15 and user_level != 4:
+        if count > 8 and count <= 15 and user_level != 3:
             query = "UPDATE " + str(table_to_update) + " set user_level = 4 where ID = " + str(user_ID) + ";"
             conn.execute(query)
-        if count > 15 and user_level != 5:
+        if count > 15 and user_level != 4:
             query = "UPDATE " + str(table_to_update) + " set user_level = 5 where ID = " + str(user_ID) + ";"
             conn.execute(query)
 
