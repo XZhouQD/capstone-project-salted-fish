@@ -32,5 +32,8 @@ Fixed some bugs: Token lost when collaborator search for projects that match his
 Next week I will continue to improve user experience and fix bugs.
 
 Week 9
-Fixed some bugs: No projects information shown after the collaborator searching the matched projects and then searching for the projects again.
-User experience enhancement: Collaborator and dreamer do not have to wait after they send messages. Pages will be automatically refreshed.
+Fixed some bugs: No projects information shown after the collaborator searching the matched projects and then searching for the projects again;
+Search bar deleted on dashboards;
+
+User experience enhancement: Follow/unfollow button update: If a user already follow a project, the project details page will show "unfollow" button.
+
