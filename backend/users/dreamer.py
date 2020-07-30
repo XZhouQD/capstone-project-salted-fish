@@ -20,10 +20,10 @@ class Dreamer():
         self.create_time = create_time
         self.last_update = last_update
         self.level_text='Entry'
-        if self.user_level >= 20: self.level_text='Expert'
-        elif self.user_level >= 10: self.level_text='Professional'
-        elif self.user_level >= 5: self.level_text='Senior'
-        elif self.user_level >= 3: self.level_text='Medium'
+        if self.user_level == 4: self.level_text='Expert'
+        elif self.user_level == 3: self.level_text='Professional'
+        elif self.user_level == 2: self.level_text='Senior'
+        elif self.user_level == 1: self.level_text='Medium'
 
     @staticmethod
     def login(conn, email, password_plain='', password_encrypted=''):
