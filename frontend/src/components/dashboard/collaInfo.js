@@ -56,7 +56,7 @@ class CollaInfo extends React.Component {
       "A modification to existing platform",
       "A research oriented project",
     ];
-    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional" };
+    const a = { 0: "entry", 1: "medium", 2: "senior", 3: "professional", 4:"expert" };
     const url =
       "https://api.adorable.io/avatars/140/" + Math.floor(Math.random() * 500);
     const skill_list = [
