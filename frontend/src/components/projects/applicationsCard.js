@@ -28,7 +28,7 @@ class ApplicationCard extends React.Component {
     };
     console.log(this.props.match.params.cid);
     const res = await axios.get(
-      "/collaborator/" + this.props.match.params.cid,
+      "/project/" + this.props.match.params.pid + "/role/" + this.props.match.params.rid + "/application/" + this.props.match.params.cid,
       config
     );
     console.log(res.data);
@@ -158,10 +158,10 @@ class ApplicationCard extends React.Component {
                       <div className="cover-photo">
                         <img src={url} className="profile" />
                       </div>
-                      <div className="profile-name">{this.state.info.Name}</div>
+                      <div className="profile-name">{this.state.info.name}</div>
                       <p className="about">
-                        This is {this.state.info.Name}'s profile as a
-                        collaborator {this.state.info.Description}
+                        This is {this.state.info.name}'s profile as a
+                        collaborator {this.state.info.description}
                       </p>
                       <button
                         className="msg-btn button1"
@@ -182,13 +182,13 @@ class ApplicationCard extends React.Component {
                         <div>
                           <i className="fab material-icons icon">call</i>{" "}
                           <span style={{ position: "relative", bottom: "6px" }}>
-                            {this.state.info.Phone_no}
+                            {this.state.info.phone_no}
                           </span>
                         </div>
                         <div>
                           <i className="fab material-icons icon">email</i>{" "}
                           <span style={{ position: "relative", bottom: "6px" }}>
-                            {this.state.info.Email}
+                            {this.state.info.email}
                           </span>
                         </div>
                         <div>
@@ -196,24 +196,24 @@ class ApplicationCard extends React.Component {
                             perm_identity
                           </i>{" "}
                           <span style={{ position: "relative", bottom: "6px" }}>
-                            {this.state.info.Education}
+                            {this.state.info.education}
                           </span>
                         </div>
                         <div>
                           <i className="fab material-icons icon">trending_up</i>{" "}
                           <span style={{ position: "relative", bottom: "4px" }}>
-                            {a[this.state.info.User_level]}
+                            {[this.state.info.user_level]}
                           </span>
                         </div>
                         <div>
                           <i className="fab material-icons icon">grade</i>{" "}
                           <span style={{ position: "relative", bottom: "4px" }}>
-                            {this.state.info.Skills &&
-                              Object.keys(this.state.info.Skills).map((key) => {
+                            {this.state.info.skills &&
+                              Object.keys(this.state.info.skills).map((key) => {
                                 return (
                                   <span>
                                     {skill_list[key]}:{" "}
-                                    {this.state.info.Skills[key]} years{" "}
+                                    {this.state.info.skills[key]} years{" "}
                                   </span>
                                 );
                               })}
