@@ -28,6 +28,7 @@ class ProjectDetails extends Component {
     status:null,
     colla_disable:false,
     approveList:[],
+    colla_not_apply:true,
   };
 
   async componentDidMount() {
@@ -87,10 +88,22 @@ class ProjectDetails extends Component {
     if (role === "Collaborator"){
       const url = "/collaborator/my_projects";
       const res2 = await axios.get(url, config);
+
+      // console.log("Applications", appRes.data.applications;
       const projects = res2.data.my_projects;
       for (var i = 0; i < projects.length; i++) {
         if (pid == projects[i].id && projects[i].follow == false) {
           this.setState({ colla_disable: true });
+        }
+      }
+      const appUrl = "/collaborator/my_applications";
+      const appRes = await axios.get(appUrl, config);
+      const applications = appRes.data.applications;
+      for (var j = 0; j < applications.length; j++){
+          if (applications[j].projectID === parseInt(pid)){
+            if (applications[j].Application_status === "Approved"){
+              this.setState({ colla_not_apply: false });
+            }
         }
       }
     }
@@ -174,7 +187,7 @@ class ProjectDetails extends Component {
   renderUser(rid) {
     return (
       <div>
-        {this.props.role==="Collaborator" && this.state.status!==9?
+        {this.props.role==="Collaborator" && this.state.status!==9 && this.state.colla_not_apply?
             <Modal
                 dialogClassName="custom-dialog"
                 trigger={
