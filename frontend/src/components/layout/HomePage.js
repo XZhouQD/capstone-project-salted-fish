@@ -87,16 +87,14 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-
-      <div className="footer-copyright right">
-        <div className="container">
-          © 2020 Copyright
-
+      <footer className="page-footer blue-grey lighten-1">
+          <div className="container center-align">
+            <div>© 2020 Copyright Salted-Fish-team</div>
+            <div>contact: fishsalted42@gmail.com</div>
+            <br/>
         </div>
-        <div>
-          <span className="container">Salted-Fish-team</span>
-        </div>
-      </div>
+      </footer>
+
     </div>
   );
 };
