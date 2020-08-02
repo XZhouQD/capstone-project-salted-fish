@@ -206,15 +206,16 @@ class ApplicationCard extends React.Component {
                           </span>
                         </div>
                         <div>
-                          <i className="fab material-icons icon">grade</i>{" "}
                           <span style={{ position: "relative", bottom: "4px" }}>
                             {this.state.info.Skills &&
                               Object.keys(this.state.info.Skills).map((key) => {
                                 return (
-                                  <span>
-                                    {skill_list[key]}:{" "}
-                                    {this.state.info.Skills[key]} years{" "}
-                                  </span>
+                                    <div>
+                                      <span>
+                                        {skill_list[key]}:{" "}
+                                        {this.state.info.Skills[key]} years{" "}
+                                      </span>
+                                    </div>
                                 );
                               })}
                           </span>
