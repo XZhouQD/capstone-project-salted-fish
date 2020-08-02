@@ -23,10 +23,10 @@ class GetApplication extends React.Component {
     console.log(this.state.a);
   }
   render() {
-    console.log("applications",this.state.a.length)
+    console.log("applications",this.state.a)
     if (this.state.a.length == 0){
       return(
-          <p>No applicaitons got.</p>
+          <p>No applicaitons now.</p>
       )
     }else{
       return (

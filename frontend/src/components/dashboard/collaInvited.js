@@ -117,7 +117,6 @@ class CollaInvited extends React.Component {
                         <h4 className="left event-title">INVITED PROJECTS</h4>
                       </div>
                     </nav>
-                    {}
                     <div className="right">
                       Total:{" "}
                       {this.state.myProjects && this.state.myProjects.length}{" "}
@@ -151,40 +150,57 @@ class CollaInvited extends React.Component {
                             </div>
 
                             <div>
-                              <button
-                                className="btn-small"
-                                onClick={(e) => {
-                                  const acceptUrl =
-                                    "/project/" +
-                                    each.projectID +
-                                    "/role/" +
-                                    each.Role_information.id +
-                                    "/invitation/" +
-                                    each.InvitationID +
-                                    "/accept";
+                              {each.Invitation_status === "Pending"?
+                                  <span>
+                                    <button
+                                        className="btn-small"
+                                        onClick={(e) => {
+                                          const acceptUrl =
+                                              "/project/" +
+                                              each.projectID +
+                                              "/role/" +
+                                              each.Role_information.id +
+                                              "/invitation/" +
+                                              each.InvitationID +
+                                              "/accept";
 
-                                  this.accept(acceptUrl);
-                                }}
-                                style={{ marginRight: "10px" }}
-                              >
-                                accept
-                              </button>
-                              <button
-                                className="btn-small"
-                                onClick={(e) => {
-                                  const declineUrl =
-                                    "/project/" +
-                                    each.projectID +
-                                    "/role/" +
-                                    each.Role_information.id +
-                                    "/invitation/" +
-                                    each.InvitationID +
-                                    "/decline";
-                                  this.decline(declineUrl);
-                                }}
-                              >
+                                          this.accept(acceptUrl);
+                                        }}
+                                        style={{ marginRight: "10px" }}
+                                    >
+                                    accept
+                                  </button>
+                                  <button
+                                      className="btn-small"
+                                      onClick={(e) => {
+                                        const declineUrl =
+                                            "/project/" +
+                                            each.projectID +
+                                            "/role/" +
+                                            each.Role_information.id +
+                                            "/invitation/" +
+                                            each.InvitationID +
+                                            "/decline";
+                                        this.decline(declineUrl);
+                                      }}
+                                  >
                                 decline
-                              </button>
+                                </button>
+                                    </span>:
+                                  <span>
+                                  <button
+                                      className="btn-small disabled"
+                                      style={{ marginRight: "10px" }}
+                                  >
+                                    accept
+                                  </button>
+                                  <button
+                                      className="btn-small disabled"
+                                  >
+                                decline
+                                </button>
+                                  </span>}
+
 
                               <span className="right">
                                 status: {each.Invitation_status}

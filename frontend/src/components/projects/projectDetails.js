@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { applyRole } from "../../actions/projects";
 import GetApplications from "./getApplications";
+import JoinedColla from "./joinedColla";
 import { setAlert } from "../../actions/alert";
 
 class ProjectDetails extends Component {
@@ -150,9 +151,10 @@ class ProjectDetails extends Component {
     const pid = this.props.match.params.id;
     const url = "/project/" + pid + "/role/" + rid;
     const url1 = "/project/" + pid + "/role/" + rid + "/applications";
+    const url2 = "/project/" + pid + "/role/" + rid + "/joined_collabors";
     return (
       <div>
-        {this.state.status==9?
+        {this.state.status===9?
             <button className="btn-small disabled" style={{ marginRight: "10px" }}>
               <i className="material-icons icon left">star</i>
               change
@@ -163,15 +165,15 @@ class ProjectDetails extends Component {
                 change
               </button>
             </Link>}
-        {this.state.status==9?
-            <Button className="btn-small disabled">
+        {this.state.status===9?
+            <Button className="btn-small disabled" style={{ marginRight: "10px" }}>
               <i className="material-icons icon left">done_all</i>
               application
             </Button>:
             <Modal
                 dialogClassName="custom-dialog"
           trigger={
-          <Button className="btn-small ">
+          <Button className="btn-small " style={{ marginRight: "10px" }}>
           <i className="material-icons icon left">done_all</i>
           application
           </Button>
@@ -180,6 +182,22 @@ class ProjectDetails extends Component {
           <GetApplications url_1={url1} rid={rid} pid={pid}/>
           </Modal>
         }
+        {this.state.status===9?
+            <button className="btn-small disabled" style={{ marginRight: "10px" }}>
+              <i className="material-icons icon left">group</i>
+              collaborators
+            </button>:
+            <Modal
+                dialogClassName="custom-dialog"
+                trigger={
+                  <button className="btn-small" style={{ marginRight: "10px" }}>
+                    <i className="material-icons icon left">group</i>
+                    collaborators
+                  </button>
+                }
+            >
+              <JoinedColla url_2={url2} rid={rid} pid={pid}/>
+            </Modal>}
       </div>
     );
   }
