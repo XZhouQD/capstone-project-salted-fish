@@ -19,6 +19,7 @@ import CollaDash from "./components/dashboard/collaDash";
 import CollaOwnRecommend from "./components/dashboard/collaOwnRecommend";
 import Card from "./components/dashboard/test";
 import ApplicationsCard from "./components/projects/applicationsCard";
+import JoinedCollaCard from "./components/projects/joinedCollaCard";
 import CollaInvited from "./components/dashboard/collaInvited";
 import CollaInfo from "./components/dashboard/collaInfo";
 import DreamerCard from "./components/dashboard/dreamerCard";
@@ -57,6 +58,11 @@ function App() {
           exact
           path="/project/:pid/role/:rid/collaborators/:cid/applications/:aid"
           component={ApplicationsCard}
+        />
+        <Route
+            exact
+            path="/project/:pid/role/:rid/collaborators/:cid/joined/:aid"
+            component={JoinedCollaCard}
         />
         <Route exact path="/admindash" component={AdminDash} />
         <Route
