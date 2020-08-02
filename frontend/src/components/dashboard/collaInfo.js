@@ -196,7 +196,6 @@ class CollaInfo extends React.Component {
                           </span>
                         </div>
                         <div>
-                          <i className="fab material-icons icon">grade</i>{" "}
                           <span style={{ position: "relative", bottom: "4px" }}>
                             {this.state.info.Skills &&
                               Object.keys(this.state.info.Skills).map((key) => {
