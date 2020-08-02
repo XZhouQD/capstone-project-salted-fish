@@ -790,6 +790,25 @@ class DeclineAnInvitation(CorsResource):
         conn.close()
         return {'message': 'Invitation has been declined successfully!','Invitation':result}, 200
 
+@api.route('/project/<int:pid>/role/<int:rid>/joined_collabors')
+@api.param('pid', 'The project id')
+@api.param('rid', 'The project_role id')
+class JoinedCollabors(CorsResource):
+    @api.response(200, 'Success')
+    @api.response(401, 'Auth Failed')
+    @api.doc(description='Get joined collaborators')
+    @require_auth
+    def get(self, pid, rid):
+        token = request.headers.get('AUTH_KEY')
+        userinfo = auth.decode(token)
+        collaborator_id = userinfo['id']
+        if userinfo['role'] != 'Dreamer':
+            return {'message': 'You are not logged in as dreamer'}, 401
+        conn = db.conn()
+        result = Role.get_joined_collaborators(conn, rid)
+        conn.close()
+        return {"collaborators": result}, 200
+
 @api.route('/project/<int:pid>/role/<int:rid>/appllication')
 @api.param('pid', 'The project id')
 @api.param('rid', 'The project_role id')
