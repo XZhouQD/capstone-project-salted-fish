@@ -177,6 +177,22 @@ class Role():
         return roles
 
     @staticmethod
+    def get_joined_collaborators(conn, rID):
+        from users.collaborator import Collaborator
+        query = f"SELECT * FROM application WHERE role_applied = {rID} AND status = 1;"
+        result = conn.execute(query)
+        collabors = []
+        for i in range(result.rowcount):
+            row = result.fetchone()
+            collabors.append(Collaborator.get_by_id(conn, row['applicant']))
+        query_2 = f"SELECT * FROM invitation WHERE role_invited = {rID} AND status = 1;"
+        result_2 = conn.execute(query_2)
+        for i in range(result_2.rowcount):
+            row = result_2.fetchone()
+            collabors.append(Collaborator.get_by_id(conn, row['invitee']))
+        return collabors
+
+    @staticmethod
     # TODO: this seems duplicate with get_text_by_pid and there is error on return value
     def get_text_by_proj_id(conn, proj_id):
         query = "SELECT * FROM project_role where projectID = " + str(proj_id) + ";"
