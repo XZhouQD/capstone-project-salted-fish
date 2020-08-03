@@ -34,6 +34,9 @@ Next week I will continue to improve user experience and fix bugs.
 Week 9
 Fixed some bugs: No projects information shown after the collaborator searching the matched projects and then searching for the projects again;
 Search bar deleted on dashboards;
-
 User experience enhancement: Follow/unfollow button update: If a user already follow a project, the project details page will show "unfollow" button.
+Enhance some user experience features.
+
+Week 10
+Feature added: Admin can view project details by "more info" button.
 
