@@ -104,6 +104,15 @@ Next week plan:
 2. clean database tables and upload valid data in system;
 4. prepare for final demo;
 
+week 10
+1. Prepare the draft version of final report and had meeting with team to do further discussion;
+2. Review the report with team for prepare for the final report;
+3. Online testing and issue fixing；
+4. Prepare for the final demo;
+5. database cleaning and reloading data;
+
+
+
 
 
 
