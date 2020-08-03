@@ -377,7 +377,7 @@ class Collaborator():
         #relaxing matching
         relaxing_matching_count = 0
         for skill, exp in skills.items():
-            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience >= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY ID, projectID, skill;"
+            query = "SELECT projectID as proj_id, ID as role_id, skill FROM project_role pr, role_skill rs WHERE pr.ID = rs.roleID and skill = " + str(skill) + " AND experience <= " + str(exp - 1) + " AND education >= " + str(edu - 1) + " ORDER BY ID, projectID, skill;"
             result = conn.execute(query)
             for i in range(result.rowcount):
                 row = result.fetchone()
