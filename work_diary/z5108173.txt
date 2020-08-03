@@ -82,3 +82,9 @@ Testing in progress [9-2]
 Final report drafting [9-3]
 
 Next Week Paln: 10-1. Dump data into database; 10-2. Prepare final demo
+
+Week 10
+
+Add joined_project API.
+Final demo meeting, prepare [10-2].
+Report final formatting.
