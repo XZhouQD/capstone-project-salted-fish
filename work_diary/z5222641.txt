@@ -55,3 +55,6 @@ Fix some code of backend
 Prepare final code and report
 Next week:prepare final demo and upload valid data into database
 
+week10
+Review and finish final report with team;
+Finish final demo with team
