@@ -1,6 +1,6 @@
 import React, { Component as component, Component, useCallback } from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import M from "materialize-css";
 import axios from "axios";
 import { Button, Modal } from "react-materialize";
@@ -126,6 +126,13 @@ class AdminEachProject extends Component {
               reveal
             </button>
           )}
+            <Link
+                to={"/projects/" + this.props.id}
+                className="btn-small"
+                style={{ marginRight: "5px" }}
+            >
+              More info
+            </Link>
         </div>
         <div className="card-reveal">
           <span className="card-title grey-text text-darken-4">
