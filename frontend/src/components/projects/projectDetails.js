@@ -83,6 +83,10 @@ class ProjectDetails extends Component {
       }else{
         this.setState({follow:true})
       }
+    }else if (this.props.role === "Admin"){
+      this.setState({follow:true})
+    }else{
+      this.setState({follow:true})
     }
 
     //
