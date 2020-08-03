@@ -610,7 +610,7 @@ class Project():
         if hidden_reason == "":
             hidden_reason = "improper or sensitive contents"
         if hide:
-            subject = '[DreamMatchmaker]Your project has been hidden due to improper or sensitive contents, please be noted!'
+            subject = '[DreamMatchmaker]Your project has been hidden due to illegal or improper content, please do modifiction!'
             content = f'''<p>Hello {dre['name']},</p>
 <p>   Your project - <b>{proj['title']}</b> has been hidden due to {hidden_reason}, admin will unhide your project once it's updated!</p>
 <p>Dream Matchmaker Team</p>
