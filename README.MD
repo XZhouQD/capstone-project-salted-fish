@@ -1,4 +1,7 @@
 # COMP9900 Capstone Project
+This is a manual fork of the project repo.
+Some sensitive data has been *removed*.
+
 ## Group Salted Fish
 ## Dream Matchmaker
 ### Members
